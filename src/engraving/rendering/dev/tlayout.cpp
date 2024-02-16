@@ -4330,7 +4330,7 @@ void TLayout::layoutNote(const Note* item, Note::LayoutData* ldata)
             }
         }
 
-        if ((item->ghost() && !Note::engravingConfiguration()->tablatureParenthesesZIndexWorkaround())) {
+        if (item->ghost()) {
             const_cast<Note*>(item)->setHeadHasParentheses(true, /* addToLinked= */ false, /* generated= */ true);
         } else {
             const_cast<Note*>(item)->setHeadHasParentheses(false, /* addToLinked= */ false);
@@ -4345,12 +4345,6 @@ void TLayout::layoutNote(const Note* item, Note::LayoutData* ldata)
         double height = item->deadNote() ? tab->deadFretBoxH(style) : tab->fretBoxH(style);
 
         noteBBox = RectF(0, y * mags, w, height * mags);
-
-        if (item->ghost() && Note::engravingConfiguration()->tablatureParenthesesZIndexWorkaround()) {
-            noteBBox.setWidth(w + item->symWidth(SymId::noteheadParenthesisLeft) + item->symWidth(SymId::noteheadParenthesisRight));
-        } else {
-            noteBBox.setWidth(w);
-        }
     } else {
         if (item->deadNote()) {
             const_cast<Note*>(item)->setHeadGroup(NoteHeadGroup::HEAD_CROSS);
@@ -5458,7 +5452,9 @@ void TLayout::layoutSymbol(const Symbol* item, Symbol::LayoutData* ldata, const 
     } else if (item->staff()) {
         ldata->setMag(item->staff()->staffMag(item->tick()));
     }
-    ldata->setBbox(item->scoreFont() ? item->scoreFont()->bbox(item->sym(), item->magS()) : item->symBbox(item->sym()));
+    ldata->setBbox(item->scoreFont()
+                   ? item->scoreFont()->bbox(item->sym(), item->magS() * item->symbolsSize())
+                   : item->symBbox(item->sym()));
     double w = ldata->bbox().width();
     PointF p;
     if (item->align() == AlignV::BOTTOM) {

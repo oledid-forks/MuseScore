@@ -125,7 +125,7 @@ qreal QQuickRangeModel1Private::publicPosition(qreal position) const
     and \a value that is passed as parameter.
 */
 
-qreal QQuickRangeModel1Private::publicValue(qreal value) const
+qreal QQuickRangeModel1Private::publicValue(qreal pValue) const
 {
     // It is important to do value-within-range check this
     // late (as opposed to during setPosition()). The reason is
@@ -133,9 +133,9 @@ qreal QQuickRangeModel1Private::publicValue(qreal value) const
     // outside the range, might become valid later if the range changes.
 
     if (stepSize == 0)
-        return qBound(minimum, value, maximum);
+        return qBound(minimum, pValue, maximum);
 
-    const int stepSizeMultiplier = (value - minimum) / stepSize;
+    const int stepSizeMultiplier = (pValue - minimum) / stepSize;
 
     // Test whether value is below minimum range
     if (stepSizeMultiplier < 0)
@@ -145,7 +145,7 @@ qreal QQuickRangeModel1Private::publicValue(qreal value) const
     const qreal rightEdge = qMin(maximum, ((stepSizeMultiplier + 1) * stepSize) + minimum);
     const qreal middle = (leftEdge + rightEdge) / 2;
 
-    return (value <= middle) ? leftEdge : rightEdge;
+    return (pValue <= middle) ? leftEdge : rightEdge;
 }
 
 /*!
@@ -508,7 +508,7 @@ void QQuickRangeModel1::setValue(qreal newValue)
 void QQuickRangeModel1::setInverted(bool inverted)
 {
     Q_D(QQuickRangeModel1);
-    if (inverted == d->inverted)
+    if (inverted == bool(d->inverted))
         return;
 
     d->inverted = inverted;

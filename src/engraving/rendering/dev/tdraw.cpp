@@ -2260,9 +2260,6 @@ void TDraw::draw(const Note* item, Painter* painter)
         painter->setFont(f);
         painter->setPen(c);
         double startPosX = ldata->bbox().x();
-        if (item->ghost() && config->tablatureParenthesesZIndexWorkaround()) {
-            startPosX += item->symWidth(SymId::noteheadParenthesisLeft);
-        }
 
         const MStyle& style = item->style();
         double yOffset = tab->fretFontYOffset(style);
@@ -2838,7 +2835,7 @@ void TDraw::draw(const Symbol* item, Painter* painter)
     if (!item->isNoteDot() || !tabStaff) {
         painter->setPen(item->curColor());
         if (item->scoreFont()) {
-            item->scoreFont()->draw(item->sym(), painter, item->magS(), PointF());
+            item->scoreFont()->draw(item->sym(), painter, item->magS() * item->symbolsSize(), PointF(), item->symAngle());
         } else {
             item->drawSymbol(item->sym(), painter);
         }
