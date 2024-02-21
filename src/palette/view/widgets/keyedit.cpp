@@ -249,7 +249,11 @@ void KeyCanvas::dragMoveEvent(QDragMoveEvent* event)
 {
     if (dragElement) {
         event->acceptProposedAction();
+#ifdef MU_QT5_COMPAT
         PointF pos = PointF::fromQPointF(imatrix.map(QPointF(event->pos())));
+#else
+        PointF pos = PointF::fromQPointF(imatrix.map(event->position()));
+#endif
         dragElement->setPos(pos);
         update();
     }
@@ -368,11 +372,13 @@ KeyEditor::KeyEditor(QWidget* parent)
     setFocus();
 }
 
+#ifdef MU_QT5_COMPAT
 KeyEditor::KeyEditor(const KeyEditor& widget)
     : KeyEditor(widget.parentWidget())
 {
 }
 
+#endif
 //---------------------------------------------------------
 //   addClicked
 //---------------------------------------------------------

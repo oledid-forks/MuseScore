@@ -5,7 +5,7 @@
  * MuseScore
  * Music Composition & Notation
  *
- * Copyright (C) 2021 MuseScore BVBA and others
+ * Copyright (C) 2024 MuseScore BVBA and others
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -19,43 +19,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "testdialog.h"
-#include "ui_testdialog.h"
+import QtQuick 2.15
+import QtQuick.Controls 2.15
 
-using namespace mu::ui;
+import MuseScore.Ui 1.0
+import MuseScore.UiComponents 1.0
 
-#ifdef MU_QT5_COMPAT
-TestDialog::TestDialog(const TestDialog& dialog)
-    : QDialog(dialog.parentWidget()),
-    ui(dialog.ui)
-{
-}
+GroupBox {
+    id: root
 
-#endif
+    padding: 12
 
-TestDialog::TestDialog(QWidget* parent)
-    : QDialog(parent),
-    ui(new Ui::TestDialog)
-{
-    ui->setupUi(this);
-}
+    background: Rectangle {
+        y: root.topPadding - root.bottomPadding
+        width: parent.width
+        height: parent.height - root.topPadding + root.bottomPadding
 
-TestDialog::~TestDialog()
-{
-    delete ui;
-}
-
-QString TestDialog::title() const
-{
-    return m_title;
-}
-
-void TestDialog::setTitle(QString title)
-{
-    if (m_title == title) {
-        return;
+        color: "transparent"
+        border.color: ui.theme.strokeColor
+        radius: ui.theme.borderWidth
     }
 
-    m_title = title;
-    ui->labelTestParam->setText(m_title);
+    label: StyledTextLabel {
+        x: root.leftPadding
+        width: root.availableWidth
+
+        text: root.title
+        horizontalAlignment: Text.AlignLeft
+        elide: Text.ElideRight
+    }
 }
