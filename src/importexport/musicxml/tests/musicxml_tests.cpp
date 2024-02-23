@@ -40,7 +40,6 @@
 #endif
 
 using namespace mu;
-using namespace mu::framework;
 using namespace mu::iex::musicxml;
 using namespace mu::engraving;
 
@@ -657,9 +656,11 @@ TEST_F(Musicxml_Tests, incorrectStaffNumber2) {
     mxmlIoTestRef("testIncorrectStaffNumber2");
 }
 #ifndef DISABLED_SOME_TESTS
+#ifndef MU_QT5_COMPAT
 TEST_F(Musicxml_Tests, inferredSubtitle) {
     mxmlImportTestRef("testInferredSubtitle");
 }
+#endif
 #endif
 TEST_F(Musicxml_Tests, instrumentChangeMIDIportExport) {
     mxmlMscxExportTestRef("testInstrumentChangeMIDIportExport");

@@ -24,8 +24,7 @@
 #include <QQmlEngine>
 
 #include "ui/iuiengine.h"
-#include "modularity/ioc.h"
-#include "log.h"
+#include "global/modularity/ioc.h"
 
 #include "internal/audioconfiguration.h"
 #include "internal/audiosanitizer.h"
@@ -167,7 +166,7 @@ void AudioModule::resolveImports()
     m_fxResolver->registerResolver(AudioFxType::MuseFx, std::make_shared<MuseFxResolver>());
 }
 
-void AudioModule::onInit(const framework::IApplication::RunMode& mode)
+void AudioModule::onInit(const IApplication::RunMode& mode)
 {
     /** We have three layers
         ------------------------
@@ -203,7 +202,7 @@ void AudioModule::onInit(const framework::IApplication::RunMode& mode)
     m_configuration->init();
     m_registerAudioPluginsScenario->init();
 
-    if (mode == framework::IApplication::RunMode::AudioPluginRegistration) {
+    if (mode == IApplication::RunMode::AudioPluginRegistration) {
         return;
     }
 
@@ -256,7 +255,7 @@ void AudioModule::onDestroy()
     }
 }
 
-void AudioModule::setupAudioDriver(const framework::IApplication::RunMode& mode)
+void AudioModule::setupAudioDriver(const IApplication::RunMode& mode)
 {
     IAudioDriver::Spec requiredSpec;
     requiredSpec.sampleRate = m_configuration->sampleRate();
@@ -268,7 +267,7 @@ void AudioModule::setupAudioDriver(const framework::IApplication::RunMode& mode)
         m_audioBuffer->pop(reinterpret_cast<float*>(stream), samplesPerChannel);
     };
 
-    if (mode == framework::IApplication::RunMode::GuiApp) {
+    if (mode == IApplication::RunMode::GuiApp) {
         m_audioDriver->init();
 
         IAudioDriver::Spec activeSpec;

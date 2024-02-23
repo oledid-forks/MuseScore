@@ -24,13 +24,14 @@
 
 #include <QApplication>
 
+#include "global/translation.h"
+
 #include "audioutils.h"
 #include "audioerrors.h"
-#include "translation.h"
+
 #include "log.h"
 
 using namespace mu::audio;
-using namespace mu::framework;
 
 void RegisterAudioPluginsScenario::init()
 {

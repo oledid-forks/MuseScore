@@ -21,14 +21,14 @@
  */
 #include "soundfontrepository.h"
 
-#include "log.h"
-#include "translation.h"
+#include "global/translation.h"
 
 #include "synthesizers/fluidsynth/fluidsoundfontparser.h"
 
+#include "log.h"
+
 using namespace mu::audio;
 using namespace mu::audio::synth;
-using namespace mu::framework;
 using namespace mu::async;
 
 void SoundFontRepository::init()

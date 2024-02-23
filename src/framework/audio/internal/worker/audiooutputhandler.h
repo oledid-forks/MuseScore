@@ -23,8 +23,8 @@
 #ifndef MU_AUDIO_AUDIOIOHANDLER_H
 #define MU_AUDIO_AUDIOIOHANDLER_H
 
-#include "modularity/ioc.h"
-#include "async/asyncable.h"
+#include "global/modularity/ioc.h"
+#include "global/async/asyncable.h"
 
 #include "ifxresolver.h"
 #include "iaudiooutput.h"
@@ -40,7 +40,7 @@ using SoundTrackWriterPtr = std::shared_ptr<SoundTrackWriter>;
 
 class AudioOutputHandler : public IAudioOutput, public async::Asyncable
 {
-    INJECT(fx::IFxResolver, fxResolver)
+    Inject<fx::IFxResolver> fxResolver;
 
 public:
     explicit AudioOutputHandler(IGetTrackSequence* getSequence);
@@ -63,7 +63,7 @@ public:
                                         const SoundTrackFormat& format) override;
     void abortSavingAllSoundTracks() override;
 
-    framework::Progress saveSoundTrackProgress(const TrackSequenceId sequenceId) override;
+    mu::Progress saveSoundTrackProgress(const TrackSequenceId sequenceId) override;
 
     void clearAllFx() override;
 
@@ -78,7 +78,7 @@ private:
     mutable async::Channel<AudioOutputParams> m_masterOutputParamsChanged;
     mutable async::Channel<TrackSequenceId, TrackId, AudioOutputParams> m_outputParamsChanged;
 
-    std::unordered_map<TrackSequenceId, framework::Progress> m_saveSoundTracksProgressMap;
+    std::unordered_map<TrackSequenceId, mu::Progress> m_saveSoundTracksProgressMap;
     std::unordered_map<TrackSequenceId, soundtrack::SoundTrackWriterPtr> m_saveSoundTracksWritersMap;
 };
 }
