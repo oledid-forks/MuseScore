@@ -459,6 +459,9 @@ TEST_F(Musicxml_Tests, clefs1) {
 TEST_F(Musicxml_Tests, clefs2) {
     mxmlIoTest("testClefs2");
 }
+TEST_F(Musicxml_Tests, codaHBox) {
+    mxmlImportTestRef("testCodaHBox");
+}
 TEST_F(Musicxml_Tests, colorExport) {
     mxmlMscxExportTestRef("testColorExport");
 }
@@ -467,6 +470,9 @@ TEST_F(Musicxml_Tests, colors) {
 }
 TEST_F(Musicxml_Tests, completeMeasureRests) {
     mxmlIoTest("testCompleteMeasureRests");
+}
+TEST_F(Musicxml_Tests, copyrightScale) {
+    mxmlImportTestRef("testCopyrightScale");
 }
 TEST_F(Musicxml_Tests, cueGraceNotes1) {
     mxmlImportTestRef("testCueGraceNotes");
@@ -542,6 +548,9 @@ TEST_F(Musicxml_Tests, dynamics2) {
 }
 TEST_F(Musicxml_Tests, dynamics3) {
     mxmlIoTestRef("testDynamics3");
+}
+TEST_F(Musicxml_Tests, elision) {
+    mxmlImportTestRef("testElision");
 }
 TEST_F(Musicxml_Tests, emptyMeasure) {
     mxmlIoTestRef("testEmptyMeasure");
@@ -709,6 +718,9 @@ TEST_F(Musicxml_Tests, lyricBracket) {
 TEST_F(Musicxml_Tests, lyricColor) {
     mxmlIoTest("testLyricColor");
 }
+TEST_F(Musicxml_Tests, lyricPos) {
+    mxmlImportTestRef("testLyricPos");
+}
 TEST_F(Musicxml_Tests, lyrics1) {
     mxmlIoTestRef("testLyrics1");
 }
@@ -864,6 +876,9 @@ TEST_F(Musicxml_Tests, restsTypeWhole) {
 }
 TEST_F(Musicxml_Tests, secondVoiceMelismata) {
     mxmlImportTestRef("testSecondVoiceMelismata");
+}
+TEST_F(Musicxml_Tests, sibMetronomeMarks) {
+    mxmlImportTestRef("testSibMetronomeMarks");
 }
 TEST_F(Musicxml_Tests, slurTieDirection) {
     mxmlIoTest("testSlurTieDirection");
