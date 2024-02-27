@@ -426,7 +426,6 @@ public:
     Segment* setNoteRest(Segment*, track_idx_t track, NoteVal nval, Fraction, DirectionV stemDirection = DirectionV::AUTO,
                          bool forceAccidental = false, const std::set<SymId>& articulationIds = {}, bool rhythmic = false,
                          InputState* externalInputState = nullptr);
-    Segment* setChord(Segment*, track_idx_t track, const Chord* chordTemplate, Fraction, DirectionV stemDirection = DirectionV::AUTO);
     void changeCRlen(ChordRest* cr, const TDuration&);
     void changeCRlen(ChordRest* cr, const Fraction&, bool fillWithRest=true);
     void createCRSequence(const Fraction& f, ChordRest* cr, const Fraction& tick);
@@ -662,7 +661,7 @@ public:
     void spatiumChanged(double oldValue, double newValue);
     void styleChanged() override;
 
-    void cmdPaste(const IMimeData* ms, MuseScoreView* view, Fraction scale = Fraction(1, 1));
+    std::vector<EngravingItem*> cmdPaste(const IMimeData* ms, MuseScoreView* view, Fraction scale = Fraction(1, 1));
     bool pasteStaff(XmlReader&, Segment* dst, staff_idx_t staffIdx, Fraction scale = Fraction(1, 1));
     void pasteSymbols(XmlReader& e, ChordRest* dst);
 
