@@ -125,7 +125,6 @@ set(LINK_LIB
     ${QT_LIBRARIES}
     global
     draw
-    fonts
     network
 
     braille
@@ -384,6 +383,12 @@ if (OS_IS_WIN)
         install(FILES
                 ${QT_INSTALL_PLUGINS}/printsupport/windowsprintersupport.dll
                 DESTINATION bin/printsupport)
+    endif()
+
+    if (NOT MUE_COMPILE_QT5_COMPAT) # Qt6
+        install(FILES
+                ${QT_INSTALL_PLUGINS}/tls/qopensslbackend.dll
+                DESTINATION bin/tls)
     endif()
 
     install(DIRECTORY
