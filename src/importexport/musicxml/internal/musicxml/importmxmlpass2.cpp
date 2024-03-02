@@ -3062,16 +3062,21 @@ void MusicXMLParserDirection::direction(const String& partId,
             m_logger->logError(u"spanner already started", &m_e);
             delete desc.sp;
         } else {
+            String spannerPlacement = placement;
+            // Case-based defaults
+            if (spannerPlacement.empty() && desc.sp->isHairpin()) {
+                spannerPlacement = isVocalStaff ? u"above" : u"below";
+            }
             if (spdesc.isStopped) {
                 m_pass2.addSpanner(desc);
                 // handleSpannerStart and handleSpannerStop must be called in order
                 // due to allocation of elements in the map
-                handleSpannerStart(desc.sp, track, placement, tick + m_offset, spanners);
+                handleSpannerStart(desc.sp, track, spannerPlacement, tick + m_offset, spanners);
                 handleSpannerStop(spdesc.sp, spdesc.track2, spdesc.tick2, spanners);
                 m_pass2.clearSpanner(desc);
             } else {
                 m_pass2.addSpanner(desc);
-                handleSpannerStart(desc.sp, track, placement, tick + m_offset, spanners);
+                handleSpannerStart(desc.sp, track, spannerPlacement, tick + m_offset, spanners);
                 spdesc.isStarted = true;
             }
         }
@@ -3257,7 +3262,9 @@ void MusicXMLParserDirection::otherDirection()
             { String(u"l.v. down"), SymId::articLaissezVibrerBelow },
             { String(u"8vb"), SymId::ottavaBassaVb },
             { String(u"Treble clef"), SymId::gClef },
-            { String(u"Bass clef"), SymId::fClef }
+            { String(u"Bass clef"), SymId::fClef },
+            { String(u"Caesura"), SymId::caesura },
+            { String(u"Thick caesura"), SymId::caesuraThick }
         };
         String t = m_e.readText();
         String val = mu::value(otherDirectionStrings, t);
@@ -7011,6 +7018,7 @@ static void addBreath(ChordRest* cr, const Fraction& tick, SymId breath)
         // b->setTrack(trk + voice); TODO check next line
         b->setTrack(cr->track());
         b->setSymId(breath);
+        b->setPlacement(b->propertyDefault(Pid::PLACEMENT).value<PlacementV>());
         seg->add(b);
     }
 }
