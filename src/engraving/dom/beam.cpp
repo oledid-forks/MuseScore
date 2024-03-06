@@ -572,6 +572,19 @@ void Beam::setNoSlope(bool b)
     }
 }
 
+void Beam::computeAndSetSlope()
+{
+    double xDiff = endAnchor().x() - startAnchor().x();
+    double yDiff = endAnchor().y() - startAnchor().y();
+    if (std::abs(xDiff) < 0.5 * spatium()) {
+        // Temporary safeguard: a beam this short is invalid, and exists only as a temporary state,
+        // so don't try to compute the slope as it will be wrong. Needs a better solution in future.
+        setSlope(0.0);
+    } else {
+        setSlope(yDiff / xDiff);
+    }
+}
+
 //---------------------------------------------------------
 //   userModified
 //---------------------------------------------------------
@@ -839,7 +852,7 @@ void Beam::initBeamEditData(EditData& ed)
     int idx = directionIdx();
     int i = 0;
     for (BeamFragment* f : m_fragments) {
-        double d = fabs(f->py1[idx] - pt.y());
+        double d = std::fabs(f->py1[idx] - pt.y());
         if (d < ydiff) {
             ydiff = d;
             bed->editFragment = i;

@@ -3598,7 +3598,7 @@ void TLayout::layoutKeySig(const KeySig* item, KeySig::LayoutData* ldata, const 
     if (item->isCustom() && !item->isAtonal()) {
         double accidentalGap = conf.styleS(Sid::keysigAccidentalDistance).val();
         // add standard key accidentals first, if necessary
-        for (int i = 1; i <= abs(t1) && abs(t1) <= 7; ++i) {
+        for (int i = 1; i <= std::abs(t1) && std::abs(t1) <= 7; ++i) {
             bool drop = false;
             for (const CustDef& cd: item->customKeyDefs()) {
                 int degree = item->degInKey(cd.degree);
@@ -3771,10 +3771,10 @@ void TLayout::layoutKeySig(const KeySig* item, KeySig::LayoutData* ldata, const 
                 }
             }
         }
-        if (abs(t1) <= 7) {
+        if (std::abs(t1) <= 7) {
             SymId symbol = t1 > 0 ? SymId::accidentalSharp : SymId::accidentalFlat;
             int lineIndexOffset = t1 > 0 ? 0 : 7;
-            for (int i = 0; i < abs(t1); ++i) {
+            for (int i = 0; i < std::abs(t1); ++i) {
                 keySigAddLayout(item, conf, symbol, lines[lineIndexOffset + i], ldata);
             }
         } else {
@@ -4222,7 +4222,7 @@ void TLayout::layoutNote(const Note* item, Note::LayoutData* ldata)
         if (item->fixed()) {
             const_cast<Note*>(item)->setFretString(u"/");
         } else {
-            const_cast<Note*>(item)->setFretString(tab->fretString(fabs(item->fret()), item->string(), item->deadNote()));
+            const_cast<Note*>(item)->setFretString(tab->fretString(std::fabs(item->fret()), item->string(), item->deadNote()));
 
             if (item->negativeFretUsed()) {
                 const_cast<Note*>(item)->setFretString(u"-" + item->fretString());
@@ -5824,12 +5824,12 @@ void TLayout::layoutTextLineBaseSegment(TextLineBaseSegment* item, LayoutContext
         double endHookWidth = 0.0;
 
         if (tl->beginHookType() == HookType::HOOK_45) {
-            beginHookWidth = fabs(beginHookHeight * .4);
+            beginHookWidth = std::fabs(beginHookHeight * .4);
             pp1.rx() += beginHookWidth;
         }
 
         if (tl->endHookType() == HookType::HOOK_45) {
-            endHookWidth = fabs(endHookHeight * .4);
+            endHookWidth = std::fabs(endHookHeight * .4);
             pp2.rx() -= endHookWidth;
         }
 
