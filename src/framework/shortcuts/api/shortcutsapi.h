@@ -19,26 +19,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef MU_API_INTERACTIVEAPI_H
-#define MU_API_INTERACTIVEAPI_H
+#ifndef MU_API_SHORTCUTSAPI_H
+#define MU_API_SHORTCUTSAPI_H
 
-#include "apiobject.h"
+#include "api/apiobject.h"
 
 #include "modularity/ioc.h"
-#include "iinteractive.h"
+#include "shortcuts/ishortcutscontroller.h"
 
 namespace mu::api {
-class InteractiveApi : public ApiObject
+class ShortcutsApi : public ApiObject
 {
     Q_OBJECT
 
-    INJECT(IInteractive, interactive)
+    INJECT(shortcuts::IShortcutsController, shortcutsController)
 
 public:
-    explicit InteractiveApi(IApiEngine* e);
+    explicit ShortcutsApi(IApiEngine* e);
 
-    Q_INVOKABLE void openUrl(const QString& url);
+    Q_INVOKABLE void activate(const QString& sequence);
 };
 }
 
-#endif // MU_API_INTERACTIVEAPI_H
+#endif // MU_API_SHORTCUTSAPI_H

@@ -5,7 +5,7 @@
  * MuseScore
  * Music Composition & Notation
  *
- * Copyright (C) 2021 MuseScore BVBA and others
+ * Copyright (C) 2024 MuseScore BVBA and others
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -19,18 +19,37 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include <QUrl>
+#include "qmlextapi.h"
 
-#include "interactiveapi.h"
+#include "log.h"
 
-using namespace mu::api;
+using namespace mu::extensions;
 
-InteractiveApi::InteractiveApi(IApiEngine* e)
-    : ApiObject(e)
+QmlExtApi::QmlExtApi(api::IApiEngine* engine, QObject* parent)
+    : QObject(parent), m_engine(engine)
 {
 }
 
-void InteractiveApi::openUrl(const QString& url)
+QJSValue QmlExtApi::api(const std::string& name) const
 {
-    interactive()->openUrl(QUrl(url));
+    if (!apiRegister()) {
+        return QJSValue();
+    }
+
+    Api a = m_apis.value(name);
+    if (!a.jsval.isUndefined()) {
+        return a.jsval;
+    }
+
+    a.obj = apiRegister()->createApi(name, m_engine);
+    if (!a.obj) {
+        LOGW() << "Not allowed api: " << name;
+        return QJSValue();
+    }
+
+    a.jsval = m_engine->newQObject(a.obj);
+
+    m_apis[name] = a;
+
+    return a.jsval;
 }

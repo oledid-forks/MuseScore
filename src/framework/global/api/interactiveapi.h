@@ -19,28 +19,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef MU_API_DISPATCHERAPI_H
-#define MU_API_DISPATCHERAPI_H
+#ifndef MU_API_INTERACTIVEAPI_H
+#define MU_API_INTERACTIVEAPI_H
 
-#include <QVariant>
-
-#include "apiobject.h"
+#include "api/apiobject.h"
 
 #include "modularity/ioc.h"
-#include "actions/iactionsdispatcher.h"
+#include "iinteractive.h"
 
 namespace mu::api {
-class DispatcherApi : public ApiObject
+class InteractiveApi : public ApiObject
 {
     Q_OBJECT
 
-    INJECT(actions::IActionsDispatcher, dispatcher)
+    INJECT(IInteractive, interactive)
 
 public:
-    explicit DispatcherApi(IApiEngine* e);
+    explicit InteractiveApi(IApiEngine* e);
 
-    Q_INVOKABLE void dispatch(const QString& action, const QVariantList& args = QVariantList());
+    Q_INVOKABLE void info(const QString& title, const QString& text);
+
+    Q_INVOKABLE void openUrl(const QString& url);
 };
 }
 
-#endif // MU_API_DISPATCHERAPI_H
+#endif // MU_API_INTERACTIVEAPI_H

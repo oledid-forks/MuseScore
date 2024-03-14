@@ -30,6 +30,9 @@
 #include "internal/extensionsprovider.h"
 #include "internal/extensionsconfiguration.h"
 
+#include "view/extensionbuilder.h"
+#include "view/extensionsuiengine.h"
+
 #include "devtools/devextensionslistmodel.h"
 
 #include "log.h"
@@ -53,6 +56,7 @@ void ExtensionsModule::registerExports()
 
     ioc()->registerExport<IExtensionsProvider>(moduleName(), m_extensionsProvider);
     ioc()->registerExport<IExtensionsConfiguration>(moduleName(), new ExtensionsConfiguration());
+    ioc()->registerExport<IExtensionsUiEngine>(moduleName(), new ExtensionsUiEngine());
 }
 
 void ExtensionsModule::registerResources()
@@ -62,6 +66,7 @@ void ExtensionsModule::registerResources()
 
 void ExtensionsModule::registerUiTypes()
 {
+    qmlRegisterType<ExtensionBuilder>("Muse.Extensions", 1, 0, "ExtensionBuilder");
     qmlRegisterType<DevExtensionsListModel>("Muse.Extensions", 1, 0, "DevExtensionsListModel");
 }
 

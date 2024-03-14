@@ -5,7 +5,7 @@
  * MuseScore
  * Music Composition & Notation
  *
- * Copyright (C) 2023 MuseScore BVBA and others
+ * Copyright (C) 2021 MuseScore BVBA and others
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -19,29 +19,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef MU_API_PROCESSAPI_H
-#define MU_API_PROCESSAPI_H
+#ifndef MU_API_KEYBOARDAPI_H
+#define MU_API_KEYBOARDAPI_H
 
-#include <QString>
-
-#include "apiobject.h"
+#include "api/apiobject.h"
 
 #include "modularity/ioc.h"
-#include "global/iprocess.h"
+#include "shortcuts/ishortcutscontroller.h"
+#include "ui/imainwindow.h"
 
 namespace mu::api {
-class ProcessApi : public ApiObject
+class KeyboardApi : public ApiObject
 {
     Q_OBJECT
 
-    INJECT(IProcess, process)
+    INJECT(shortcuts::IShortcutsController, shortcutsController)
+    INJECT(ui::IMainWindow, mainWindow)
 
 public:
-    explicit ProcessApi(IApiEngine* e);
+    explicit KeyboardApi(IApiEngine* e);
 
-    Q_INVOKABLE int execute(const QString& program, const QStringList& arguments = QStringList());
-    Q_INVOKABLE bool startDetached(const QString& program, const QStringList& arguments = QStringList());
+    Q_INVOKABLE void key(const QString& key);
+    Q_INVOKABLE void repeatKey(const QString& key, int count);
+    Q_INVOKABLE void text(const QString& text);
 };
 }
 
-#endif // MU_API_PROCESSAPI_H
+#endif // MU_API_KEYBOARDAPI_H

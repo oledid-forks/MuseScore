@@ -19,28 +19,34 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef MU_API_LOGAPI_H
-#define MU_API_LOGAPI_H
+#ifndef MU_API_IAPIREGISTER_H
+#define MU_API_IAPIREGISTER_H
 
-#include "apiobject.h"
+#include "modularity/imoduleinterface.h"
+#include "iapiengine.h"
+#include "api/apiobject.h"
 
 namespace mu::api {
-class LogApi : public ApiObject
+class IApiRegister : MODULE_EXPORT_INTERFACE
 {
-    Q_OBJECT
+    INTERFACE_ID(mu::api::IApiRegister)
 public:
-    explicit LogApi(IApiEngine* e);
+    virtual ~IApiRegister() = default;
 
-    Q_INVOKABLE void error(const QString& message);
-    Q_INVOKABLE void warn(const QString& message);
-    Q_INVOKABLE void info(const QString& message);
-    Q_INVOKABLE void debug(const QString& message);
+    struct ICreator {
+        virtual ~ICreator() {}
+        virtual ApiObject* create(IApiEngine* e) = 0;
+    };
 
-    Q_INVOKABLE void error(const QString& tag, const QString& message);
-    Q_INVOKABLE void warn(const QString& tag, const QString& message);
-    Q_INVOKABLE void info(const QString& tag, const QString& message);
-    Q_INVOKABLE void debug(const QString& tag, const QString& message);
+    virtual void regApiCreator(const std::string& module, const std::string& api, ICreator* c) = 0;
+    virtual ApiObject* createApi(const std::string& api, IApiEngine* e) const = 0;
+};
+
+template<class T>
+struct ApiCreator : public IApiRegister::ICreator
+{
+    ApiObject* create(IApiEngine* e) { return new T(e); }
 };
 }
 
-#endif // LOGAPI_H
+#endif // MU_API_IAPIREGISTER_H

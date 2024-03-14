@@ -5,7 +5,7 @@
  * MuseScore
  * Music Composition & Notation
  *
- * Copyright (C) 2021 MuseScore BVBA and others
+ * Copyright (C) 2024 MuseScore BVBA and others
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -19,26 +19,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef MU_API_SHORTCUTSAPI_H
-#define MU_API_SHORTCUTSAPI_H
-
-#include "apiobject.h"
+#include "apimodule.h"
 
 #include "modularity/ioc.h"
-#include "shortcuts/ishortcutscontroller.h"
 
-namespace mu::api {
-class ShortcutsApi : public ApiObject
+#include "internal/apiregister.h"
+
+using namespace mu::api;
+using namespace mu::modularity;
+
+std::string ApiModule::moduleName() const
 {
-    Q_OBJECT
-
-    INJECT(shortcuts::IShortcutsController, shortcutsController)
-
-public:
-    explicit ShortcutsApi(IApiEngine* e);
-
-    Q_INVOKABLE void activate(const QString& sequence);
-};
+    return "api";
 }
 
-#endif // MU_API_SHORTCUTSAPI_H
+void ApiModule::registerExports()
+{
+    ioc()->registerExport<IApiRegister>(moduleName(), new ApiRegister());
+}

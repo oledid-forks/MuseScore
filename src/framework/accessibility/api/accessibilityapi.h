@@ -19,30 +19,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef MU_API_KEYBOARDAPI_H
-#define MU_API_KEYBOARDAPI_H
+#ifndef MU_API_ACCESSIBILITYAPI_H
+#define MU_API_ACCESSIBILITYAPI_H
 
-#include "apiobject.h"
+#include "api/apiobject.h"
 
 #include "modularity/ioc.h"
-#include "shortcuts/ishortcutscontroller.h"
-#include "ui/imainwindow.h"
+#include "accessibility/iaccessibilitycontroller.h"
 
 namespace mu::api {
-class KeyboardApi : public ApiObject
+class AccessibilityApi : public ApiObject
 {
     Q_OBJECT
 
-    INJECT(shortcuts::IShortcutsController, shortcutsController)
-    INJECT(ui::IMainWindow, mainWindow)
+    INJECT(accessibility::IAccessibilityController, accessibilityController)
 
 public:
-    explicit KeyboardApi(IApiEngine* e);
+    explicit AccessibilityApi(IApiEngine* e);
 
-    Q_INVOKABLE void key(const QString& key);
-    Q_INVOKABLE void repeatKey(const QString& key, int count);
-    Q_INVOKABLE void text(const QString& text);
+    Q_INVOKABLE QString currentName() const;
 };
 }
 
-#endif // MU_API_KEYBOARDAPI_H
+#endif // MU_API_ACCESSIBILITYAPI_H

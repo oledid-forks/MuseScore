@@ -19,34 +19,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef MU_API_IAPIREGISTER_H
-#define MU_API_IAPIREGISTER_H
+#ifndef MU_ACTIONS_DISPATCHERAPI_H
+#define MU_ACTIONS_DISPATCHERAPI_H
 
-#include "modularity/imoduleinterface.h"
-#include "iapiengine.h"
-#include "apiobject.h"
+#include <QVariant>
+
+#include "api/apiobject.h"
+
+#include "modularity/ioc.h"
+#include "actions/iactionsdispatcher.h"
 
 namespace mu::api {
-class IApiRegister : MODULE_EXPORT_INTERFACE
+class DispatcherApi : public ApiObject
 {
-    INTERFACE_ID(IApiRegister)
+    Q_OBJECT
+
+    INJECT(actions::IActionsDispatcher, dispatcher)
+
 public:
-    virtual ~IApiRegister() = default;
+    explicit DispatcherApi(IApiEngine* e);
 
-    struct ICreator {
-        virtual ~ICreator() {}
-        virtual ApiObject* create(IApiEngine* e) = 0;
-    };
-
-    virtual void regApiCreator(const std::string& module, const std::string& api, ICreator* c) = 0;
-    virtual ApiObject* createApi(const std::string& api, IApiEngine* e) const = 0;
-};
-
-template<class T>
-struct ApiCreator : public IApiRegister::ICreator
-{
-    ApiObject* create(IApiEngine* e) { return new T(e); }
+    Q_INVOKABLE void dispatch(const QString& action, const QVariantList& args = QVariantList());
 };
 }
 
-#endif // MU_API_IAPIREGISTER_H
+#endif // MU_ACTIONS_DISPATCHERAPI_H
