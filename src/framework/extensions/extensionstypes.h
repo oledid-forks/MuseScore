@@ -28,15 +28,23 @@
 #include "global/io/path.h"
 
 namespace mu::extensions {
+//! NOTE Api versions:
+//! 1 - plugins from 3х
+//! 2 - extensions
+constexpr int DEFAULT_API_VERSION = 2;
+
 enum class Type {
     Undefined = 0,
-    Form
+    Form,       // Have UI, controls, user interaction
+    Macros      // Without UI, they just do some script
 };
 
 static inline Type typeFromString(const std::string& str)
 {
     if (str == "form") {
         return Type::Form;
+    } else if (str == "macros") {
+        return Type::Macros;
     }
     return Type::Undefined;
 }
@@ -46,6 +54,7 @@ static inline std::string typeToString(const Type& type)
     switch (type) {
     case Type::Undefined: return "undefined";
     case Type::Form: return "form";
+    case Type::Macros: return "macros";
     }
     return std::string();
 }
@@ -55,24 +64,28 @@ manifest.json
 {
 
 "uri": String,                    // Example: musescore://module/target/name
-"type": String,                   // Values: form
+"type": String,                   // Values: form, macros
 "title": String,                  //
-"apiversion": String              // Optional default 1
+"description": String,            //
+"apiversion": String              // Optional default 2
 "enabled": Boolean,               // Optional default true
 "visible": Boolean,               // Optional default true
 
-"qmlFile": String                 // Path (name) of qml file
+"qmlFilePath": String             // Path (name) of qml file of form
+"jsFilePath": String              // Path (name) of js file of macros
 }*/
 
 struct Manifest {
     Uri uri;
     Type type = Type::Undefined;
     String title;
-    int apiversion = 1;
+    String description;
+    int apiversion = DEFAULT_API_VERSION;
     bool enabled = true;
     bool visible = true;
 
     mu::io::path_t qmlFilePath;
+    mu::io::path_t jsFilePath;
 
     bool isValid() const { return type != Type::Undefined && uri.isValid(); }
 };

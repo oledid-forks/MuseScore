@@ -5,7 +5,7 @@
  * MuseScore
  * Music Composition & Notation
  *
- * Copyright (C) 2021 MuseScore BVBA and others
+ * Copyright (C) 2024 MuseScore BVBA and others
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -19,30 +19,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef MU_API_APIREGISTER_H
-#define MU_API_APIREGISTER_H
+#ifndef MU_EXTENSIONS_EXTPLUGINRUNNER_H
+#define MU_EXTENSIONS_EXTPLUGINRUNNER_H
 
-#include <map>
+#include "global/types/ret.h"
 
-#include "../iapiregister.h"
+#include "../../extensionstypes.h"
 
-namespace mu::api {
-class ApiRegister : public IApiRegister
+#include "modularity/ioc.h"
+#include "../../iextensionsuiengine.h"
+
+namespace mu::extensions::legacy {
+//! NOTE Run old plugins without UI
+//! But they are still qml files, so they are run as qml
+class ExtPluginRunner
 {
+    Inject<IExtensionsUiEngine> engine;
+
 public:
-    ApiRegister() = default;
+    ExtPluginRunner() = default;
 
-    void regApiCreator(const std::string& module, const std::string& api, ICreator* c) override;
-    ApiObject* createApi(const std::string& api, IApiEngine* e) const override;
-
-private:
-    struct ApiCreator {
-        std::string module;
-        ICreator* c = nullptr;
-    };
-
-    std::map<std::string, ApiCreator> m_creators;
+    Ret run(const Manifest& manifest);
 };
 }
 
-#endif // MU_API_APIREGISTER_H
+#endif // MU_EXTENSIONS_EXTPLUGINRUNNER_H

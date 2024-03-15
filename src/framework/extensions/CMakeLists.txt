@@ -28,12 +28,30 @@ set(MODULE_SRC
     ${CMAKE_CURRENT_LIST_DIR}/iextensionsconfiguration.h
     ${CMAKE_CURRENT_LIST_DIR}/iextensionsuiengine.h
 
+    ${CMAKE_CURRENT_LIST_DIR}/api/qmlextapi.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/api/qmlextapi.h
+    ${CMAKE_CURRENT_LIST_DIR}/api/scriptapi.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/api/scriptapi.h
+
     ${CMAKE_CURRENT_LIST_DIR}/internal/extensionsprovider.cpp
     ${CMAKE_CURRENT_LIST_DIR}/internal/extensionsprovider.h
     ${CMAKE_CURRENT_LIST_DIR}/internal/extensionsconfiguration.cpp
     ${CMAKE_CURRENT_LIST_DIR}/internal/extensionsconfiguration.h
     ${CMAKE_CURRENT_LIST_DIR}/internal/extensionsloader.cpp
     ${CMAKE_CURRENT_LIST_DIR}/internal/extensionsloader.h
+    ${CMAKE_CURRENT_LIST_DIR}/internal/extensionrunner.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/internal/extensionrunner.h
+    ${CMAKE_CURRENT_LIST_DIR}/internal/scriptengine.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/internal/scriptengine.h
+    ${CMAKE_CURRENT_LIST_DIR}/internal/jsmoduleloader.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/internal/jsmoduleloader.h
+
+    ${CMAKE_CURRENT_LIST_DIR}/internal/legacy/extpluginsloader.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/internal/legacy/extpluginsloader.h
+    ${CMAKE_CURRENT_LIST_DIR}/internal/legacy/extpluginrunner.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/internal/legacy/extpluginrunner.h
+    ${CMAKE_CURRENT_LIST_DIR}/internal/legacy/api/qmlpluginapi.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/internal/legacy/api/qmlpluginapi.h
 
     ${CMAKE_CURRENT_LIST_DIR}/view/extensionbuilder.cpp
     ${CMAKE_CURRENT_LIST_DIR}/view/extensionbuilder.h
@@ -49,9 +67,4 @@ set(MODULE_QRC extensions.qrc)
 set(MODULE_QML_IMPORT ${CMAKE_CURRENT_LIST_DIR}/qml )
 
 include(SetupModule)
-
-target_sources(extensions
-  PRIVATE
-    view/qmlextapi.h view/qmlextapi.cpp
-)
 

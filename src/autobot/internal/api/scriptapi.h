@@ -29,7 +29,7 @@
 #include "api/iapiregister.h"
 #include "api/iapiengine.h"
 
-namespace mu::api {
+namespace mu::autobot {
 class ScriptApi : public QObject
 {
     Q_OBJECT
@@ -46,10 +46,10 @@ class ScriptApi : public QObject
     Q_PROPERTY(QJSValue process READ process CONSTANT)
     Q_PROPERTY(QJSValue filesystem READ filesystem CONSTANT)
 
-    INJECT(IApiRegister, apiRegister)
+    INJECT(api::IApiRegister, apiRegister)
 
 public:
-    ScriptApi(IApiEngine* engine, QObject* parent);
+    ScriptApi(api::IApiEngine* engine, QObject* parent);
 
     QJSValue log() const { return api("api.log"); }
     QJSValue autobot() const { return api("api.autobot"); }
@@ -70,11 +70,11 @@ private:
 
     struct Api
     {
-        ApiObject* obj = nullptr;
+        api::ApiObject* obj = nullptr;
         QJSValue jsval;
     };
 
-    IApiEngine* m_engine = nullptr;
+    api::IApiEngine* m_engine = nullptr;
     mutable QMap<std::string, Api> m_apis;
 };
 }

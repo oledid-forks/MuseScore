@@ -21,7 +21,11 @@
  */
 #include "extensionsconfiguration.h"
 
+#include "global/settings.h"
+
 using namespace mu::extensions;
+
+static const mu::Settings::Key USER_PLUGINS_PATH("plugins", "application/paths/myPlugins");
 
 mu::io::path_t ExtensionsConfiguration::defaultPath() const
 {
@@ -31,4 +35,14 @@ mu::io::path_t ExtensionsConfiguration::defaultPath() const
 mu::io::path_t ExtensionsConfiguration::userPath() const
 {
     return globalConfiguration()->userAppDataPath() + "/extensions";
+}
+
+mu::io::path_t ExtensionsConfiguration::pluginsDefaultPath() const
+{
+    return globalConfiguration()->appDataPath() + "/plugins";
+}
+
+mu::io::path_t ExtensionsConfiguration::pluginsUserPath() const
+{
+    return settings()->value(USER_PLUGINS_PATH).toPath();
 }

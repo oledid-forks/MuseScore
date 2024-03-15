@@ -21,7 +21,13 @@
  */
 #include "extensionsprovider.h"
 
+#include "global/containers.h"
+
 #include "extensionsloader.h"
+#include "legacy/extpluginsloader.h"
+
+#include "extensionrunner.h"
+#include "legacy/extpluginrunner.h"
 
 using namespace mu::extensions;
 
@@ -29,7 +35,14 @@ const ManifestList& ExtensionsProvider::manifestList() const
 {
     if (m_manifests.empty()) {
         ExtensionsLoader loader;
-        m_manifests = loader.loadManifesList(configuration()->defaultPath(), configuration()->userPath());
+        m_manifests = loader.loadManifesList(configuration()->defaultPath(),
+                                             configuration()->userPath());
+
+        legacy::ExtPluginsLoader pluginsLoader;
+        ManifestList plugins = pluginsLoader.loadManifesList(configuration()->pluginsDefaultPath(),
+                                                             configuration()->pluginsUserPath());
+
+        mu::join(m_manifests, plugins);
     }
     return m_manifests;
 }
@@ -47,4 +60,25 @@ const Manifest& ExtensionsProvider::manifest(const Uri& uri) const
 
     static Manifest _dymmy;
     return _dymmy;
+}
+
+mu::Ret ExtensionsProvider::run(const Uri& uri)
+{
+    const Manifest& m = manifest(uri);
+    if (!m.isValid()) {
+        return make_ret(Ret::Code::UnknownError);
+    }
+
+    //! TODO Add check of type
+
+    Ret ret;
+    if (m.apiversion == 1) {
+        legacy::ExtPluginRunner runner;
+        ret = runner.run(m);
+    } else {
+        ExtensionRunner runner;
+        ret = runner.run(m);
+    }
+
+    return ret;
 }

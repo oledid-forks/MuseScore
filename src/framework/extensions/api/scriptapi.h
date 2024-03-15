@@ -19,8 +19,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef MU_EXTENSIONS_QMLEXTAPI_H
-#define MU_EXTENSIONS_QMLEXTAPI_H
+#ifndef MU_EXTENSIONS_SCRIPTAPI_H
+#define MU_EXTENSIONS_SCRIPTAPI_H
 
 #include <QObject>
 
@@ -28,8 +28,8 @@
 #include "api/iapiregister.h"
 #include "api/iapiengine.h"
 
-namespace mu::extensions {
-class QmlExtApi : public QObject
+namespace mu::api {
+class ScriptApi : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QJSValue log READ log CONSTANT)
@@ -52,15 +52,15 @@ class QmlExtApi : public QObject
     Inject<api::IApiRegister> apiRegister;
 
 public:
-    QmlExtApi(api::IApiEngine* engine, QObject* parent);
+    ScriptApi(api::IApiEngine* engine, QObject* parent);
 
     QJSValue log() const { return api("api.log"); }
-    QJSValue autobot() const { return api("api.autobot"); }
+    QJSValue context() const { return api("api.context"); }
+    QJSValue interactive() const { return api("api.interactive"); }
+
     QJSValue dispatcher() const { return api("api.dispatcher"); }
     QJSValue navigation() const { return api("api.navigation"); }
-    QJSValue context() const { return api("api.context"); }
     QJSValue shortcuts() const { return api("api.shortcuts"); }
-    QJSValue interactive() const { return api("api.interactive"); }
     QJSValue keyboard() const { return api("api.keyboard"); }
     QJSValue accessibility() const { return api("api.accessibility"); }
 
@@ -78,4 +78,4 @@ private:
 };
 }
 
-#endif // MU_EXTENSIONS_QMLEXTAPI_H
+#endif // MU_EXTENSIONS_SCRIPTAPI_H

@@ -69,12 +69,12 @@ void ExtensionsUiEngine::setup(QQmlEngine* e)
     e->rootContext()->setContextProperty("ui", ui);
 
     m_apiEngine = new QmlApiEngine(e);
-    m_api = new QmlExtApi(m_apiEngine, e);
+    m_api = new api::QmlExtApi(m_apiEngine, e);
     m_engine->globalObject().setProperty("api", e->newQObject(m_api));
 
     //! NOTE We prohibit importing default modules;
-    //! only what is in the `qmlext` folder will be imported.
-    e->addImportPath(":/qmlext");
+    //! only what is in the `api` folder will be imported.
+    e->addImportPath(":/api");
 }
 
 QQmlEngine* ExtensionsUiEngine::engine()

@@ -101,10 +101,12 @@ Manifest ExtensionsLoader::parseManifest(const io::path_t& path) const
     m.uri = Uri(obj.value("uri").toStdString());
     m.type = typeFromString(obj.value("type").toStdString());
     m.title = obj.value("title").toString();
-    m.apiversion = obj.value("apiversion", 1).toInt();
+    m.description = obj.value("description").toString();
+    m.apiversion = obj.value("apiversion", DEFAULT_API_VERSION).toInt();
     m.enabled = obj.value("enabled", true).toBool();
     m.visible = obj.value("enabled", true).toBool();
-    m.qmlFilePath = obj.value("qmlFile").toStdString();
+    m.qmlFilePath = obj.value("qmlFilePath").toStdString();
+    m.jsFilePath = obj.value("jsFilePath").toStdString();
 
     return m;
 }
@@ -112,4 +114,5 @@ Manifest ExtensionsLoader::parseManifest(const io::path_t& path) const
 void ExtensionsLoader::resolvePaths(Manifest& m, const io::path_t& rootDirPath) const
 {
     m.qmlFilePath = rootDirPath + "/" + m.qmlFilePath;
+    m.jsFilePath = rootDirPath + "/" + m.jsFilePath;
 }

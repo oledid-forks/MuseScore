@@ -29,7 +29,7 @@
 #include "modularity/ioc.h"
 #include "ui/iuiengine.h"
 
-#include "qmlextapi.h"
+#include "../api/qmlextapi.h"
 
 namespace mu::extensions {
 class QmlApiEngine;
@@ -52,7 +52,7 @@ private:
 
     QQmlEngine* m_engine = nullptr;
     QmlApiEngine* m_apiEngine = nullptr;
-    QmlExtApi* m_api = nullptr;
+    api::QmlExtApi* m_api = nullptr;
 };
 }
 

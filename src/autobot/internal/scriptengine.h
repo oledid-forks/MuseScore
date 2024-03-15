@@ -88,7 +88,7 @@ private:
     };
 
     QJSEngine* m_engine = nullptr;
-    api::ScriptApi* m_api = nullptr;
+    ScriptApi* m_api = nullptr;
     JsModuleLoader* m_moduleLoader = nullptr;
     bool m_isRequireMode = false;
     io::path_t m_scriptPath;

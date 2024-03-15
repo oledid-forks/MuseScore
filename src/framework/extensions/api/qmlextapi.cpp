@@ -19,21 +19,37 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "apimodule.h"
+#include "qmlextapi.h"
 
-#include "modularity/ioc.h"
-
-#include "internal/apiregister.h"
+#include "log.h"
 
 using namespace mu::api;
-using namespace mu::modularity;
 
-std::string ApiModule::moduleName() const
+QmlExtApi::QmlExtApi(IApiEngine* engine, QObject* parent)
+    : QObject(parent), m_engine(engine)
 {
-    return "api";
 }
 
-void ApiModule::registerExports()
+QJSValue QmlExtApi::api(const std::string& name) const
 {
-    ioc()->registerExport<IApiRegister>(moduleName(), new ApiRegister());
+    if (!apiRegister()) {
+        return QJSValue();
+    }
+
+    Api a = m_apis.value(name);
+    if (!a.jsval.isUndefined()) {
+        return a.jsval;
+    }
+
+    a.obj = apiRegister()->createApi(name, m_engine);
+    if (!a.obj) {
+        LOGW() << "Not allowed api: " << name;
+        return QJSValue();
+    }
+
+    a.jsval = m_engine->newQObject(a.obj);
+
+    m_apis[name] = a;
+
+    return a.jsval;
 }
