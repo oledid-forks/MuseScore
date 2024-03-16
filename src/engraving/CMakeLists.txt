@@ -167,6 +167,8 @@ set(MODULE_SRC
     ${CMAKE_CURRENT_LIST_DIR}/compat/writescorehook.h
     ${CMAKE_CURRENT_LIST_DIR}/compat/dummyelement.cpp
     ${CMAKE_CURRENT_LIST_DIR}/compat/dummyelement.h
+    ${CMAKE_CURRENT_LIST_DIR}/compat/engravingcompat.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/compat/engravingcompat.h
 
     ${COMPAT_MIDI_SRC}
 
@@ -289,8 +291,14 @@ else()
 endif()
 
 if (ENGRAVING_NO_INTERNAL)
-    set(MODULE_DEF ${MODULE_DEF} -DENGRAVING_NO_INTERNAL -DENGRAVING_NO_QTEXTDOCUMENT -DENGRAVING_NO_INTERACTIVE)
+    set(MODULE_DEF ${MODULE_DEF}
+        -DENGRAVING_NO_INTERNAL
+        -DENGRAVING_NO_QTEXTDOCUMENT
+        -DENGRAVING_NO_INTERACTIVE
+        -DENGRAVING_NO_API
+    )
 else()
+    include(${CMAKE_CURRENT_LIST_DIR}/api/v1/api_v1.cmake)
     set(MODULE_SRC ${MODULE_SRC}
         ${CMAKE_CURRENT_LIST_DIR}/internal/engravingconfiguration.cpp
         ${CMAKE_CURRENT_LIST_DIR}/internal/engravingconfiguration.h
@@ -300,6 +308,7 @@ else()
         ${CMAKE_CURRENT_LIST_DIR}/internal/engravingfontsprovider.h
         ${CMAKE_CURRENT_LIST_DIR}/internal/engravingfont.cpp
         ${CMAKE_CURRENT_LIST_DIR}/internal/engravingfont.h
+        ${API_V1_SRC}
         )
 endif()
 

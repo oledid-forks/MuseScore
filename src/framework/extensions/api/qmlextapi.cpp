@@ -24,6 +24,7 @@
 #include "log.h"
 
 using namespace mu::api;
+using namespace mu::extensions::api;
 
 QmlExtApi::QmlExtApi(IApiEngine* engine, QObject* parent)
     : QObject(parent), m_engine(engine)

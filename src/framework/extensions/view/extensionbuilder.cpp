@@ -23,6 +23,11 @@
 
 #include <QQmlEngine>
 
+#include "global/types/number.h"
+#include "global/async/async.h"
+
+#include "../api/v1/ipluginapiv1.h"
+
 #include "log.h"
 
 using namespace mu::extensions;
@@ -37,21 +42,66 @@ void ExtensionBuilder::load(const QString& uri, QObject* itemParent)
 
     setTitle(m.title);
 
+    QQmlEngine* engin = nullptr;
+    if (m.apiversion == 1) {
+        engin = engine()->qmlEngineApiV1();
+    } else {
+        engin = engine()->qmlEngine();
+    }
+
     //! NOTE We create extension UI using a separate engine to control what we provide,
     //! making it easier to maintain backward compatibility and stability.
-    QQmlComponent component = QQmlComponent(engine()->qmlEngine(), m.qmlFilePath.toQString());
+    QQmlComponent component = QQmlComponent(engin, m.qmlFilePath.toQString());
     if (!component.isReady()) {
         LOGE() << "Failed to load QML file: " << m.qmlFilePath << ", from extension: " << uri;
         LOGE() << component.errorString();
         return;
     }
 
-    m_contentItem = component.createWithInitialProperties({ { "parent", QVariant::fromValue(itemParent) } });
+    QObject* obj = component.createWithInitialProperties({ { "parent", QVariant::fromValue(itemParent) } });
+
+    m_contentItem = qobject_cast<QQuickItem*>(obj);
+    if (!m_contentItem) {
+        LOGE() << "Component not QuickItem, file: " << m.qmlFilePath << ", from extension: " << uri;
+    }
+
+    if (m_contentItem) {
+        if (mu::is_zero(m_contentItem->implicitHeight())) {
+            m_contentItem->setImplicitHeight(m_contentItem->height());
+            if (mu::is_zero(m_contentItem->implicitHeight())) {
+                m_contentItem->setImplicitHeight(480);
+            }
+        }
+
+        if (mu::is_zero(m_contentItem->implicitWidth())) {
+            m_contentItem->setImplicitWidth(m_contentItem->width());
+            if (mu::is_zero(m_contentItem->implicitWidth())) {
+                m_contentItem->setImplicitWidth(600);
+            }
+        }
+    }
 
     emit contentItemChanged();
+
+    if (m.apiversion == 1) {
+        apiv1::IPluginApiV1* plugin = dynamic_cast<apiv1::IPluginApiV1*>(m_contentItem);
+        plugin->closeRequest().onNotify(this, [this]() {
+            emit closeRequested();
+        });
+
+        //! NOTE For version 1 plugins we need to call run
+        async::Async::call(this, [plugin, m]() {
+            if (!plugin) {
+                LOGE() << "Qml Object not MuseScore plugin: " << m.qmlFilePath
+                       << ", from extension: " << m.uri.toString();
+                return;
+            }
+            plugin->runPlugin();
+        });
+    }
 }
 
-QObject* ExtensionBuilder::contentItem() const
+QQuickItem* ExtensionBuilder::contentItem() const
 {
     return m_contentItem;
 }

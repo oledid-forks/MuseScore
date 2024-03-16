@@ -23,18 +23,19 @@
 
 #include <QQmlComponent>
 
-#include "api/qmlpluginapi.h"
+#include "../../api/v1/ipluginapiv1.h"
 
 #include "log.h"
 
 using namespace mu::extensions;
 using namespace mu::extensions::legacy;
+using namespace mu::extensions::apiv1;
 
 mu::Ret ExtPluginRunner::run(const Manifest& m)
 {
     //! NOTE We create extension UI using a separate engine to control what we provide,
     //! making it easier to maintain backward compatibility and stability.
-    QQmlComponent component = QQmlComponent(engine()->qmlEngine(), m.qmlFilePath.toQString());
+    QQmlComponent component = QQmlComponent(engine()->qmlEngineApiV1(), m.qmlFilePath.toQString());
     if (!component.isReady()) {
         LOGE() << "Failed to load QML file: " << m.qmlFilePath
                << ", from extension: " << m.uri.toString();
@@ -49,7 +50,7 @@ mu::Ret ExtPluginRunner::run(const Manifest& m)
         return make_ret(Ret::Code::UnknownError);
     }
 
-    QmlPluginApi* plugin = qobject_cast<QmlPluginApi*>(obj);
+    IPluginApiV1* plugin = dynamic_cast<IPluginApiV1*>(obj);
     if (!plugin) {
         LOGE() << "Qml Object not MuseScore plugin: " << m.qmlFilePath
                << ", from extension: " << m.uri.toString();

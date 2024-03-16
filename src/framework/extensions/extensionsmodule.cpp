@@ -30,10 +30,10 @@
 #include "internal/extensionsprovider.h"
 #include "internal/extensionsconfiguration.h"
 
-#include "internal/legacy/api/qmlpluginapi.h"
-
 #include "view/extensionbuilder.h"
 #include "view/extensionsuiengine.h"
+
+#include "api/v1/apiv1.h"
 
 #include "devtools/devextensionslistmodel.h"
 
@@ -70,8 +70,6 @@ void ExtensionsModule::registerUiTypes()
 {
     qmlRegisterType<ExtensionBuilder>("Muse.Extensions", 1, 0, "ExtensionBuilder");
     qmlRegisterType<DevExtensionsListModel>("Muse.Extensions", 1, 0, "DevExtensionsListModel");
-
-    legacy::QmlPluginApi::registerQmlTypes();
 }
 
 void ExtensionsModule::resolveImports()
@@ -80,6 +78,11 @@ void ExtensionsModule::resolveImports()
     if (ir) {
         ir->registerQmlUri(Uri("musescore://extensions/viewer"), "Muse/Extensions/ExtensionViewerDialog.qml");
     }
+}
+
+void ExtensionsModule::registerApi()
+{
+    apiv1::ApiV1::registerQmlTypes();
 }
 
 void ExtensionsModule::onInit(const IApplication::RunMode& mode)

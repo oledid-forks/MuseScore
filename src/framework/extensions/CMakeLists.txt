@@ -20,6 +20,8 @@
 
 set(MODULE extensions)
 
+include(${CMAKE_CURRENT_LIST_DIR}/api/v1/apiv1.cmake)
+
 set(MODULE_SRC
     ${CMAKE_CURRENT_LIST_DIR}/extensionsmodule.cpp
     ${CMAKE_CURRENT_LIST_DIR}/extensionsmodule.h
@@ -32,6 +34,8 @@ set(MODULE_SRC
     ${CMAKE_CURRENT_LIST_DIR}/api/qmlextapi.h
     ${CMAKE_CURRENT_LIST_DIR}/api/scriptapi.cpp
     ${CMAKE_CURRENT_LIST_DIR}/api/scriptapi.h
+    ${CMAKE_CURRENT_LIST_DIR}/api/qmllistproperty.h
+    ${API_V1_SRC}
 
     ${CMAKE_CURRENT_LIST_DIR}/internal/extensionsprovider.cpp
     ${CMAKE_CURRENT_LIST_DIR}/internal/extensionsprovider.h
@@ -50,8 +54,6 @@ set(MODULE_SRC
     ${CMAKE_CURRENT_LIST_DIR}/internal/legacy/extpluginsloader.h
     ${CMAKE_CURRENT_LIST_DIR}/internal/legacy/extpluginrunner.cpp
     ${CMAKE_CURRENT_LIST_DIR}/internal/legacy/extpluginrunner.h
-    ${CMAKE_CURRENT_LIST_DIR}/internal/legacy/api/qmlpluginapi.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/internal/legacy/api/qmlpluginapi.h
 
     ${CMAKE_CURRENT_LIST_DIR}/view/extensionbuilder.cpp
     ${CMAKE_CURRENT_LIST_DIR}/view/extensionbuilder.h
@@ -67,4 +69,5 @@ set(MODULE_QRC extensions.qrc)
 set(MODULE_QML_IMPORT ${CMAKE_CURRENT_LIST_DIR}/qml )
 
 include(SetupModule)
+
 
