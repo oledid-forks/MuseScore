@@ -21,18 +21,22 @@
  */
 #include "pluginsactioncontroller.h"
 
-#include "containers.h"
 #include "translation.h"
+
+#include "pluginsuiactions.h"
+
 #include "log.h"
 
 using namespace mu::plugins;
+using namespace mu::extensions;
 using namespace mu::actions;
 
 void PluginsActionController::init()
 {
+    m_pluginsUiActions = std::make_shared<PluginsUiActions>();
     registerPlugins();
 
-    service()->pluginsChanged().onNotify(this, [this](){
+    provider()->manifestListChanged().onNotify(this, [this](){
         registerPlugins();
     });
 }
@@ -41,49 +45,39 @@ void PluginsActionController::registerPlugins()
 {
     dispatcher()->unReg(this);
 
-    for (const PluginInfo& plugin : values(service()->plugins().val)) {
-        dispatcher()->reg(this, plugin.codeKey.toStdString(), [this, codeKey = plugin.codeKey]() {
-            onPluginTriggered(codeKey);
+    for (const Manifest& m : provider()->manifestList()) {
+        dispatcher()->reg(this, m.uri.toString(), [this, uri = m.uri]() {
+            onPluginTriggered(uri);
         });
     }
 
     dispatcher()->reg(this, "manage-plugins", [this]() {
         interactive()->open("musescore://home?section=plugins");
     });
+
+    uiActionsRegister()->reg(m_pluginsUiActions);
 }
 
-void PluginsActionController::onPluginTriggered(const CodeKey& codeKey)
+void PluginsActionController::onPluginTriggered(const Uri& uri)
 {
-    auto plugins = service()->plugins().val;
-    bool enabled = false;
-    bool found = false;
-    QString pluginName;
-
-    for (const PluginInfo& plugin : values(plugins)) {
-        if (plugin.codeKey == codeKey) {
-            enabled = plugin.enabled;
-            found = true;
-            pluginName = plugin.name;
-        }
-    }
-
-    if (!found) {
+    const Manifest& m = provider()->manifest(uri);
+    if (!m.isValid()) {
+        LOGE() << "Not found extension, uri: " << uri.toString();
         return;
     }
 
-    if (enabled) {
-        service()->run(codeKey);
+    if (m.config.enabled) {
+        provider()->perform(uri);
         return;
     }
 
     IInteractive::Result result = interactive()->warning(
-        qtrc("plugins", "The plugin “%1” is currently disabled. Do you want to enable it now?").arg(pluginName).toStdString(),
+        qtrc("plugins", "The plugin “%1” is currently disabled. Do you want to enable it now?").arg(m.title).toStdString(),
         trc("plugins", "Alternatively, you can enable it at any time from Home > Plugins."),
-        { interactive()->buttonData(IInteractive::Button::No),
-          interactive()->buttonData(IInteractive::Button::Yes) }, 0);
+        { IInteractive::Button::No, IInteractive::Button::Yes });
 
     if (result.standardButton() == IInteractive::Button::Yes) {
-        service()->setEnable(codeKey, true);
-        service()->run(codeKey);
+        provider()->setEnable(uri, true);
+        provider()->perform(uri);
     }
 }
