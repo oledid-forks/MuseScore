@@ -74,7 +74,8 @@ mu::io::paths_t ExtPluginsLoader::qmlsPaths(const io::path_t& rootPath) const
 {
     RetVal<io::paths_t> paths = io::Dir::scanFiles(rootPath, { "*.qml" });
     if (!paths.ret) {
-        LOGE() << "failed scan files, err: " << paths.ret.toString();
+        LOGE() << "failed scan files, err: " << paths.ret.toString()
+               << ", path: " << rootPath;
     }
     return paths.val;
 }
@@ -94,7 +95,6 @@ Manifest ExtPluginsLoader::parseManifest(const io::path_t& path) const
     m.uri = Uri("musescore://extensions/v1/" + fi.baseName().toLower().toStdString());
     m.type = Type::Macros;
     m.apiversion = 1;
-    m.qmlFilePath = fi.fileName();
 
     auto dropQuotes = [](const String& str) {
         if (str.size() < 3) {
@@ -141,6 +141,14 @@ Manifest ExtPluginsLoader::parseManifest(const io::path_t& path) const
         current = content.indexOf(u"\n", previous);
     }
 
+    Action a;
+    a.code = "main";
+    a.type = m.type;
+    a.title = m.title;
+    a.apiversion = m.apiversion;
+    a.main = fi.fileName();
+    m.actions.push_back(std::move(a));
+
     return m;
 }
 
@@ -149,5 +157,8 @@ void ExtPluginsLoader::resolvePaths(Manifest& m, const io::path_t& rootDirPath) 
     if (!m.thumbnail.empty()) {
         m.thumbnail = rootDirPath + "/" + m.thumbnail;
     }
-    m.qmlFilePath = rootDirPath + "/" + m.qmlFilePath;
+
+    for (Action& a : m.actions) {
+        a.main = rootDirPath + "/" + a.main;
+    }
 }

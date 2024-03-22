@@ -25,10 +25,13 @@
 #include "global/io/file.h"
 #include "global/io/fileinfo.h"
 #include "global/serialization/json.h"
+#include "global/stringutils.h"
+#include "global/runtime.h"
 
 #include "log.h"
 
 const std::string MANIFEST("manifest.json");
+const std::string DEV_EXTENSIONS("extensions/dev/");
 
 using namespace mu::extensions;
 
@@ -46,6 +49,11 @@ ManifestList ExtensionsLoader::loadManifesList(const io::path_t& defPath, const 
         if (!m.isValid()) {
             continue;
         }
+
+        if (!mu::runtime::isDebug() && mu::strings::startsWith(m.uri.path(), DEV_EXTENSIONS)) {
+            continue;
+        }
+
         retList.push_back(m);
     }
 
@@ -53,6 +61,11 @@ ManifestList ExtensionsLoader::loadManifesList(const io::path_t& defPath, const 
         if (!m.isValid()) {
             continue;
         }
+
+        if (!mu::runtime::isDebug() && mu::strings::startsWith(m.uri.path(), DEV_EXTENSIONS)) {
+            continue;
+        }
+
         retList.push_back(m);
     }
 
@@ -105,8 +118,28 @@ Manifest ExtensionsLoader::parseManifest(const io::path_t& path) const
     m.category = obj.value("category").toString();
     m.thumbnail = obj.value("thumbnail").toStdString();
     m.apiversion = obj.value("apiversion", DEFAULT_API_VERSION).toInt();
-    m.qmlFilePath = obj.value("qmlFilePath").toStdString();
-    m.jsFilePath = obj.value("jsFilePath").toStdString();
+
+    if (obj.contains("actions")) {
+        JsonArray arr = obj.value("actions").toArray();
+        for (size_t i = 0; i < arr.size(); ++i) {
+            JsonObject ao = arr.at(i).toObject();
+            Action a;
+            a.code = ao.value("code").toStdString();
+            a.type = typeFromString(ao.value("type").toStdString());
+            a.title = ao.value("title").toString();
+            a.main = ao.value("main").toStdString();
+            a.apiversion = m.apiversion;
+            m.actions.push_back(std::move(a));
+        }
+    } else {
+        Action a;
+        a.code = "main";
+        a.type = m.type;
+        a.title = m.title;
+        a.main = obj.value("main").toStdString();
+        a.apiversion = m.apiversion;
+        m.actions.push_back(std::move(a));
+    }
 
     return m;
 }
@@ -117,11 +150,7 @@ void ExtensionsLoader::resolvePaths(Manifest& m, const io::path_t& rootDirPath) 
         m.thumbnail = rootDirPath + "/" + m.thumbnail;
     }
 
-    if (!m.qmlFilePath.empty()) {
-        m.qmlFilePath = rootDirPath + "/" + m.qmlFilePath;
-    }
-
-    if (!m.jsFilePath.empty()) {
-        m.jsFilePath = rootDirPath + "/" + m.jsFilePath;
+    for (Action& a : m.actions) {
+        a.main = rootDirPath + "/" + a.main;
     }
 }

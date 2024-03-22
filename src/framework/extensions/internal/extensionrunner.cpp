@@ -22,26 +22,28 @@
 #include "extensionrunner.h"
 
 #include "scriptengine.h"
+#include "../extensionserrors.h"
 
 #include "log.h"
 
 using namespace mu::extensions;
 
-mu::Ret ExtensionRunner::run(const Manifest& manifest)
+mu::Ret ExtensionRunner::run(const Action& action)
 {
     ScriptEngine engine;
-    engine.setScriptPath(manifest.jsFilePath);
+    engine.setScriptPath(action.main);
     Ret ret = engine.evaluate();
     if (!ret) {
-        LOGE() << "failed evaluate js script: " << manifest.jsFilePath
+        LOGE() << "failed evaluate js script: " << action.main
                << ", err: " << ret.toString();
-        return ret;
+        return make_ret(Err::ExtLoadError);
     }
 
     ret = engine.call("main");
     if (!ret) {
-        LOGE() << "failed call main function of script: " << manifest.jsFilePath
+        LOGE() << "failed call main function of script: " << action.main
                << ", err: " << ret.toString();
+        return make_ret(Err::ExtBadFormat);
     }
 
     return ret;
