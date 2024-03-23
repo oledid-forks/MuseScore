@@ -19,19 +19,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "apiv1.h"
+#include "extapiv1.h"
 
 #include <QtQml>
 
 #include "messagedialog.h"
 #include "filedialog.h"
 #include "qqmlsettings_p.h"
-
 #include "util.h"
+#include "iapiv1object.h"
+
+#include "log.h"
 
 using namespace mu::extensions::apiv1;
 
-void ApiV1::registerQmlTypes()
+void ExtApiV1::registerQmlTypes()
 {
     qmlRegisterType<MsProcess>("MuseScore", 3, 0, "QProcess");
     qmlRegisterType<FileIO, 1>("FileIO",    3, 0, "FileIO");
@@ -40,4 +42,56 @@ void ApiV1::registerQmlTypes()
     qmlRegisterType<MessageDialog>("MuseScore", 3, 0, "MessageDialog");
     qmlRegisterType<QQmlSettings>("MuseScore", 3, 0, "Settings");
     qmlRegisterType<FileDialog>("MuseScore", 3, 0, "FileDialog");
+}
+
+ExtApiV1::ExtApiV1(mu::api::IApiEngine* engine, QObject* parent)
+    : QObject(parent), m_engine(engine)
+{
+}
+
+void ExtApiV1::setup(QJSValue globalObj)
+{
+    QJSValue engApiVal = engraving();
+    if (engApiVal.isNull()) {
+        LOGE() << "not found api.engraving.v1";
+        return;
+    }
+
+    QObject* engObj = engApiVal.toQObject();
+    if (!engObj) {
+        LOGE() << "api.engraving.v1 is not QObject";
+        return;
+    }
+
+    IApiV1Object* engApiV1 = dynamic_cast<IApiV1Object*>(engObj);
+    if (!engApiV1) {
+        LOGE() << "api.engraving.v1 is not IApiV1Object";
+        return;
+    }
+
+    engApiV1->setup(globalObj);
+}
+
+QJSValue ExtApiV1::api(const std::string& name) const
+{
+    if (!apiRegister()) {
+        return QJSValue();
+    }
+
+    Api a = m_apis.value(name);
+    if (!a.jsval.isUndefined()) {
+        return a.jsval;
+    }
+
+    a.obj = apiRegister()->createApi(name, m_engine);
+    if (!a.obj) {
+        LOGW() << "Not allowed api: " << name;
+        return QJSValue();
+    }
+
+    a.jsval = m_engine->newQObject(a.obj);
+
+    m_apis[name] = a;
+
+    return a.jsval;
 }

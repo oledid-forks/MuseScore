@@ -19,15 +19,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef MU_EXTENSIONS_APIV1_APIV1_H
-#define MU_EXTENSIONS_APIV1_APIV1_H
+#ifndef MU_EXTENSIONS_APIV1_IAPIV1OBJECT_H
+#define MU_EXTENSIONS_APIV1_IAPIV1OBJECT_H
+
+#include <QJSValue>
 
 namespace mu::extensions::apiv1 {
-class ApiV1
+class IApiV1Object
 {
 public:
+    virtual ~IApiV1Object() = default;
 
-    static void registerQmlTypes();
+    virtual void setup(QJSValue globalOb) = 0;
 };
 }
-#endif // MU_EXTENSIONS_APIV1_APIV1_H
+
+#endif // MU_EXTENSIONS_APIV1_IAPIV1OBJECT_H
