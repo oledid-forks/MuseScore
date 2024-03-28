@@ -27,7 +27,6 @@
 #include <QCoreApplication>
 
 #include "settings.h"
-#include "muversion.h"
 #include "log.h"
 
 using namespace mu;
@@ -40,7 +39,7 @@ static const std::string MUSESCORE_URL("https://www.musescore.org/");
 
 void GlobalConfiguration::init()
 {
-    settings()->setDefaultValue(DEV_MODE_ENABLED_KEY, Val(MUVersion::unstable()));
+    settings()->setDefaultValue(DEV_MODE_ENABLED_KEY, Val(application()->unstable()));
 }
 
 io::path_t GlobalConfiguration::appBinPath() const
@@ -64,7 +63,7 @@ io::path_t GlobalConfiguration::appDataPath() const
 QString GlobalConfiguration::resolveAppDataPath() const
 {
 #ifdef Q_OS_WIN
-    QDir dir(QCoreApplication::applicationDirPath() + QString("/../" MUSESCORE_INSTALL_NAME));
+    QDir dir(QCoreApplication::applicationDirPath() + QString("/../" MU_APP_INSTALL_NAME));
     return dir.absolutePath() + "/";
 #elif defined(Q_OS_MAC)
     QDir dir(QCoreApplication::applicationDirPath() + QString("/../Resources"));
@@ -73,12 +72,12 @@ QString GlobalConfiguration::resolveAppDataPath() const
     return "/files/share";
 #else
     // Try relative path (needed for portable AppImage and non-standard installations)
-    QDir dir(QCoreApplication::applicationDirPath() + QString("/../share/" MUSESCORE_INSTALL_NAME));
+    QDir dir(QCoreApplication::applicationDirPath() + QString("/../share/" MU_APP_INSTALL_NAME));
     if (dir.exists()) {
         return dir.absolutePath() + "/";
     }
     // Otherwise fall back to default location (e.g. if binary has moved relative to share)
-    return QString(MUSESCORE_INSTALL_PREFIX "/share/" MUSESCORE_INSTALL_NAME);
+    return QString(MU_APP_INSTALL_PREFIX "/share/" MU_APP_INSTALL_NAME);
 #endif
 }
 

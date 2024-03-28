@@ -144,9 +144,10 @@ bool MasterNotationParts::appendStaff(Staff* staff, const ID& destinationPartId)
     NotationParts::appendStaff(staff, destinationPartId);
 
     for (INotationPartsPtr parts : excerptsParts()) {
-        Staff* excerptStaff = mu::engraving::toStaff(staff->linkedClone());
-        if (!parts->appendStaff(excerptStaff, destinationPartId)) {
-            excerptStaff->unlink();
+        Staff* excerptStaff = staff->clone();
+        if (parts->appendStaff(excerptStaff, destinationPartId)) {
+            excerptStaff->linkTo(staff);
+        } else {
             delete excerptStaff;
         }
     }
@@ -212,16 +213,16 @@ void MasterNotationParts::replaceInstrument(const InstrumentKey& instrumentKey, 
     endGlobalEdit();
 }
 
-void MasterNotationParts::replaceDrumset(const InstrumentKey& instrumentKey, const Drumset& newDrumset)
+void MasterNotationParts::replaceDrumset(const InstrumentKey& instrumentKey, const Drumset& newDrumset, bool undoable)
 {
     TRACEFUNC;
 
     startGlobalEdit();
 
-    NotationParts::replaceDrumset(instrumentKey, newDrumset);
+    NotationParts::replaceDrumset(instrumentKey, newDrumset, undoable);
 
     for (INotationPartsPtr parts : excerptsParts()) {
-        parts->replaceDrumset(instrumentKey, newDrumset);
+        parts->replaceDrumset(instrumentKey, newDrumset, undoable);
     }
 
     endGlobalEdit();

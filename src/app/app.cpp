@@ -35,9 +35,9 @@
 
 #include "modularity/ioc.h"
 #include "ui/internal/uiengine.h"
-#include "muversion.h"
 
 #include "framework/global/globalmodule.h"
+#include "framework/global/internal/application.h"
 
 #include "log.h"
 
@@ -71,7 +71,7 @@ int App::run(int argc, char** argv)
 #endif
 
     const char* appName;
-    if (MUVersion::unstable()) {
+    if (globalModule.app()->unstable()) {
         appName  = "MuseScore4Development";
     } else {
         appName  = "MuseScore4";
@@ -116,25 +116,25 @@ int App::run(int argc, char** argv)
     commandLineParser.parse(argc, argv);
 
     IApplication::RunMode runMode = commandLineParser.runMode();
-    QCoreApplication* app = nullptr;
+    QCoreApplication* qapp = nullptr;
 
     if (runMode == IApplication::RunMode::AudioPluginRegistration) {
-        app = new QCoreApplication(argc, argv);
+        qapp = new QCoreApplication(argc, argv);
     } else {
-        app = new QApplication(argc, argv);
+        qapp = new QApplication(argc, argv);
     }
 
     QCoreApplication::setApplicationName(appName);
     QCoreApplication::setOrganizationName("MuseScore");
     QCoreApplication::setOrganizationDomain("musescore.org");
-    QCoreApplication::setApplicationVersion(QString::fromStdString(MUVersion::fullVersion().toStdString()));
+    QCoreApplication::setApplicationVersion(globalModule.app()->fullVersion().toString());
 
 #if !defined(Q_OS_WIN) && !defined(Q_OS_DARWIN) && !defined(Q_OS_WASM)
     // Any OS that uses Freedesktop.org Desktop Entry Specification (e.g. Linux, BSD)
-    QGuiApplication::setDesktopFileName("org.musescore.MuseScore" MUSESCORE_INSTALL_SUFFIX ".desktop");
+    QGuiApplication::setDesktopFileName("org.musescore.MuseScore" MU_APP_INSTALL_SUFFIX ".desktop");
 #endif
 
-    commandLineParser.processBuiltinArgs(*app);
+    commandLineParser.processBuiltinArgs(*qapp);
 
     // ====================================================
     // Setup modules: Resources, Exports, Imports, UiTypes
@@ -289,7 +289,7 @@ int App::run(int argc, char** argv)
 #endif
 
         QObject::connect(engine, &QQmlApplicationEngine::objectCreated,
-                         app, [this, url, splashScreen](QObject* obj, const QUrl& objUrl) {
+                         qapp, [this, url, splashScreen](QObject* obj, const QUrl& objUrl) {
                 if (!obj && url == objUrl) {
                     LOGE() << "failed Qml load\n";
                     QCoreApplication::exit(-1);
@@ -345,7 +345,7 @@ int App::run(int argc, char** argv)
     // ====================================================
     // Run main loop
     // ====================================================
-    int retCode = app->exec();
+    int retCode = qapp->exec();
 
     // ====================================================
     // Quit
@@ -388,7 +388,7 @@ int App::run(int argc, char** argv)
     m_modules.clear();
     mu::modularity::ioc()->reset();
 
-    delete app;
+    delete qapp;
 
     return retCode;
 }
