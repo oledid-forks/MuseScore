@@ -19,31 +19,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef MU_WORKSPACE_WORKSPACETYPES_H
-#define MU_WORKSPACE_WORKSPACETYPES_H
+import QtQuick 2.15
 
-namespace mu::workspace {
-static const std::string DEFAULT_WORKSPACE_NAME("Default");
+import MuseScore.Ui 1.0
+import MuseScore.UiComponents 1.0
 
-enum class DataKey {
-    Undefined = 0,
-    UiSettings,
-    UiStates,
-    UiToolConfigs,
-    Palettes,
-};
+QmlDialog {
+    id: root
 
-inline std::string key_to_string(DataKey key)
-{
-    switch (key) {
-    case DataKey::Undefined: return std::string();
-    case DataKey::UiSettings: return std::string("ui_settings");
-    case DataKey::UiStates: return std::string("ui_states");
-    case DataKey::UiToolConfigs: return std::string("ui_toolconfigs");
-    case DataKey::Palettes: return std::string("palettes");
+    height: 600
+    width: 1024
+
+    Rectangle {
+        anchors.fill: parent
+        color: ui.theme.backgroundPrimaryColor
+
+        StyledTextLabel {
+            anchors.centerIn: parent
+            text: "Workspaces Dialog Stub"
+        }
     }
-    return std::string();
 }
-}
-
-#endif // MU_WORKSPACE_WORKSPACETYPES_H

@@ -59,8 +59,16 @@ if (MUE_BUILD_MULTIINSTANCES_MODULE)
     add_subdirectory(multiinstances)
 endif()
 
+if (MUE_BUILD_LANGUAGES_MODULE)
+    add_subdirectory(languages)
+endif()
+
 if (MUE_BUILD_EXTENSIONS_MODULE)
     add_subdirectory(extensions)
+endif()
+
+if (MUE_BUILD_WORKSPACE_MODULE)
+    add_subdirectory(workspace)
 endif()
 
 if (MUE_BUILD_VST_MODULE)
