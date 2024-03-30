@@ -227,10 +227,20 @@ if (CC_IS_EMSCRIPTEN)
 endif()
 
 ###########################################
+# Resources
+###########################################
+if (MUE_COMPILE_QT5_COMPAT)
+    qt5_add_resources(APP_RCC_SOURCES app.qrc)
+else()
+    qt_add_resources(APP_RCC_SOURCES app.qrc)
+endif()
+
+###########################################
 # Executable declaration
 ###########################################
 
 add_executable(${EXECUTABLE_NAME}
+      ${APP_RCC_SOURCES}
       main.cpp
       app.cpp
       app.h
@@ -478,7 +488,6 @@ elseif(OS_IS_MAC)
             ${PROJECT_SOURCE_DIR}/fonts/mscore-BC.ttf
             ${PROJECT_SOURCE_DIR}/fonts/mscoreTab.ttf
             ${PROJECT_SOURCE_DIR}/fonts/mscore/MScoreText.ttf
-            ${PROJECT_SOURCE_DIR}/fonts/mscore/MusescoreIcon.ttf
             ${PROJECT_SOURCE_DIR}/fonts/musejazz/MuseJazzText.otf
             ${PROJECT_SOURCE_DIR}/fonts/petaluma/PetalumaScript.otf
             ${PROJECT_SOURCE_DIR}/fonts/petaluma/PetalumaText.otf
