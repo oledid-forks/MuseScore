@@ -27,6 +27,7 @@
 
 #include "global/io/buffer.h"
 #include "global/io/file.h"
+#include "global/io/ioretcodes.h"
 
 #include "engraving/dom/undo.h"
 
@@ -566,16 +567,17 @@ mu::Ret NotationProject::doSave(const io::path_t& path, engraving::MscIoMode ioM
 
     // Step 1: check writable
     {
-        if (fileSystem()->exists(savePath) && !fileSystem()->isWritable(savePath)) {
-            LOGE() << "failed save, not writable path: " << savePath;
-            return make_ret(notation::Err::UnknownError);
+        if ((fileSystem()->exists(savePath) && !fileSystem()->isWritable(savePath))
+            || (fileSystem()->exists(targetContainerPath) && !fileSystem()->isWritable(targetContainerPath))) {
+            LOGE() << "failed save, not writable path: " << targetContainerPath;
+            return make_ret(io::Err::FSWriteError);
         }
 
         if (ioMode == engraving::MscIoMode::Dir) {
             // Dir needs to be created, otherwise we can't move to it
             if (!QDir(targetContainerPath).mkpath(".")) {
-                LOGE() << "Couldn't create container directory";
-                return make_ret(notation::Err::UnknownError);
+                LOGE() << "Couldn't create container directory: " << targetContainerPath;
+                return make_ret(io::Err::FSMakingError);
             }
         }
     }
