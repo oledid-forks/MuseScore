@@ -37,10 +37,6 @@ if (MUE_BUILD_BRAILLE_MODULE)
     add_subdirectory(braille)
 endif()
 
-if (MUE_BUILD_CLOUD_MODULE)
-    add_subdirectory(cloud)
-endif()
-
 add_subdirectory(commonscene)
 add_subdirectory(context)
 
@@ -90,7 +86,7 @@ if (MUE_BUILD_UPDATE_MODULE)
     add_subdirectory(update)
 endif()
 
-if (MUE_BUILD_WORKSPACE_MODULE)
+if (MUSE_MODULE_WORKSPACE)
     add_subdirectory(workspacescene)
 endif()
 

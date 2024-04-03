@@ -627,6 +627,61 @@ void Score::cmdAddSpanner(Spanner* spanner, staff_idx_t staffIdx, Segment* start
     undoAddElement(spanner, true, ctrlModifier);
 }
 
+void Score::addHairpinToChordRest(Hairpin* hairpin, ChordRest* chordRest)
+{
+    track_idx_t track = chordRest->track();
+    hairpin->setTrack(track);
+    hairpin->setTrack2(track);
+
+    hairpin->setTick(chordRest->tick());
+
+    // End the hairpin at the end of the chord or, if present, at the next dynamic
+    Fraction endTick = chordRest->tick() + chordRest->actualTicks();
+
+    Segment* startSegment = chordRest->segment();
+    Segment* endSegment = nullptr;
+    for (Segment* segment = startSegment; segment && segment->tick() < endTick;
+         segment = segment->next1(SegmentType::ChordRest | SegmentType::TimeTick)) {
+        if (segment == startSegment) {
+            continue;
+        }
+        if (segment->findAnnotation(ElementType::DYNAMIC, track, track)) {
+            endSegment = segment;
+            break;
+        }
+    }
+    if (endSegment) {
+        endTick = std::min(endTick, endSegment->tick());
+    }
+
+    hairpin->setTick2(endTick);
+
+    undoAddElement(hairpin);
+}
+
+void Score::addHairpinToDynamic(Hairpin* hairpin, Dynamic* dynamic)
+{
+    track_idx_t track = dynamic->track();
+    hairpin->setTrack(track);
+    hairpin->setTrack2(track);
+
+    hairpin->setTick(dynamic->tick());
+
+    ChordRest* startCR = nullptr;
+    for (Segment* segment = dynamic->segment(); segment; segment = segment->prev(SegmentType::ChordRest)) {
+        EngravingItem* element = segment->elementAt(track);
+        if (element && element->isChordRest()) {
+            startCR = toChordRest(element);
+            break;
+        }
+    }
+
+    Fraction endTick = startCR ? startCR->tick() + startCR->actualTicks() : dynamic->segment()->measure()->endTick();
+    hairpin->setTick2(endTick);
+
+    undoAddElement(hairpin);
+}
+
 //---------------------------------------------------------
 //   expandVoice
 //    fills gaps in voice with rests,
@@ -1980,7 +2035,7 @@ void Score::upDown(bool up, UpDownMode mode)
                 Note* firstTiedNote = oNote->firstTiedNote();
                 int newLine = firstTiedNote->line() + (up ? -1 : 1);
                 Staff* vStaff = score()->staff(firstTiedNote->chord()->vStaffIdx());
-                Key key = vStaff->key(tick);
+                Key vKey = vStaff->key(tick);
                 Key cKey = vStaff->concertKey(tick);
                 Interval interval = vStaff->part()->instrument(tick)->transpose();
 
@@ -2000,10 +2055,10 @@ void Score::upDown(bool up, UpDownMode mode)
                         newPitch += interval.chromatic;
                     } else {
                         interval.flip();
-                        key = transposeKey(cKey, interval, vStaff->part()->preferSharpFlat());
+                        vKey = transposeKey(cKey, interval, vStaff->part()->preferSharpFlat());
                     }
                     newTpc1 = pitch2tpc(newPitch, cKey, Prefer::NEAREST);
-                    newTpc2 = pitch2tpc(newPitch - firstTiedNote->transposition(), key, Prefer::NEAREST);
+                    newTpc2 = pitch2tpc(newPitch - firstTiedNote->transposition(), vKey, Prefer::NEAREST);
                 }
             }
             break;
