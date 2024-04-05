@@ -31,7 +31,7 @@
 #include "log.h"
 
 using namespace winrt;
-using namespace mu::audio;
+using namespace muse::audio;
 
 static constexpr char DEFAULT_DEVICE_ID[] = "default";
 
@@ -208,7 +208,7 @@ AudioDeviceList WasapiAudioDriver::availableOutputDevices() const
 
     AudioDeviceList result;
 
-    result.push_back({ DEFAULT_DEVICE_ID, trc("audio", "System default") });
+    result.push_back({ DEFAULT_DEVICE_ID, mu::trc("audio", "System default") });
 
     // Get the string identifier of the audio renderer
     hstring AudioSelector = MediaDevice::GetAudioRenderSelector();

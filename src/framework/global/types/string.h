@@ -506,4 +506,9 @@ inline mu::logger::Stream& operator<<(mu::logger::Stream& s, const mu::AsciiStri
 #  define muPrintable(string) string.toUtf8().constChar()
 #endif
 
+namespace muse {
+using Char = mu::Char;
+using String = mu::String;
+}
+
 #endif // MU_GLOBAL_STRING_H

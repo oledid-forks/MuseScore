@@ -36,7 +36,7 @@
 
 static constexpr char DEFAULT_DEVICE_ID[] = "default";
 
-using namespace mu::audio;
+using namespace muse::audio;
 
 namespace {
 struct ALSAData
@@ -52,7 +52,7 @@ struct ALSAData
 };
 
 static ALSAData* s_alsaData{ nullptr };
-IAudioDriver::Spec s_format;
+static muse::audio::IAudioDriver::Spec s_format;
 
 static void* alsaThread(void* aParam)
 {
@@ -246,7 +246,7 @@ mu::async::Notification LinuxAudioDriver::outputDeviceChanged() const
 AudioDeviceList LinuxAudioDriver::availableOutputDevices() const
 {
     AudioDeviceList devices;
-    devices.push_back({ DEFAULT_DEVICE_ID, trc("audio", "System default") });
+    devices.push_back({ DEFAULT_DEVICE_ID, mu::trc("audio", "System default") });
 
     return devices;
 }

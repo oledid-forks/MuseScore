@@ -266,8 +266,8 @@ int main(int argc, char** argv)
     // framework
     app.addModule(new muse::accessibility::AccessibilityModule());
     app.addModule(new muse::actions::ActionsModule());
-    app.addModule(new mu::audio::AudioModule());
-    app.addModule(new mu::draw::DrawModule());
+    app.addModule(new muse::audio::AudioModule());
+    app.addModule(new muse::draw::DrawModule());
     app.addModule(new mu::midi::MidiModule());
     app.addModule(new mu::mpe::MpeModule());
 #ifdef MUSE_MODULE_MUSESAMPLER
@@ -278,7 +278,7 @@ int main(int argc, char** argv)
 #ifdef MUSE_MODULE_UI
     app.addModule(new mu::ui::UiModule());
     app.addModule(new mu::uicomponents::UiComponentsModule());
-    app.addModule(new mu::dock::DockModule());
+    app.addModule(new muse::dock::DockModule());
 #endif
     app.addModule(new mu::vst::VSTModule());
 
@@ -293,7 +293,7 @@ int main(int argc, char** argv)
 
     app.addModule(new mu::braille::BrailleModule());
 
-    app.addModule(new mu::cloud::CloudModule());
+    app.addModule(new muse::cloud::CloudModule());
     app.addModule(new mu::commonscene::CommonSceneModule());
     app.addModule(new mu::context::ContextModule());
 
@@ -333,7 +333,7 @@ int main(int argc, char** argv)
     app.addModule(new mu::palette::PaletteModule());
     app.addModule(new mu::playback::PlaybackModule());
 #ifdef MUSE_MODULE_EXTENSIONS
-    app.addModule(new mu::extensions::ExtensionsModule());
+    app.addModule(new muse::extensions::ExtensionsModule());
 #endif
     app.addModule(new mu::print::PrintModule());
     app.addModule(new mu::project::ProjectModule());

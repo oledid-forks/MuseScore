@@ -31,7 +31,7 @@
 
 #include "log.h"
 
-using namespace mu::audio;
+using namespace muse::audio;
 
 void RegisterAudioPluginsScenario::init()
 {
@@ -64,7 +64,7 @@ mu::Ret RegisterAudioPluginsScenario::registerNewPlugins()
     }
 
     if (newPluginPaths.empty()) {
-        return make_ok();
+        return mu::make_ok();
     }
 
     processPluginsRegistration(newPluginPaths);
@@ -94,7 +94,7 @@ void RegisterAudioPluginsScenario::processPluginsRegistration(const io::paths_t&
         const io::path_t& pluginPath = pluginPaths[i];
         std::string pluginPathStr = pluginPath.toStdString();
 
-        m_progress.progressChanged.send(i, pluginCount, io::filename(pluginPath).toStdString());
+        m_progress.progressChanged.send(i, pluginCount, mu::io::filename(pluginPath).toStdString());
         qApp->processEvents();
 
         int code = process()->execute(appPath, { "--register-audio-plugin", pluginPathStr });
@@ -107,7 +107,7 @@ void RegisterAudioPluginsScenario::processPluginsRegistration(const io::paths_t&
         }
     }
 
-    m_progress.finished.send(make_ok());
+    m_progress.finished.send(mu::make_ok());
 }
 
 mu::Ret RegisterAudioPluginsScenario::registerPlugin(const io::path_t& pluginPath)
@@ -142,7 +142,7 @@ mu::Ret RegisterAudioPluginsScenario::registerPlugin(const io::path_t& pluginPat
         }
     }
 
-    return make_ok();
+    return mu::make_ok();
 }
 
 mu::Ret RegisterAudioPluginsScenario::registerFailedPlugin(const io::path_t& pluginPath, int failCode)
@@ -154,7 +154,7 @@ mu::Ret RegisterAudioPluginsScenario::registerFailedPlugin(const io::path_t& plu
     }
 
     AudioPluginInfo info;
-    info.meta.id = io::completeBasename(pluginPath).toStdString();
+    info.meta.id = mu::io::completeBasename(pluginPath).toStdString();
 
     std::string ext = io::suffix(pluginPath);
     if (ext.find("vst") != std::string::npos) {

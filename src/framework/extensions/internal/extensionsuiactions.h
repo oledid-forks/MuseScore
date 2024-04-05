@@ -19,8 +19,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef MU_EXTENSIONS_EXTENSIONSUIACTIONS_H
-#define MU_EXTENSIONS_EXTENSIONSUIACTIONS_H
+#ifndef MUSE_EXTENSIONS_EXTENSIONSUIACTIONS_H
+#define MUSE_EXTENSIONS_EXTENSIONSUIACTIONS_H
 
 #include "async/asyncable.h"
 #include "ui/iuiactionsmodule.h"
@@ -28,25 +28,25 @@
 #include "modularity/ioc.h"
 #include "extensions/iextensionsprovider.h"
 
-namespace mu::extensions {
-class ExtensionsUiActions : public ui::IUiActionsModule, public async::Asyncable
+namespace muse::extensions {
+class ExtensionsUiActions : public mu::ui::IUiActionsModule, public async::Asyncable
 {
     Inject<extensions::IExtensionsProvider> provider;
 
 public:
     ExtensionsUiActions() = default;
 
-    const ui::UiActionList& actionsList() const override;
+    const mu::ui::UiActionList& actionsList() const override;
 
-    bool actionEnabled(const ui::UiAction& action) const override;
+    bool actionEnabled(const mu::ui::UiAction& action) const override;
     async::Channel<muse::actions::ActionCodeList> actionEnabledChanged() const override;
 
-    bool actionChecked(const ui::UiAction& action) const override;
+    bool actionChecked(const mu::ui::UiAction& action) const override;
     async::Channel<muse::actions::ActionCodeList> actionCheckedChanged() const override;
 
 private:
-    mutable ui::UiActionList m_actions;
+    mutable mu::ui::UiActionList m_actions;
 };
 }
 
-#endif // MU_EXTENSIONS_EXTENSIONSUIACTIONS_H
+#endif // MUSE_EXTENSIONS_EXTENSIONSUIACTIONS_H
