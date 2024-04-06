@@ -2979,6 +2979,16 @@ void MusicXMLParserDirection::direction(const String& partId,
     } else if (isLikelyLegallyDownloaded(tick)) {
         // Ignore (TBD: print to footer?)
         return;
+    } else if (isLikelyTempoText()) {
+        TempoText* tt = Factory::createTempoText(m_score->dummy()->segment());
+        tt->setXmlText(m_wordsText + m_metroText);
+        if (m_tpoSound > 0 && canAddTempoText(m_score->tempomap(), tick.ticks())) {
+            double tpo = m_tpoSound / 60;
+            tt->setTempo(tpo);
+            tt->setFollowText(true);
+        }
+
+        addElemOffset(tt, track, placement(), measure, tick + m_offset);
     } else if (m_wordsText != "" || m_rehearsalText != "" || m_metroText != "") {
         TextBase* t = 0;
         if (m_tpoSound > 0.1) {
@@ -3175,6 +3185,9 @@ void MusicXMLParserDirection::direction(const String& partId,
 
 bool MusicXMLParserDirection::isLikelyCredit(const Fraction& tick) const
 {
+    if (!configuration()->inferTextType()) {
+        return false;
+    }
     return (tick + m_offset < Fraction(5, 1)) // Only early in the piece
            && m_rehearsalText.empty()
            && m_metroText.empty()
@@ -3206,6 +3219,9 @@ bool MusicXMLParserDirection::isLyricBracket() const
 
 bool MusicXMLParserDirection::isLikelySubtitle(const Fraction& tick) const
 {
+    if (!configuration()->inferTextType()) {
+        return false;
+    }
     return (tick + m_offset < Fraction(5, 1)) // Only early in the piece
            && m_rehearsalText.empty()
            && m_metroText.empty()
@@ -3215,11 +3231,35 @@ bool MusicXMLParserDirection::isLikelySubtitle(const Fraction& tick) const
 
 bool MusicXMLParserDirection::isLikelyLegallyDownloaded(const Fraction& tick) const
 {
+    if (!configuration()->inferTextType()) {
+        return false;
+    }
     return (tick + m_offset < Fraction(5, 1))   // Only early in the piece
            && m_rehearsalText.empty()
            && m_metroText.empty()
            && m_tpoSound < 0.1
            && m_wordsText.contains(std::wregex(L"This music has been legally downloaded\\.\\sDo not photocopy\\."));
+}
+
+bool MusicXMLParserDirection::isLikelyTempoText() const
+{
+    if (!configuration()->inferTextType() || !m_wordsText.contains(u"<b>") || m_placement == u"below") {
+        return false;
+    }
+
+    const String plainText = MScoreTextToMXML::toPlainText(m_wordsText.simplified());
+    static const std::array<String,
+                            25> tempoStrs
+        = { u"a tempo", u"adag", u"alleg", u"andant", u"ballad", u"brisk", u"determination", u"dolce", u"expressive",
+            u"fast", u"free", u"grave", u"larg", u"lento", u"maestoso", u"moderat", u"mosso", u"prest", u"rubato", u"slow", u"straight",
+            u"tempo i", u"tenderly", u"triumphant", u"vivace" };
+
+    for (const String& str : tempoStrs) {
+        if (plainText.contains(str, CaseSensitivity::CaseInsensitive)) {
+            return true;
+        }
+    }
+    return false;
 }
 
 Text* MusicXMLParserDirection::addTextToHeader(const TextStyleType textStyleType)
@@ -3549,6 +3589,9 @@ static Marker* findMarker(const String& repeat, Score* score)
 
 bool MusicXMLParserDirection::isLikelyFingering() const
 {
+    if (!configuration()->inferTextType()) {
+        return false;
+    }
     // One or more newline-separated digits, possibly lead or trailed by whitespace
     static const std::wregex re(L"^\\s*[0-5pimac](?:[-–][0-5pimac])?(?:\\n[0-5pimac](?:[-–][0-5pimac])?)*\\s*$");
     return m_wordsText.contains(re)
@@ -3663,6 +3706,9 @@ MusicXMLDelayedDirectionElement* MusicXMLInferredFingering::toDelayedDirection()
 
 void MusicXMLParserDirection::handleRepeats(Measure* measure, const track_idx_t track, const Fraction tick)
 {
+    if (!configuration()->inferTextType()) {
+        return;
+    }
     // Try to recognize the various repeats
     String repeat;
     if (!m_sndCoda.empty()) {
@@ -3723,6 +3769,9 @@ void MusicXMLParserDirection::handleRepeats(Measure* measure, const track_idx_t 
 void MusicXMLParserDirection::handleNmiCmi(Measure* measure, const track_idx_t track, const Fraction tick,
                                            DelayedDirectionsList& delayedDirections)
 {
+    if (!configuration()->inferTextType()) {
+        return;
+    }
     if (!m_wordsText.contains(u"NmiCmi")) {
         return;
     }
@@ -3738,6 +3787,9 @@ void MusicXMLParserDirection::handleNmiCmi(Measure* measure, const track_idx_t t
 
 void MusicXMLParserDirection::handleTempo()
 {
+    if (!configuration()->inferTextType()) {
+        return;
+    }
     // Pick up any tempo markings which may have been exported from Sibelius as <words>
     // eg. andante (q = c. 90)
     // Sibelius uses a symbol font with the characters 'yxeqhVwW' each drawn as a different duration

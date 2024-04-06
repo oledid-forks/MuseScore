@@ -43,7 +43,7 @@
 #include "log.h"
 
 using namespace mu;
-using namespace mu::languages;
+using namespace muse::languages;
 using namespace mu::network;
 
 static const QStringList LANGUAGE_RESOURCE_NAMES = {
@@ -286,7 +286,7 @@ Ret LanguagesService::loadLanguage(Language& lang)
     }
 
     for (const io::path_t& appFilePath : appFilePaths.val) {
-        io::path_t filename = io::filename(appFilePath);
+        io::path_t filename = mu::io::filename(appFilePath);
         io::path_t userFilePath = languagesUserAppDataPath.appendingComponent(filename);
 
         QFileInfo appFileInfo(appFilePath.toQString());
@@ -308,7 +308,7 @@ Ret LanguagesService::loadLanguage(Language& lang)
         return true;
     }());
 
-    return make_ok();
+    return mu::make_ok();
 }
 
 Progress LanguagesService::update(const QString& languageCode)
@@ -359,7 +359,7 @@ void LanguagesService::th_update(const QString& languageCode, Progress progress)
 {
     progress.started.notify();
 
-    progress.progressChanged.send(0, 0, trc("languages", "Checking for updates…"));
+    progress.progressChanged.send(0, 0, mu::trc("languages", "Checking for updates…"));
 
     if (!canUpdate(languageCode)) {
         progress.finished.send(make_ret(Err::AlreadyUpToDate));
@@ -413,7 +413,7 @@ bool LanguagesService::canUpdate(const QString& languageCode)
 
 Ret LanguagesService::downloadLanguage(const QString& languageCode, Progress progress) const
 {
-    std::string downloadingStatusTitle = trc("languages", "Downloading…");
+    std::string downloadingStatusTitle = mu::trc("languages", "Downloading…");
     progress.progressChanged.send(0, 0, downloadingStatusTitle);
 
     QBuffer qbuff;
@@ -430,10 +430,10 @@ Ret LanguagesService::downloadLanguage(const QString& languageCode, Progress pro
         return make_ret(Err::ErrorDownloadLanguage);
     }
 
-    progress.progressChanged.send(0, 0, trc("languages", "Unpacking…"));
+    progress.progressChanged.send(0, 0, mu::trc("languages", "Unpacking…"));
 
     ByteArray ba = ByteArray::fromQByteArrayNoCopy(qbuff.data());
-    io::Buffer buff(&ba);
+    mu::io::Buffer buff(&ba);
     ZipReader zipReader(&buff);
 
     {
@@ -449,7 +449,7 @@ Ret LanguagesService::downloadLanguage(const QString& languageCode, Progress pro
         }
     }
 
-    return make_ok();
+    return mu::make_ok();
 }
 
 RetVal<QString> LanguagesService::fileHash(const io::path_t& path)

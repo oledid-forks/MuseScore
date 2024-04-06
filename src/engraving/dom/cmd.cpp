@@ -3546,8 +3546,8 @@ bool Score::makeMeasureRepeatGroup(Measure* firstMeasure, int numMeasures, staff
     }
 
     if (!empty) {
-        auto b = MessageBox::warning(trc("engraving", "Current contents of measures will be replaced"),
-                                     trc("engraving", "Continue with inserting measure repeat?"));
+        auto b = MessageBox::warning(mu::trc("engraving", "Current contents of measures will be replaced"),
+                                     mu::trc("engraving", "Continue with inserting measure repeat?"));
         if (b == MessageBox::Button::Cancel) {
             return false;
         }
@@ -4175,6 +4175,12 @@ static Segment* setChord(Score* score, Segment* segment, track_idx_t track, cons
             LOGD("reached end of score");
             break;
         }
+
+        //it is possible that the next measure's ticks have not been computed yet. compute them now
+        if (nseg->ticks().isZero()) {
+            nseg->measure()->computeTicks();
+        }
+
         segment = nseg;
 
         cr = toChordRest(segment->element(track));

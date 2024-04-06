@@ -268,7 +268,7 @@ int main(int argc, char** argv)
     app.addModule(new muse::actions::ActionsModule());
     app.addModule(new muse::audio::AudioModule());
     app.addModule(new muse::draw::DrawModule());
-    app.addModule(new mu::midi::MidiModule());
+    app.addModule(new muse::midi::MidiModule());
     app.addModule(new mu::mpe::MpeModule());
 #ifdef MUSE_MODULE_MUSESAMPLER
     app.addModule(new mu::musesampler::MuseSamplerModule());
@@ -280,7 +280,7 @@ int main(int argc, char** argv)
     app.addModule(new mu::uicomponents::UiComponentsModule());
     app.addModule(new muse::dock::DockModule());
 #endif
-    app.addModule(new mu::vst::VSTModule());
+    app.addModule(new muse::vst::VSTModule());
 
     // modules
 #ifdef MUE_BUILD_APPSHELL_MODULE
@@ -288,7 +288,7 @@ int main(int argc, char** argv)
 #endif
 
 #ifdef MUSE_MODULE_AUTOBOT
-    app.addModule(new mu::autobot::AutobotModule());
+    app.addModule(new muse::autobot::AutobotModule());
 #endif
 
     app.addModule(new mu::braille::BrailleModule());
@@ -326,8 +326,8 @@ int main(int argc, char** argv)
 
     app.addModule(new mu::inspector::InspectorModule());
     app.addModule(new mu::instrumentsscene::InstrumentsSceneModule());
-    app.addModule(new mu::languages::LanguagesModule());
-    app.addModule(new mu::learn::LearnModule());
+    app.addModule(new muse::languages::LanguagesModule());
+    app.addModule(new muse::learn::LearnModule());
     app.addModule(new mu::mi::MultiInstancesModule());
     app.addModule(new mu::notation::NotationModule());
     app.addModule(new mu::palette::PaletteModule());
@@ -338,8 +338,8 @@ int main(int argc, char** argv)
     app.addModule(new mu::print::PrintModule());
     app.addModule(new mu::project::ProjectModule());
     app.addModule(new mu::update::UpdateModule());
-    app.addModule(new mu::workspace::WorkspaceModule());
-    app.addModule(new mu::workspace::WorkspaceSceneModule());
+    app.addModule(new muse::workspace::WorkspaceModule());
+    app.addModule(new mu::workspacescene::WorkspaceSceneModule());
 
 #ifdef Q_OS_WASM
     app.addModule(new mu::wasmtest::WasmTestModule());
