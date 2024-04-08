@@ -271,10 +271,10 @@ int main(int argc, char** argv)
     app.addModule(new muse::midi::MidiModule());
     app.addModule(new mu::mpe::MpeModule());
 #ifdef MUSE_MODULE_MUSESAMPLER
-    app.addModule(new mu::musesampler::MuseSamplerModule());
+    app.addModule(new muse::musesampler::MuseSamplerModule());
 #endif
-    app.addModule(new mu::network::NetworkModule());
-    app.addModule(new mu::shortcuts::ShortcutsModule());
+    app.addModule(new muse::network::NetworkModule());
+    app.addModule(new muse::shortcuts::ShortcutsModule());
 #ifdef MUSE_MODULE_UI
     app.addModule(new muse::ui::UiModule());
     app.addModule(new muse::uicomponents::UiComponentsModule());
