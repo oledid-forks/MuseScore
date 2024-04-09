@@ -19,13 +19,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef MU_UPDATE_UPDATESERVICESTUB_H
-#define MU_UPDATE_UPDATESERVICESTUB_H
+#ifndef MUSE_UPDATE_UPDATESERVICESTUB_H
+#define MUSE_UPDATE_UPDATESERVICESTUB_H
 
-#include "update/iupdateservice.h"
+#include "update/iappupdateservice.h"
 
-namespace mu::update {
-class UpdateServiceStub : public IUpdateService
+namespace muse::update {
+class UpdateServiceStub : public IAppUpdateService
 {
 public:
     mu::RetVal<ReleaseInfo> checkForUpdate() override;
@@ -36,4 +36,4 @@ public:
 };
 }
 
-#endif // MU_UPDATE_UPDATESERVICESTUB_H
+#endif // MUSE_UPDATE_UPDATESERVICESTUB_H
