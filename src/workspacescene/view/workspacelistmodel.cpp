@@ -28,6 +28,7 @@
 #include "log.h"
 
 using namespace mu::workspacescene;
+using namespace muse;
 using namespace muse::workspace;
 
 static const QString NAME_KEY("name");
@@ -154,7 +155,7 @@ void WorkspaceListModel::createNewWorkspace()
         workspaceNames << QString::fromStdString(workspace->name());
     }
 
-    UriQuery uri("musescore://workspace/create");
+    UriQuery uri("muse://workspace/create");
     uri.addParam("sync", Val(true));
     uri.addParam("workspaceNames", Val(workspaceNames.join(',')));
 

@@ -53,7 +53,7 @@
 #endif
 
 using namespace muse::shortcuts;
-using namespace mu::modularity;
+using namespace muse::modularity;
 using namespace muse::ui;
 
 static void shortcuts_init_qrc()
@@ -81,7 +81,7 @@ void ShortcutsModule::registerExports()
 
 void ShortcutsModule::registerApi()
 {
-    using namespace mu::api;
+    using namespace muse::api;
 
     auto api = ioc()->resolve<IApiRegister>(moduleName());
     if (api) {
@@ -97,15 +97,15 @@ void ShortcutsModule::registerResources()
 void ShortcutsModule::registerUiTypes()
 {
 #if defined(Q_OS_MACOS)
-    qmlRegisterType<MacOSShortcutsInstanceModel>("MuseScore.Shortcuts", 1, 0, "ShortcutsInstanceModel");
+    qmlRegisterType<MacOSShortcutsInstanceModel>("Muse.Shortcuts", 1, 0, "ShortcutsInstanceModel");
 #else
-    qmlRegisterType<ShortcutsInstanceModel>("MuseScore.Shortcuts", 1, 0, "ShortcutsInstanceModel");
+    qmlRegisterType<ShortcutsInstanceModel>("Muse.Shortcuts", 1, 0, "ShortcutsInstanceModel");
 #endif
 
-    qmlRegisterType<ShortcutsModel>("MuseScore.Shortcuts", 1, 0, "ShortcutsModel");
-    qmlRegisterType<EditShortcutModel>("MuseScore.Shortcuts", 1, 0, "EditShortcutModel");
-    qmlRegisterType<MidiDeviceMappingModel>("MuseScore.Shortcuts", 1, 0, "MidiDeviceMappingModel");
-    qmlRegisterType<EditMidiMappingModel>("MuseScore.Shortcuts", 1, 0, "EditMidiMappingModel");
+    qmlRegisterType<ShortcutsModel>("Muse.Shortcuts", 1, 0, "ShortcutsModel");
+    qmlRegisterType<EditShortcutModel>("Muse.Shortcuts", 1, 0, "EditShortcutModel");
+    qmlRegisterType<MidiDeviceMappingModel>("Muse.Shortcuts", 1, 0, "MidiDeviceMappingModel");
+    qmlRegisterType<EditMidiMappingModel>("Muse.Shortcuts", 1, 0, "EditMidiMappingModel");
 
     ioc()->resolve<IUiEngine>(moduleName())->addSourceImportPath(shortcuts_QML_IMPORT);
 }

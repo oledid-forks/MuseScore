@@ -41,6 +41,7 @@
 #include "log.h"
 #include "translation.h"
 
+using namespace muse;
 using namespace mu::palette;
 using namespace mu::engraving;
 
@@ -141,7 +142,7 @@ const char* PaletteCell::translationContext() const
 
 QString PaletteCell::translatedName() const
 {
-    const QString trName = mu::qtrc(translationContext(), name.toUtf8());
+    const QString trName = muse::qtrc(translationContext(), name.toUtf8());
 
     if (element && element->isTextBase() && name.contains("%1")) {
         return trName.arg(toTextBase(element.get())->plainText());
@@ -156,7 +157,7 @@ void PaletteCell::retranslate()
         TextBase* target = toTextBase(element.get());
         TextBase* orig = toTextBase(untranslatedElement.get());
         const QString& text = orig->xmlText();
-        target->setXmlText(mu::qtrc("palette", text.toUtf8().constData()));
+        target->setXmlText(muse::qtrc("palette", text.toUtf8().constData()));
     }
 }
 
@@ -286,7 +287,7 @@ void PaletteCell::write(XmlWriter& xml, bool pasteMode) const
     if (!tag.isEmpty()) {
         xml.tag("tag", tag);
     }
-    if (mag != 1.0) {
+    if (!RealIsEqual(mag, 1.0)) {
         xml.tag("mag", mag);
     }
 

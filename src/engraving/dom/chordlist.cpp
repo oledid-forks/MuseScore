@@ -38,7 +38,8 @@
 #include "log.h"
 
 using namespace mu;
-using namespace mu::io;
+using namespace muse;
+using namespace muse::io;
 
 namespace mu::engraving {
 //---------------------------------------------------------
@@ -52,7 +53,7 @@ HChord::HChord(const String& str)
         { "C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B" }
     };
     m_keys = 0;
-    StringList sl = str.split(u' ', mu::SkipEmptyParts);
+    StringList sl = str.split(u' ', muse::SkipEmptyParts);
     for (const String& s : sl) {
         for (int i = 0; i < 12; ++i) {
             if (s == scaleNames[0][i] || s == scaleNames[1][i]) {
@@ -337,10 +338,10 @@ void HChord::add(const std::vector<HDegree>& degreeList)
 static void readRenderList(String val, std::list<RenderAction>& renderList)
 {
     renderList.clear();
-    StringList sl = val.split(u' ', mu::SkipEmptyParts);
+    StringList sl = val.split(u' ', muse::SkipEmptyParts);
     for (const String& s : sl) {
         if (s.startsWith(u"m:")) {
-            StringList ssl = s.split(u':', mu::SkipEmptyParts);
+            StringList ssl = s.split(u':', muse::SkipEmptyParts);
             if (ssl.size() == 3) {
                 // m:x:y
                 RenderAction a;
@@ -382,7 +383,7 @@ static void writeRenderList(XmlWriter& xml, const std::list<RenderAction>& al, c
             s += a.text;
             break;
         case RenderAction::RenderActionType::MOVE:
-            if (a.movex != 0.0 || a.movey != 0.0) {
+            if (!RealIsNull(a.movex) || !RealIsNull(a.movey)) {
                 s += String(u"m:%1:%2").arg(a.movex).arg(a.movey);
             }
             break;
@@ -490,7 +491,7 @@ void ParsedChord::correctXmlText(const String& s)
     xmlText.remove(std::regex("[0-9]"));
     if (s != "") {
         size_t pos = xmlText.lastIndexOf(u')');
-        if (pos == mu::nidx) {
+        if (pos == muse::nidx) {
             pos = xmlText.size();
         }
         xmlText.insert(pos, s);
@@ -1301,12 +1302,12 @@ String ParsedChord::fromXml(const String& rawKind, const String& rawKindText, co
     }
     // convert no3,add[42] into sus[42]
     size_t no3 = m_modifierList.indexOf(u"no3");
-    if (no3 != mu::nidx) {
+    if (no3 != muse::nidx) {
         size_t addn = m_modifierList.indexOf(u"add4");
-        if (addn == mu::nidx) {
+        if (addn == muse::nidx) {
             addn = m_modifierList.indexOf(u"add2");
         }
-        if (addn != mu::nidx) {
+        if (addn != muse::nidx) {
             String& s = m_modifierList[addn];
             s.replace(u"add", u"sus");
             m_modifierList.removeAt(no3);
@@ -1471,11 +1472,11 @@ const std::list<RenderAction>& ParsedChord::renderList(const ChordList* cl)
         // check for adjustments
         // stop adjusting when first non-adjusted modifier found
         double p = adjust ? cl->position(tok.names, ctc) : 0.0;
-        if (tok.tokenClass == ChordTokenClass::MODIFIER && p == 0.0) {
+        if (tok.tokenClass == ChordTokenClass::MODIFIER && RealIsNull(p)) {
             adjust = false;
         }
         // build render list
-        if (p != 0.0) {
+        if (!RealIsNull(p)) {
             RenderAction m1 = RenderAction(RenderAction::RenderActionType::MOVE);
             m1.movex = 0.0;
             m1.movey = p;
@@ -1489,7 +1490,7 @@ const std::list<RenderAction>& ParsedChord::renderList(const ChordList* cl)
             a.text = tok.names.front();
             m_renderList.push_back(a);
         }
-        if (p != 0.0) {
+        if (!RealIsNull(p)) {
             RenderAction m2 = RenderAction(RenderAction::RenderActionType::MOVE);
             m2.movex = 0.0;
             m2.movey = -p;
@@ -1735,7 +1736,9 @@ void ChordList::read(XmlReader& e)
             // if no id attribute (id == 0), then assign it a private id
             // user chords that match these ChordDescriptions will be treated as normal recognized chords
             // except that the id will not be written to the score file
-            ChordDescription cd = (id && mu::contains(*this, id)) ? mu::take(*this, id) : ChordDescription(id);
+            ChordDescription cd = (id && muse::contains(*this, id))
+                                  ? muse::take(*this, id)
+                                  : ChordDescription(id);
 
             // record updated id
             id = cd.id;
@@ -1813,7 +1816,7 @@ void ChordList::write(XmlWriter& xml) const
 bool ChordList::read(const String& name)
 {
 //      LOGD("ChordList::read <%s>", muPrintable(name));
-    io::path_t path;
+    muse::io::path_t path;
     FileInfo ftest(name);
     if (ftest.isAbsolute()) {
         path = name;

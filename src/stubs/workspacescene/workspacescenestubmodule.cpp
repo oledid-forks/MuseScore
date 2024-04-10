@@ -26,7 +26,8 @@
 #include "framework/ui/iinteractiveuriregister.h"
 
 using namespace mu::workspacescene;
-using namespace mu::modularity;
+using namespace muse;
+using namespace muse::modularity;
 using namespace muse::ui;
 
 static void workspacescene_init_qrc()
@@ -43,10 +44,10 @@ void WorkspaceSceneModule::resolveImports()
 {
     auto ir = ioc()->resolve<IInteractiveUriRegister>(moduleName());
     if (ir) {
-        ir->registerUri(Uri("musescore://workspace/select"),
+        ir->registerUri(Uri("muse://workspace/select"),
                         ContainerMeta(ContainerType::QmlDialog, "MuseScore/Workspace/WorkspacesDialog.qml"));
 
-        ir->registerUri(Uri("musescore://workspace/create"),
+        ir->registerUri(Uri("muse://workspace/create"),
                         ContainerMeta(ContainerType::QmlDialog, "MuseScore/Workspace/NewWorkspaceDialog.qml"));
     }
 }

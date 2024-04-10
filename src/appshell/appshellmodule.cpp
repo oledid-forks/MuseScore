@@ -71,7 +71,8 @@
 #endif
 
 using namespace mu::appshell;
-using namespace mu::modularity;
+using namespace muse;
+using namespace muse::modularity;
 using namespace muse::ui;
 using namespace muse::dock;
 
@@ -130,7 +131,7 @@ void AppShellModule::resolveImports()
         ir->registerUri(Uri("musescore://about/musicxml"), ContainerMeta(ContainerType::QmlDialog, "AboutMusicXMLDialog.qml"));
         ir->registerUri(Uri("musescore://firstLaunchSetup"),
                         ContainerMeta(ContainerType::QmlDialog, "FirstLaunchSetup/FirstLaunchSetupDialog.qml"));
-        ir->registerUri(Uri("musescore://preferences"), ContainerMeta(ContainerType::QmlDialog, "Preferences/PreferencesDialog.qml"));
+        ir->registerUri(Uri("muse://preferences"), ContainerMeta(ContainerType::QmlDialog, "Preferences/PreferencesDialog.qml"));
     }
 }
 
@@ -176,7 +177,7 @@ void AppShellModule::registerUiTypes()
     qmlRegisterType<PublishToolBarModel>("MuseScore.AppShell", 1, 0, "PublishToolBarModel");
     qmlRegisterType<MainToolBarModel>("MuseScore.AppShell", 1, 0, "MainToolBarModel");
 
-    qmlRegisterType<WindowDropArea>("MuseScore.Ui", 1, 0, "WindowDropArea");
+    qmlRegisterType<WindowDropArea>("Muse.Ui", 1, 0, "WindowDropArea");
 }
 
 void AppShellModule::onPreInit(const IApplication::RunMode& mode)

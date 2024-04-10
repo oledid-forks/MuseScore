@@ -59,6 +59,7 @@
 
 using namespace mu::iex::mei;
 using namespace mu;
+using namespace muse;
 
 StringList Convert::logs;
 
@@ -2698,7 +2699,7 @@ std::pair<engraving::DirectionV, bool> Convert::stemFromMEI(const libmei::AttSte
     default:
         break;
     }
-    if (meiStemsAtt.GetStemLen() == 0.0) {
+    if (RealIsNull(meiStemsAtt.GetStemLen())) {
         noStem = true;
     }
 

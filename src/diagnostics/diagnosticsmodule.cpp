@@ -58,7 +58,8 @@
 #include "log.h"
 
 using namespace mu::diagnostics;
-using namespace mu::modularity;
+using namespace muse;
+using namespace muse::modularity;
 
 std::string DiagnosticsModule::moduleName() const
 {
@@ -81,11 +82,11 @@ void DiagnosticsModule::resolveImports()
 {
     auto ir = ioc()->resolve<muse::ui::IInteractiveUriRegister>(moduleName());
     if (ir) {
-        ir->registerQmlUri(Uri("musescore://diagnostics/system/paths"), "MuseScore/Diagnostics/DiagnosticPathsDialog.qml");
-        ir->registerQmlUri(Uri("musescore://diagnostics/system/profiler"), "MuseScore/Diagnostics/DiagnosticProfilerDialog.qml");
-        ir->registerQmlUri(Uri("musescore://diagnostics/navigation/tree"), "MuseScore/Diagnostics/DiagnosticNavigationDialog.qml");
-        ir->registerQmlUri(Uri("musescore://diagnostics/accessible/tree"), "MuseScore/Diagnostics/DiagnosticAccessibleDialog.qml");
-        ir->registerQmlUri(Uri("musescore://diagnostics/engraving/elements"), "MuseScore/Diagnostics/EngravingElementsDialog.qml");
+        ir->registerQmlUri(Uri("muse://diagnostics/system/paths"), "MuseScore/Diagnostics/DiagnosticPathsDialog.qml");
+        ir->registerQmlUri(Uri("muse://diagnostics/system/profiler"), "MuseScore/Diagnostics/DiagnosticProfilerDialog.qml");
+        ir->registerQmlUri(Uri("muse://diagnostics/navigation/tree"), "MuseScore/Diagnostics/DiagnosticNavigationDialog.qml");
+        ir->registerQmlUri(Uri("muse://diagnostics/accessible/tree"), "MuseScore/Diagnostics/DiagnosticAccessibleDialog.qml");
+        ir->registerQmlUri(Uri("muse://diagnostics/engraving/elements"), "MuseScore/Diagnostics/EngravingElementsDialog.qml");
     }
 
     auto ar = ioc()->resolve<muse::ui::IUiActionsRegister>(moduleName());
@@ -132,13 +133,13 @@ void DiagnosticsModule::onInit(const IApplication::RunMode& mode)
     static CrashHandler s_crashHandler;
 
 #ifdef _MSC_VER
-    io::path_t handlerFile("crashpad_handler.exe");
+    muse::io::path_t handlerFile("crashpad_handler.exe");
 #else
-    io::path_t handlerFile("crashpad_handler");
+    muse::io::path_t handlerFile("crashpad_handler");
 #endif // _MSC_VER
 
-    io::path_t handlerPath = globalConf->appBinDirPath() + "/" + handlerFile;
-    io::path_t dumpsDir = globalConf->userAppDataPath() + "/logs/dumps";
+    muse::io::path_t handlerPath = globalConf->appBinDirPath() + "/" + handlerFile;
+    muse::io::path_t dumpsDir = globalConf->userAppDataPath() + "/logs/dumps";
     fileSystem()->makePath(dumpsDir);
     std::string serverUrl(MUE_CRASH_REPORT_URL);
 

@@ -31,7 +31,7 @@
 #include "view/learnpagemodel.h"
 
 using namespace muse::learn;
-using namespace mu::modularity;
+using namespace muse::modularity;
 
 static void learn_init_qrc()
 {
@@ -59,7 +59,7 @@ void LearnModule::registerResources()
 
 void LearnModule::registerUiTypes()
 {
-    qmlRegisterType<LearnPageModel>("MuseScore.Learn", 1, 0, "LearnPageModel");
+    qmlRegisterType<LearnPageModel>("Muse.Learn", 1, 0, "LearnPageModel");
 }
 
 void LearnModule::onInit(const IApplication::RunMode&)

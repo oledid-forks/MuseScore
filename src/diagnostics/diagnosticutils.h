@@ -82,24 +82,24 @@ inline bool isDiagnosticHierarchy(const QObject* obj, bool print = false)
     return false;
 }
 
-inline std::vector<Uri> removeDiagnosticsUri(const std::vector<Uri>& uris)
+inline std::vector<muse::Uri> removeDiagnosticsUri(const std::vector<muse::Uri>& uris)
 {
-    std::vector<Uri> nuris;
-    for (const Uri& uri : uris) {
-        if (!QString::fromStdString(uri.toString()).startsWith("musescore://diagnostics")) {
+    std::vector<muse::Uri> nuris;
+    for (const muse::Uri& uri : uris) {
+        if (!QString::fromStdString(uri.toString()).startsWith("muse://diagnostics")) {
             nuris.push_back(uri);
         }
     }
     return nuris;
 }
 
-inline Uri diagnosticCurrentUri(const std::vector<Uri>& stack)
+inline muse::Uri diagnosticCurrentUri(const std::vector<muse::Uri>& stack)
 {
-    std::vector<Uri> uris = removeDiagnosticsUri(stack);
+    std::vector<muse::Uri> uris = removeDiagnosticsUri(stack);
     if (!uris.empty()) {
         return uris.back();
     }
-    return Uri();
+    return muse::Uri();
 }
 }
 

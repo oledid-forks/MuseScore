@@ -79,7 +79,7 @@ struct Action {
     Type type = Type::Undefined;
     bool modal = DEFAULT_MODAL;
     String title;
-    mu::io::path_t main;
+    io::path_t main;
     int apiversion = DEFAULT_API_VERSION;
     bool legacyPlugin = false;
 
@@ -97,7 +97,7 @@ inline UriQuery makeUriQuery(const Uri& uri, const std::string& actionCode)
 manifest.json
 {
 
-"uri": String,                    // Example: musescore://module/target/name
+"uri": String,                    // Example: muse://module/target/name
 "type": String,                   // Values: form, macros
 "title": String,                  //
 "description": String,            //
@@ -115,7 +115,7 @@ struct Manifest {
     String title;
     String description;
     String category;
-    mu::io::path_t thumbnail;
+    io::path_t thumbnail;
     String version;
     int apiversion = DEFAULT_API_VERSION;
     bool legacyPlugin = false;

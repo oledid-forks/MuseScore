@@ -29,7 +29,8 @@
 #include "view/newworkspacemodel.h"
 
 using namespace mu::workspacescene;
-using namespace mu::modularity;
+using namespace muse;
+using namespace muse::modularity;
 
 static void workspacescene_init_qrc()
 {
@@ -45,8 +46,8 @@ void WorkspaceSceneModule::resolveImports()
 {
     auto ir = ioc()->resolve<muse::ui::IInteractiveUriRegister>(moduleName());
     if (ir) {
-        ir->registerQmlUri(Uri("musescore://workspace/select"), "MuseScore/Workspace/WorkspacesDialog.qml");
-        ir->registerQmlUri(Uri("musescore://workspace/create"), "MuseScore/Workspace/NewWorkspaceDialog.qml");
+        ir->registerQmlUri(Uri("muse://workspace/select"), "MuseScore/Workspace/WorkspacesDialog.qml");
+        ir->registerQmlUri(Uri("muse://workspace/create"), "MuseScore/Workspace/NewWorkspaceDialog.qml");
     }
 }
 

@@ -23,7 +23,7 @@
 
 #include "log.h"
 
-using namespace mu;
+using namespace muse;
 using namespace muse::autobot;
 
 void AutobotInteractive::setRealInteractive(std::shared_ptr<IInteractive> real)
@@ -102,7 +102,7 @@ IInteractive::Result AutobotInteractive::error(const std::string& title, const T
     return m_real->error(title, text, detailedText, buttons, defBtn, options);
 }
 
-Ret AutobotInteractive::showProgress(const std::string& title, mu::Progress* progress) const
+Ret AutobotInteractive::showProgress(const std::string& title, Progress* progress) const
 {
     return m_real->showProgress(title, progress);
 }
@@ -122,7 +122,7 @@ io::path_t AutobotInteractive::selectSavingFile(const QString& title, const io::
     }
 
     LOGD() << title << " dir:" << dir << ", filter: " << filterList << ", confirmOverwrite: " << confirmOverwrite;
-    m_real->open("musescore://autobot/selectfile?sync=true&filePath=" + dir.toStdString());
+    m_real->open("muse://autobot/selectfile?sync=true&filePath=" + dir.toStdString());
     m_selectedFilePath = dir;
     return m_selectedFilePath;
 }

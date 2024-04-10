@@ -140,6 +140,7 @@
 using namespace mu::engraving::rendering::single;
 using namespace mu::engraving;
 using namespace mu::engraving::rtti;
+using namespace muse;
 using namespace muse::draw;
 
 void SingleDraw::drawItem(const EngravingItem* item, Painter* painter)
@@ -610,11 +611,11 @@ void SingleDraw::draw(const BagpipeEmbellishment* item, Painter* painter)
                             const double x1, const double x2, double y)
         {
             // draw the beams
-            painter->drawLine(mu::LineF(x1, y, x2, y));
+            painter->drawLine(LineF(x1, y, x2, y));
             y += spatium / 1.5;
-            painter->drawLine(mu::LineF(x1, y, x2, y));
+            painter->drawLine(LineF(x1, y, x2, y));
             y += spatium / 1.5;
-            painter->drawLine(mu::LineF(x1, y, x2, y));
+            painter->drawLine(LineF(x1, y, x2, y));
         };
 
         drawBeams(painter, data->spatium, dataBeam.x1, dataBeam.x2, dataBeam.y);
@@ -1574,7 +1575,7 @@ void SingleDraw::drawTextBase(const TextBase* item, Painter* painter)
 
     if (item->hasFrame()) {
         double baseSpatium = DefaultStyle::baseStyle().value(Sid::spatium).toReal();
-        if (item->frameWidth().val() != 0.0) {
+        if (!RealIsNull(item->frameWidth().val())) {
             Color fColor = item->curColor(item->visible(), item->frameColor());
             double frameWidthVal = item->frameWidth().val() * (item->sizeIsSpatiumDependent() ? item->spatium() : baseSpatium);
 
@@ -1787,7 +1788,7 @@ void SingleDraw::draw(const Harmony* item, Painter* painter)
     const Harmony::LayoutData* ldata = item->ldata();
 
     if (item->hasFrame()) {
-        if (item->frameWidth().val() != 0.0) {
+        if (!RealIsNull(item->frameWidth().val())) {
             Color color = item->frameColor();
             Pen pen(color, item->frameWidth().val() * item->spatium(), PenStyle::SolidLine,
                     PenCapStyle::SquareCap, PenJoinStyle::MiterJoin);
@@ -1853,7 +1854,7 @@ void SingleDraw::draw(const Image* item, Painter* painter)
             }
 
             Transform t = painter->worldTransform();
-            Size ss = Size(s.width() * t.m11(), s.height() * t.m22());
+            muse::Size ss = muse::Size(s.width() * t.m11(), s.height() * t.m22());
             t.setMatrix(1.0, t.m12(), t.m13(), t.m21(), 1.0, t.m23(), t.m31(), t.m32(), t.m33());
             painter->setWorldTransform(t);
             if ((item->buffer().size() != ss || item->dirty()) && item->rasterImage() && !item->rasterImage()->isNull()) {

@@ -46,7 +46,7 @@
 #include "view/vstfxeditorview.h"
 
 using namespace muse::vst;
-using namespace mu::modularity;
+using namespace muse::modularity;
 using namespace muse::audio::synth;
 using namespace muse::audio::fx;
 using namespace muse::audio;
@@ -77,10 +77,10 @@ void VSTModule::resolveImports()
 {
     auto ir = ioc()->resolve<IInteractiveUriRegister>(moduleName());
     if (ir) {
-        ir->registerUri(Uri("musescore://vsti/editor"),
+        ir->registerUri(Uri("muse://vsti/editor"),
                         ContainerMeta(ContainerType::QWidgetDialog, qRegisterMetaType<VstiEditorView>("VstiEditorView")));
 
-        ir->registerUri(Uri("musescore://vstfx/editor"),
+        ir->registerUri(Uri("muse://vstfx/editor"),
                         ContainerMeta(ContainerType::QWidgetDialog, qRegisterMetaType<VstFxEditorView>("VstFxEditorView")));
     }
 
@@ -115,7 +115,7 @@ void VSTModule::registerUiTypes()
     ioc()->resolve<muse::ui::IUiEngine>(moduleName())->addSourceImportPath(vst_QML_IMPORT);
 }
 
-void VSTModule::onInit(const mu::IApplication::RunMode&)
+void VSTModule::onInit(const IApplication::RunMode&)
 {
     s_configuration->init();
     s_pluginModulesRepo->init();

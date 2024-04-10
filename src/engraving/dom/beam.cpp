@@ -46,6 +46,7 @@
 #include "log.h"
 
 using namespace mu;
+using namespace muse;
 using namespace mu::engraving;
 
 namespace mu::engraving {
@@ -109,7 +110,7 @@ Beam::~Beam()
 
     clearBeamSegments();
 
-    DeleteAll(m_fragments);
+    muse::DeleteAll(m_fragments);
     m_fragments.clear();
 }
 
@@ -171,7 +172,7 @@ void Beam::remove(EngravingItem* e)
 void Beam::addChordRest(ChordRest* a)
 {
     a->setBeam(this);
-    if (!mu::contains(m_elements, a)) {
+    if (!muse::contains(m_elements, a)) {
         //
         // insert element in same order as it appears
         // in the score
@@ -197,7 +198,7 @@ void Beam::addChordRest(ChordRest* a)
 
 void Beam::removeChordRest(ChordRest* a)
 {
-    if (!mu::remove(m_elements, a)) {
+    if (!muse::remove(m_elements, a)) {
         LOGD("Beam::remove(): cannot find ChordRest");
     }
     a->setBeam(0);
@@ -438,10 +439,10 @@ void Beam::setAsFeathered(const bool slower)
 
 void Beam::reset()
 {
-    if (growLeft() != 1.0) {
+    if (!RealIsEqual(growLeft(), 1.0)) {
         undoChangeProperty(Pid::GROW_LEFT, 1.0);
     }
-    if (growRight() != 1.0) {
+    if (!RealIsEqual(growRight(), 1.0)) {
         undoChangeProperty(Pid::GROW_RIGHT, 1.0);
     }
     if (userModified()) {
@@ -891,7 +892,7 @@ void Beam::clearBeamSegments()
         chordRest->setBeamlet(nullptr);
     }
 
-    DeleteAll(m_beamSegments);
+    muse::DeleteAll(m_beamSegments);
     m_beamSegments.clear();
 }
 
@@ -919,7 +920,7 @@ Shape BeamSegment::shape() const
     }
     double beamHorizontalLength = endPoint.x() - startPoint.x();
     // If beam is horizontal, one rectangle is enough
-    if (mu::RealIsEqual(startPoint.y(), endPoint.y())) {
+    if (muse::RealIsEqual(startPoint.y(), endPoint.y())) {
         RectF rect(startPoint.x(), startPoint.y(), beamHorizontalLength, _beamWidth / 2);
         rect.adjust(0.0, -_beamWidth / 2, 0.0, 0.0);
         shape.add(rect, parentElement);
