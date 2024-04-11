@@ -59,6 +59,8 @@ set(MODULE_SRC
     ${CMAKE_CURRENT_LIST_DIR}/view/firstlaunchsetup/firstlaunchsetupmodel.h
     ${CMAKE_CURRENT_LIST_DIR}/view/firstlaunchsetup/themespagemodel.cpp
     ${CMAKE_CURRENT_LIST_DIR}/view/firstlaunchsetup/themespagemodel.h
+    ${CMAKE_CURRENT_LIST_DIR}/view/firstlaunchsetup/tutorialspagemodel.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/view/firstlaunchsetup/tutorialspagemodel.h
     ${CMAKE_CURRENT_LIST_DIR}/view/preferences/preferencesmodel.cpp
     ${CMAKE_CURRENT_LIST_DIR}/view/preferences/preferencesmodel.h
     ${CMAKE_CURRENT_LIST_DIR}/view/preferences/preferencepageitem.cpp
@@ -108,9 +110,9 @@ set(MODULE_SRC
 
 
 set(MODULE_LINK
-    ui
-    uicomponents
-    dockwindow
+    muse::ui
+    muse::uicomponents
+    muse::dockwindow
     )
 
 if (OS_IS_MAC)
@@ -151,4 +153,4 @@ if (NOT OS_IS_MAC)
     endif()
 endif(NOT OS_IS_MAC)
 
-include(${PROJECT_SOURCE_DIR}/build/module.cmake)
+include(SetupModule)

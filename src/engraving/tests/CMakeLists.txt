@@ -91,10 +91,16 @@ set(MODULE_TEST_SRC
     ${CMAKE_CURRENT_LIST_DIR}/mocks/engravingconfigurationmock.h
 )
 
+if (MUE_BUILD_ENGRAVING_DEVTOOLS)
+set(MODULE_TEST_SRC ${MODULE_TEST_SRC}
+    ${CMAKE_CURRENT_LIST_DIR}/drawdata_tests.cpp
+)
+endif()
+
 set(MODULE_TEST_LINK
     engraving
 )
 
 set(MODULE_TEST_DATA_ROOT ${CMAKE_CURRENT_LIST_DIR})
 
-include(${PROJECT_SOURCE_DIR}/src/framework/testing/gtest.cmake)
+include(SetupGTest)

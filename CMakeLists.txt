@@ -63,9 +63,8 @@ option(MUE_BUILD_APPSHELL_MODULE "Build appshell module" ON)
 option(MUE_BUILD_BRAILLE_MODULE "Build braille module" ON)
 option(MUE_BUILD_BRAILLE_TESTS "Build braille tests" ON)
 option(MUE_BUILD_CONVERTER_MODULE "Build converter module" ON)
-option(MUE_BUILD_DIAGNOSTICS_MODULE "Build diagnostic code" ON)
-option(MUE_BUILD_DIAGNOSTICS_TESTS "Build diagnostic tests" ON)
 option(MUE_BUILD_ENGRAVING_TESTS "Build engraving tests" ON)
+option(MUE_BUILD_ENGRAVING_DEVTOOLS "Build engraving devtools" OFF)
 option(MUE_BUILD_IMPORTEXPORT_MODULE "Build importexport module" ON)
 option(MUE_BUILD_IMPORTEXPORT_TESTS "Build importexport tests" ON)
 option(MUE_BUILD_VIDEOEXPORT_MODULE "Build videoexport module" OFF)
@@ -90,7 +89,6 @@ option(MUE_INSTALL_SOUNDFONT "Install sound font" ON)
 # === Tests ===
 set(MUE_VTEST_MSCORE_REF_BIN "${CMAKE_CURRENT_LIST_DIR}/../MU_ORIGIN/MuseScore/build.debug/install/${INSTALL_SUBDIR}/mscore" CACHE PATH "Path to mscore ref bin")
 option(MUE_BUILD_ASAN "Enable Address Sanitizer" OFF)
-option(MUE_BUILD_CRASHPAD_CLIENT "Build crashpad client" ON)
 set(MUE_CRASH_REPORT_URL "" CACHE STRING "URL where to send crash reports")
 option(MUE_CRASHPAD_HANDLER_PATH "Path to custom crashpad_handler executable (optional)" "")
 
@@ -108,7 +106,6 @@ option(MUE_COMPILE_USE_CCACHE "Try use ccache" ON)
 option(MUE_COMPILE_USE_SHARED_LIBS_IN_DEBUG "Build shared libs if possible in debug" OFF)
 option(MUE_COMPILE_USE_SYSTEM_FREETYPE "Try use system freetype" OFF) # Important for the maintainer of Linux distributions
 option(MUE_COMPILE_USE_SYSTEM_OPUS "Try use system opus" OFF) # Important for the maintainers of Linux distributions
-option(MUE_COMPILE_USE_QTFONTMETRICS "Use Qt font metrics" ON)
 
 # === Debug ===
 
@@ -130,6 +127,7 @@ else()
     include(SetupConfigure)
 endif()
 
+set(MUSE_FRAMEWORK_SRC_PATH ${PROJECT_SOURCE_DIR}/src/framework)
 set(THIRDPARTY_DIR ${PROJECT_SOURCE_DIR}/thirdparty)
 
 ###########################################
@@ -178,7 +176,6 @@ endif(MUE_DOWNLOAD_SOUNDFONT)
 # Add source tree
 ###########################################
 add_subdirectory(share)
-add_subdirectory(src/framework/global) # should be first to work pch
 add_subdirectory(src)
 
 

@@ -229,9 +229,9 @@ if (NOT MSVC AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VER
 endif (NOT MSVC AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 9.0)
 
 set(MODULE_LINK
-    uicomponents
+    muse::uicomponents
     engraving
     )
 
 set(MODULE_USE_UNITBUILD ON)
-include(${PROJECT_SOURCE_DIR}/build/module.cmake)
+include(SetupModule)

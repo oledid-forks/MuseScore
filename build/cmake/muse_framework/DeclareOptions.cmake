@@ -14,7 +14,13 @@ option(MUSE_MODULE_AUDIO_EXPORT "Enable audio export" ON)
 
 declare_muse_module_opt(AUTOBOT ON)
 declare_muse_module_opt(CLOUD ON)
+
+declare_muse_module_opt(DIAGNOSTICS ON)
+option(MUSE_MODULE_DIAGNOSTICS_CRASHPAD_CLIENT "Enable crashpad client" OFF) # enable on CI
+
 declare_muse_module_opt(DRAW ON)
+option(MUSE_MODULE_DRAW_USE_QTFONTMETRICS "Use Qt font metrics" ON)
+
 declare_muse_module_opt(EXTENSIONS ON)
 declare_muse_module_opt(GLOBAL ON)
 declare_muse_module_opt(LANGUAGES ON)
@@ -31,8 +37,6 @@ declare_muse_module_opt(UPDATE ON)
 set(VST3_SDK_VERSION "3.7")
 declare_muse_module_opt(VST OFF)
 set(MUSE_MODULE_VST_VST3_SDK_PATH "" CACHE PATH "Path to VST3_SDK. SDK version >= ${VST3_SDK_VERSION} required")
-# backwards compatible, will be removed later
-set(VST3_SDK_PATH "" CACHE PATH "Path to VST3_SDK. SDK version >= ${VST3_SDK_VERSION} required")
 
 declare_muse_module_opt(WORKSPACE ON)
 
