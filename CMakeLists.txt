@@ -36,6 +36,9 @@ set(CMAKE_MODULE_PATH
     ${CMAKE_MODULE_PATH}
     )
 
+set(MUSE_FRAMEWORK_PATH ${CMAKE_CURRENT_LIST_DIR})
+set(MUSE_FRAMEWORK_SRC_PATH ${CMAKE_CURRENT_LIST_DIR}/src/framework)
+
 ###########################################
 # Setup option and build settings
 ###########################################
@@ -56,7 +59,7 @@ set(MUSESCORE_BUILD_MODE "dev" CACHE STRING "Build mode")
 
 set(MUSESCORE_REVISION "" CACHE STRING "Build revision")
 
-include(muse_framework/DeclareOptions)
+include(${MUSE_FRAMEWORK_SRC_PATH}/cmake/MuseDeclareOptions.cmake)
 
 # Modules (alphabetical order please)
 option(MUE_BUILD_APPSHELL_MODULE "Build appshell module" ON)
@@ -64,7 +67,7 @@ option(MUE_BUILD_BRAILLE_MODULE "Build braille module" ON)
 option(MUE_BUILD_BRAILLE_TESTS "Build braille tests" ON)
 option(MUE_BUILD_CONVERTER_MODULE "Build converter module" ON)
 option(MUE_BUILD_ENGRAVING_TESTS "Build engraving tests" ON)
-option(MUE_BUILD_ENGRAVING_DEVTOOLS "Build engraving devtools" OFF)
+option(MUE_BUILD_ENGRAVING_DEVTOOLS "Build engraving devtools" ON)
 option(MUE_BUILD_IMPORTEXPORT_MODULE "Build importexport module" ON)
 option(MUE_BUILD_IMPORTEXPORT_TESTS "Build importexport tests" ON)
 option(MUE_BUILD_VIDEOEXPORT_MODULE "Build videoexport module" OFF)
@@ -88,19 +91,10 @@ option(MUE_INSTALL_SOUNDFONT "Install sound font" ON)
 
 # === Tests ===
 set(MUE_VTEST_MSCORE_REF_BIN "${CMAKE_CURRENT_LIST_DIR}/../MU_ORIGIN/MuseScore/build.debug/install/${INSTALL_SUBDIR}/mscore" CACHE PATH "Path to mscore ref bin")
-option(MUE_BUILD_ASAN "Enable Address Sanitizer" OFF)
-set(MUE_CRASH_REPORT_URL "" CACHE STRING "URL where to send crash reports")
-option(MUE_CRASHPAD_HANDLER_PATH "Path to custom crashpad_handler executable (optional)" "")
-
-# === Tools ===
-option(MUE_ENABLE_CUSTOM_ALLOCATOR "Enable custom allocator (used for engraving)" OFF)
 
 # === Compile ===
 option(MUE_COMPILE_QT5_COMPAT "Build with Qt5" OFF)
-option(MUE_COMPILE_BUILD_64 "Build 64 bit version of editor" ON)
-option(MUE_COMPILE_BUILD_MACOS_APPLE_SILICON "Build for Apple Silicon architecture. Only applicable on Macs with Apple Silicon, and requires suitable Qt version." OFF)
 option(MUE_COMPILE_INSTALL_QTQML_FILES "Whether to bundle qml files along with the installation (relevant on MacOS only)" ON)
-option(MUE_COMPILE_USE_PCH "Use precompiled headers." ON)
 option(MUE_COMPILE_USE_UNITY "Use unity build." ON)
 option(MUE_COMPILE_USE_CCACHE "Try use ccache" ON)
 option(MUE_COMPILE_USE_SHARED_LIBS_IN_DEBUG "Build shared libs if possible in debug" OFF)
@@ -108,13 +102,10 @@ option(MUE_COMPILE_USE_SYSTEM_FREETYPE "Try use system freetype" OFF) # Importan
 option(MUE_COMPILE_USE_SYSTEM_OPUS "Try use system opus" OFF) # Important for the maintainers of Linux distributions
 
 # === Debug ===
-
-
 option(MUE_ENABLE_LOAD_QML_FROM_SOURCE "Load qml files from source (not resource)" OFF)
 option(MUE_ENABLE_ENGRAVING_RENDER_DEBUG "Enable rendering debug" OFF)
 option(MUE_ENABLE_ENGRAVING_LD_ACCESS "Enable diagnostic engraving check layout data access" OFF)
 option(MUE_ENABLE_ENGRAVING_LD_PASSES "Enable engraving layout by passes" OFF)
-option(MUE_ENABLE_STRING_DEBUG_HACK "Enable string debug hack (only clang)" ON)
 
 
 ###########################################
@@ -152,25 +143,9 @@ else()
     include(FindQt6)
 endif()
 
-if (OS_IS_WIN)
-    include(FetchContent)
-    FetchContent_Declare(
-      musescore_prebuild_win_deps
-      GIT_REPOSITORY https://github.com/musescore/musescore_prebuild_win_deps.git
-      GIT_TAG        HEAD
-    )
-    FetchContent_MakeAvailable(musescore_prebuild_win_deps)
-    set(DEPENDENCIES_DIR ${musescore_prebuild_win_deps_SOURCE_DIR})
-    set(DEPENDENCIES_LIB_DIR ${DEPENDENCIES_DIR}/libx64)
-    set(DEPENDENCIES_INC ${DEPENDENCIES_DIR}/include)
-endif(OS_IS_WIN)
-
-include(FindSndFile)
-
 if (MUE_DOWNLOAD_SOUNDFONT)
     include(DownloadSoundFont)
 endif(MUE_DOWNLOAD_SOUNDFONT)
-
 
 ###########################################
 # Add source tree
