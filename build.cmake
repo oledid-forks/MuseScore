@@ -38,7 +38,7 @@ while(i LESS "${CMAKE_ARGC}")
 endwhile()
 
 # load custom CMake functions and macros
-include("${CMAKE_CURRENT_LIST_DIR}/build/cmake/GetUtilsFunctions.cmake") # "fn__" namespace
+include("${CMAKE_CURRENT_LIST_DIR}/buildscripts/cmake/GetUtilsFunctions.cmake") # "fn__" namespace
 
 # Set the name of the build folder (just the folder name, not the full path)
 function(build_folder
@@ -215,7 +215,7 @@ if(ARG_CONFIGURE AND NOT EXISTS "${BUILD_PATH}/CMakeCache.txt")
     message("\n~~~~ Actualizing Configure step ~~~~\n")
     file(MAKE_DIRECTORY "${BUILD_PATH}")
     if(QT_COMPILER MATCHES "msvc")
-        set(CMAKE_WRAPPER "${SOURCE_PATH}/build/cmake_wrapper.bat")
+        set(CMAKE_WRAPPER "${SOURCE_PATH}/buildscripts/tools/cmake_wrapper.bat")
     else()
         set(CMAKE_WRAPPER "cmake")
     endif()
