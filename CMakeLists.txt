@@ -1,10 +1,10 @@
 # SPDX-License-Identifier: GPL-3.0-only
-# MuseScore-CLA-applies
+# MuseScore-Studio-CLA-applies
 #
-# MuseScore
+# MuseScore Studio
 # Music Composition & Notation
 #
-# Copyright (C) 2021 MuseScore BVBA and others
+# Copyright (C) 2021 MuseScore Limited
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -150,6 +150,11 @@ endif(MUE_DOWNLOAD_SOUNDFONT)
 ###########################################
 # Add source tree
 ###########################################
+if (MUSE_ENABLE_UNIT_TESTS)
+    enable_testing()
+    message(STATUS "Enabled testing")
+endif()
+
 add_subdirectory(share)
 add_subdirectory(src)
 

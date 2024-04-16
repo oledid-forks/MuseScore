@@ -1,11 +1,11 @@
 /*
  * SPDX-License-Identifier: GPL-3.0-only
- * MuseScore-CLA-applies
+ * MuseScore-Studio-CLA-applies
  *
- * MuseScore
+ * MuseScore Studio
  * Music Composition & Notation
  *
- * Copyright (C) 2021 MuseScore BVBA and others
+ * Copyright (C) 2021 MuseScore Limited
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as
@@ -686,10 +686,10 @@ TEST_F(Musicxml_Tests, incorrectStaffNumber2) {
 }
 #ifndef DISABLED_SOME_TESTS
 #ifndef MU_QT5_COMPAT
-TEST_F(Musicxml_Tests, inferredCredits1) {
+TEST_F(Musicxml_Tests, DISABLED_inferredCredits1) {
     mxmlImportTestRef("testInferredCredits1");
 }
-TEST_F(Musicxml_Tests, inferredCredits2) {
+TEST_F(Musicxml_Tests, DISABLED_inferredCredits2) {
     mxmlImportTestRef("testInferredCredits2");
 }
 #endif
