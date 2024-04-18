@@ -125,7 +125,7 @@ MasterScore* Musicxml_Tests::readScore(const String& fileName, bool isAbsolutePa
 bool Musicxml_Tests::saveCompareMusicXmlScore(MasterScore* score, const String& saveName, const String& compareWithLocalPath)
 {
     EXPECT_TRUE(saveXml(score, saveName));
-    return ScoreComp::compareFiles(saveName,  ScoreRW::rootPath() + u"/" + compareWithLocalPath);
+    return ScoreComp::compareFiles(ScoreRW::rootPath() + u"/" + compareWithLocalPath, saveName);
 }
 
 //---------------------------------------------------------
@@ -694,6 +694,12 @@ TEST_F(Musicxml_Tests, inferredCredits2) {
 }
 #endif
 #endif
+TEST_F(Musicxml_Tests, inferCodaII) {
+    mxmlImportTestRef("testInferCodaII");
+}
+TEST_F(Musicxml_Tests, inferSegnoII) {
+    mxmlImportTestRef("testInferSegnoII");
+}
 TEST_F(Musicxml_Tests, inferredFingerings) {
     mxmlImportTestRef("testInferredFingerings");
 }
@@ -951,8 +957,11 @@ TEST_F(Musicxml_Tests, sound2) {
 TEST_F(Musicxml_Tests, specialCharacters) {
     mxmlIoTest("testSpecialCharacters");
 }
-TEST_F(Musicxml_Tests, testStaffEmptiness) {
+TEST_F(Musicxml_Tests, staffEmptiness) {
     mxmlImportTestRef("testStaffEmptiness");
+}
+TEST_F(Musicxml_Tests, staffSize) {
+    mxmlIoTest("testStaffSize");
 }
 TEST_F(Musicxml_Tests, staffTwoKeySigs) {
     mxmlIoTest("testStaffTwoKeySigs");

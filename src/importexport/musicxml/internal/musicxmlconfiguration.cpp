@@ -22,6 +22,7 @@
 #include "musicxmlconfiguration.h"
 
 #include "settings.h"
+#include "translation.h"
 
 using namespace mu;
 using namespace muse;
@@ -32,6 +33,7 @@ static const std::string module_name("iex_musicxml");
 static const Settings::Key MUSICXML_IMPORT_BREAKS_KEY(module_name, "import/musicXML/importBreaks");
 static const Settings::Key MUSICXML_IMPORT_LAYOUT_KEY(module_name, "import/musicXML/importLayout");
 static const Settings::Key MUSICXML_EXPORT_LAYOUT_KEY(module_name, "export/musicXML/exportLayout");
+static const Settings::Key MUSICXML_EXPORT_MU3_COMPAT_KEY(module_name, "export/musicXML/exportMu3Compat");
 static const Settings::Key MUSICXML_EXPORT_BREAKS_TYPE_KEY(module_name, "export/musicXML/exportBreaks");
 static const Settings::Key MUSICXML_EXPORT_INVISIBLE_ELEMENTS_KEY(module_name, "export/musicXML/exportInvisibleElements");
 static const Settings::Key MIGRATION_APPLY_EDWIN_FOR_XML(module_name, "import/compatibility/apply_edwin_for_xml");
@@ -43,8 +45,15 @@ void MusicXmlConfiguration::init()
     settings()->setDefaultValue(MUSICXML_IMPORT_BREAKS_KEY, Val(true));
     settings()->setDefaultValue(MUSICXML_IMPORT_LAYOUT_KEY, Val(true));
     settings()->setDefaultValue(MUSICXML_EXPORT_LAYOUT_KEY, Val(true));
+    settings()->setDefaultValue(MUSICXML_EXPORT_MU3_COMPAT_KEY, Val(false));
+    settings()->setDescription(MUSICXML_EXPORT_MU3_COMPAT_KEY, muse::trc("iex_musicxml",
+                                                                         "Export to MusicXML compatible with older MuseScore versions"));
+    settings()->setCanBeManuallyEdited(MUSICXML_EXPORT_MU3_COMPAT_KEY, true);
     settings()->setDefaultValue(MUSICXML_EXPORT_BREAKS_TYPE_KEY, Val(MusicxmlExportBreaksType::All));
     settings()->setDefaultValue(MUSICXML_EXPORT_INVISIBLE_ELEMENTS_KEY, Val(false));
+    settings()->setDescription(MUSICXML_EXPORT_INVISIBLE_ELEMENTS_KEY, muse::trc("iex_musicxml",
+                                                                                 "Export invisible elements to MusicXML"));
+    settings()->setCanBeManuallyEdited(MUSICXML_EXPORT_INVISIBLE_ELEMENTS_KEY, true);
     settings()->setDefaultValue(MIGRATION_APPLY_EDWIN_FOR_XML, Val(false));
     settings()->setDefaultValue(MIGRATION_NOT_ASK_AGAIN_KEY, Val(false));
     settings()->setDefaultValue(MUSICXML_IMPORT_INFER_TEXT_TYPE, Val(false));
@@ -80,6 +89,16 @@ void MusicXmlConfiguration::setMusicxmlExportLayout(bool value)
     settings()->setSharedValue(MUSICXML_EXPORT_LAYOUT_KEY, Val(value));
 }
 
+bool MusicXmlConfiguration::musicxmlExportMu3Compat() const
+{
+    return settings()->value(MUSICXML_EXPORT_MU3_COMPAT_KEY).toBool();
+}
+
+void MusicXmlConfiguration::setMusicxmlExportMu3Compat(bool value)
+{
+    settings()->setSharedValue(MUSICXML_EXPORT_MU3_COMPAT_KEY, Val(value));
+}
+
 MusicXmlConfiguration::MusicxmlExportBreaksType MusicXmlConfiguration::musicxmlExportBreaksType() const
 {
     return settings()->value(MUSICXML_EXPORT_BREAKS_TYPE_KEY).toEnum<MusicxmlExportBreaksType>();
@@ -102,12 +121,21 @@ void MusicXmlConfiguration::setMusicxmlExportInvisibleElements(bool value)
 
 bool MusicXmlConfiguration::needUseDefaultFont() const
 {
+    if (m_needUseDefaultFontOverride.has_value()) {
+        return m_needUseDefaultFontOverride.value();
+    }
+
     return settings()->value(MIGRATION_APPLY_EDWIN_FOR_XML).toBool();
 }
 
 void MusicXmlConfiguration::setNeedUseDefaultFont(bool value)
 {
     settings()->setSharedValue(MIGRATION_APPLY_EDWIN_FOR_XML, Val(value));
+}
+
+void MusicXmlConfiguration::setNeedUseDefaultFontOverride(std::optional<bool> value)
+{
+    m_needUseDefaultFontOverride = value;
 }
 
 bool MusicXmlConfiguration::needAskAboutApplyingNewStyle() const
@@ -122,10 +150,19 @@ void MusicXmlConfiguration::setNeedAskAboutApplyingNewStyle(bool value)
 
 bool MusicXmlConfiguration::inferTextType() const
 {
+    if (m_inferTextTypeOverride.has_value()) {
+        return m_inferTextTypeOverride.value();
+    }
+
     return settings()->value(MUSICXML_IMPORT_INFER_TEXT_TYPE).toBool();
 }
 
 void MusicXmlConfiguration::setInferTextType(bool value)
 {
     settings()->setSharedValue(MUSICXML_IMPORT_INFER_TEXT_TYPE, Val(value));
+}
+
+void MusicXmlConfiguration::setInferTextTypeOverride(std::optional<bool> value)
+{
+    m_inferTextTypeOverride = value;
 }

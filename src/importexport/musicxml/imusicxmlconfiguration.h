@@ -42,6 +42,9 @@ public:
     virtual bool musicxmlExportLayout() const = 0;
     virtual void setMusicxmlExportLayout(bool value) = 0;
 
+    virtual bool musicxmlExportMu3Compat() const = 0;
+    virtual void setMusicxmlExportMu3Compat(bool value) = 0;
+
     enum class MusicxmlExportBreaksType {
         All, Manual, No
     };
@@ -54,12 +57,14 @@ public:
 
     virtual bool needUseDefaultFont() const = 0;
     virtual void setNeedUseDefaultFont(bool value) = 0;
+    virtual void setNeedUseDefaultFontOverride(std::optional<bool> value) = 0;
 
     virtual bool needAskAboutApplyingNewStyle() const = 0;
     virtual void setNeedAskAboutApplyingNewStyle(bool value) = 0;
 
     virtual bool inferTextType() const = 0;
     virtual void setInferTextType(bool value) = 0;
+    virtual void setInferTextTypeOverride(std::optional<bool> value) = 0;
 };
 }
 
