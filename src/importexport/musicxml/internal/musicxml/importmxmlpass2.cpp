@@ -2981,6 +2981,7 @@ void MusicXMLParserDirection::direction(const String& partId,
     m_placement = m_e.attribute("placement");
     track_idx_t track = m_pass1.trackForPart(partId);
     bool isVocalStaff = m_pass1.isVocalStaff(partId);
+    bool isPercussionStaff = m_pass1.isPercussionStaff(partId);
     bool isExpressionText = false;
     bool delayOttava = m_pass1.exporterString().contains(u"sibelius");
     //LOGD("direction track %d", track);
@@ -3061,8 +3062,29 @@ void MusicXMLParserDirection::direction(const String& partId,
                 tt->setFollowText(true);
             }
         }
+        tt->setVisible(m_visible);
 
         addElemOffset(tt, track, placement(), measure, tick + m_offset);
+    } else if (isLikelySticking() && isPercussionStaff) {
+        Sticking* sticking = Factory::createSticking(m_score->dummy()->segment());
+        sticking->setXmlText(m_wordsText);
+        if (!RealIsNull(m_relativeX) || !RealIsNull(m_relativeY)) {
+            PointF offset = sticking->offset();
+            offset.setX(!RealIsNull(m_relativeX) ? m_relativeX : sticking->offset().x());
+            offset.setY(!RealIsNull(m_relativeY) ? m_relativeY : sticking->offset().y());
+            sticking->setOffset(offset);
+            sticking->setPropertyFlags(Pid::OFFSET, PropertyFlags::UNSTYLED);
+        }
+
+        if (hasTotalY()) {
+            // Add element to score later, after collecting all the others and sorting by default-y
+            // This allows default-y to be at least respected by the order of elements
+            MusicXMLDelayedDirectionElement* delayedDirection = new MusicXMLDelayedDirectionElement(
+                totalY(), sticking, track, placement(), measure, tick + m_offset);
+            delayedDirections.push_back(delayedDirection);
+        } else {
+            addElemOffset(sticking, track, placement(), measure, tick + m_offset);
+        }
     } else if (m_wordsText != "" || m_rehearsalText != "" || m_metroText != "") {
         TextBase* t = 0;
         if (m_tpoSound > 0.1) {
@@ -3115,6 +3137,8 @@ void MusicXMLParserDirection::direction(const String& partId,
             if (m_color.isValid()) {
                 t->setColor(m_color);
             }
+
+            t->setVisible(m_visible);
 
             String wordsPlacement = m_placement;
             // Case-based defaults
@@ -3177,6 +3201,8 @@ void MusicXMLParserDirection::direction(const String& partId,
             }
             dyn->setVelocity(dynaValue);
         }
+
+        dyn->setVisible(m_visible);
 
         String dynamicsPlacement = placement();
         // Case-based defaults
@@ -3264,6 +3290,7 @@ void MusicXMLParserDirection::direction(const String& partId,
                     spannerPlacement = totalY() < 0 ? u"above" : u"below";
                 }
             }
+            desc.sp->setVisible(m_visible);
             if (spdesc.isStopped) {
                 m_pass2.addSpanner(desc);
                 // handleSpannerStart and handleSpannerStop must be called in order
@@ -3417,6 +3444,9 @@ void MusicXMLParserDirection::directionType(std::vector<MusicXmlSpannerDesc>& st
 {
     while (m_e.readNextStartElement()) {
         m_defaultY = m_e.asciiAttribute("default-y").toDouble(&m_hasDefaultY) * -0.1;
+        m_relativeX = m_e.doubleAttribute("relative-x") / 10 * m_score->style().spatium();
+        m_relativeY = m_e.doubleAttribute("relative-y") / -10 * m_score->style().spatium();
+        m_visible = m_e.asciiAttribute("print-object") != "no";
         String number = m_e.attribute("number");
         int n = 0;
         if (!number.empty()) {
@@ -3773,9 +3803,11 @@ void MusicXMLParserDirection::textToDynamic(String& text)
         return;
     }
     String simplifiedText = MScoreTextToMXML::toPlainText(text).simplified();
+    // We don't want to count a single 'm', 'r', 's' or 'z' as a whole dynamic
+    static const std::wregex singleCharDynamic = std::wregex(L"^[mrsz]$");
     // try to find a dynamic - xml representation or
     // if found add to dynamics list and set text to blank string
-    if (TConv::dynamicValid(simplifiedText.toStdString())) {
+    if (!simplifiedText.contains(singleCharDynamic) && TConv::dynamicValid(simplifiedText.toStdString())) {
         DynamicType dt = TConv::fromXml(simplifiedText.toStdString(), DynamicType::OTHER);
         if (dt != DynamicType::OTHER) {
             m_dynaVelocity = String::number(round(Dynamic::dynamicVelocity(dt) / 0.9));
@@ -3995,6 +4027,7 @@ void MusicXMLParserDirection::handleRepeats(Measure* measure, const track_idx_t 
                 MeasureBase* gap = m_score->insertBox(ElementType::HBOX, measure);
                 toHBox(gap)->setBoxWidth(Spatium(10));
             }
+            tb->setVisible(m_visible);
             measure->add(tb);
         }
     }
@@ -4084,7 +4117,7 @@ void MusicXMLParserDirection::handleNmiCmi(Measure* measure, const track_idx_t t
 
 void MusicXMLParserDirection::handleChordSym(const track_idx_t track, const Fraction tick, HarmonyMap& harmonyMap)
 {
-    if (!configuration()->inferTextType()) {
+    if (!configuration()->inferTextType() || placement() == "below") {
         return;
     }
 
@@ -4099,6 +4132,7 @@ void MusicXMLParserDirection::handleChordSym(const track_idx_t track, const Frac
     ha->setTrack(track);
     ha->setPlacement(placement() == u"above" ? PlacementV::ABOVE : PlacementV::BELOW);
     ha->setPropertyFlags(Pid::PLACEMENT, PropertyFlags::UNSTYLED);
+    ha->setVisible(m_visible);
     HarmonyDesc newHarmonyDesc(track, ha, nullptr);
 
     const int ticks = tick.ticks();
@@ -4174,6 +4208,20 @@ void MusicXMLParserDirection::handleTempo()
             m_tpoMetro = 4 * duration.fraction().numerator() * d / duration.fraction().denominator();
         }
     }
+}
+
+bool MusicXMLParserDirection::isLikelySticking()
+{
+    if (!configuration()->inferTextType()) {
+        return false;
+    }
+
+    String plainWords = MScoreTextToMXML::toPlainText(m_wordsText.simplified());
+    static const std::wregex sticking(L"^[lrbLRB]$");
+    return plainWords.contains(sticking)
+           && m_rehearsalText.empty()
+           && m_metroText.empty()
+           && m_tpoSound < 0.1;
 }
 
 //---------------------------------------------------------
@@ -5906,6 +5954,7 @@ Note* MusicXMLParserPass2::note(const String& partId,
     bool noStem = false;
     bool hasHead = true;
     NoteHeadGroup headGroup = NoteHeadGroup::HEAD_NORMAL;
+    NoteHeadScheme headScheme = NoteHeadScheme::HEAD_AUTO;
     const Color noteColor = Color::fromString(m_e.asciiAttribute("color").ascii());
     Color noteheadColor;
     bool noteheadParentheses = false;
@@ -5954,9 +6003,11 @@ Note* MusicXMLParserPass2::note(const String& partId,
             noteheadColor = Color::fromString(m_e.asciiAttribute("color").ascii());
             noteheadParentheses = m_e.asciiAttribute("parentheses") == "yes";
             noteheadFilled = m_e.attribute("filled");
-            auto noteheadValue = m_e.readText();
+            String noteheadValue = m_e.readText();
             if (noteheadValue == "none") {
                 hasHead = false;
+            } else if (noteheadValue == "named" && m_pass1.exporterString().contains(u"noteflight")) {
+                headScheme = NoteHeadScheme::HEAD_PITCHNAME;
             } else {
                 headGroup = convertNotehead(noteheadValue);
             }
@@ -6146,6 +6197,9 @@ Note* MusicXMLParserPass2::note(const String& partId,
         handleSmallness(cue || isSmall, note, c);
         note->setPlay(!cue);          // cue notes don't play
         note->setHeadGroup(headGroup);
+        if (headScheme != NoteHeadScheme::HEAD_AUTO) {
+            note->setHeadScheme(headScheme);
+        }
         if (noteColor.isValid()) {
             note->setColor(noteColor);
         }

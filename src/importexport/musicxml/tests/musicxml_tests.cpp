@@ -730,6 +730,9 @@ TEST_F(Musicxml_Tests, invalidLayout) {
 TEST_F(Musicxml_Tests, invalidTimesig) {
     mxmlIoTestRef("testInvalidTimesig");
 }
+TEST_F(Musicxml_Tests, invisibleDirection) {
+    mxmlIoTest("testInvisibleDirection");
+}
 TEST_F(Musicxml_Tests, invisibleElements) {
     mxmlIoTest("testInvisibleElements");
 }
@@ -839,6 +842,9 @@ TEST_F(Musicxml_Tests, multiMeasureRest4) {
 }
 TEST_F(Musicxml_Tests, multipleNotations) {
     mxmlIoTestRef("testMultipleNotations");
+}
+TEST_F(Musicxml_Tests, namedNoteheads) {
+    mxmlImportTestRef("testNamedNoteheads");
 }
 TEST_F(Musicxml_Tests, negativeOffset) {
     mxmlImportTestRef("testNegativeOffset");
@@ -968,6 +974,9 @@ TEST_F(Musicxml_Tests, staffSize) {
 }
 TEST_F(Musicxml_Tests, staffTwoKeySigs) {
     mxmlIoTest("testStaffTwoKeySigs");
+}
+TEST_F(Musicxml_Tests, sticking) {
+    mxmlImportTestRef("testSticking");
 }
 TEST_F(Musicxml_Tests, stringData) {
     mxmlIoTest("testStringData");

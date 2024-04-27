@@ -4855,6 +4855,9 @@ static void wordsMetronome(XmlWriter& xml, const MStyle& s, TextBase const* cons
         String tagName = String(u"metronome parentheses=\"%1\"").arg(hasParen ? u"yes" : u"no");
         tagName += color2xml(text);
         tagName += ExportMusicXml::positioningAttributes(text);
+        if (!text->visible()) {
+            tagName += u" print-object=\"no\"";
+        }
         xml.startElementRaw(tagName);
         int len1 = 0;
         TDuration dur;
@@ -6308,7 +6311,7 @@ static bool commonAnnotations(ExportMusicXml* exp, const EngravingItem* e, staff
         exp->tempoText(toTempoText(e), sstaff);
     } else if (e->isPlayTechAnnotation() || e->isCapo() || e->isStringTunings() || e->isStaffText()
                || e->isTripletFeel() || e->isText()
-               || e->isExpression() || (e->isInstrumentChange() && e->visible())) {
+               || e->isExpression() || (e->isInstrumentChange() && e->visible()) || e->isSticking()) {
         exp->words(toTextBase(e), sstaff);
     } else if (e->isDynamic()) {
         exp->dynamic(toDynamic(e), sstaff);
