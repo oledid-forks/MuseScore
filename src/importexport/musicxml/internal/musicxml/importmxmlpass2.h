@@ -241,7 +241,9 @@ public:
                     DelayedArpMap& delayedArps);
     String errors() const { return m_errors; }
     MusicXmlTupletDesc tupletDesc() const { return m_tupletDesc; }
+    bool hasTremolo() const { return m_hasTremolo; }
     String tremoloType() const { return m_tremoloType; }
+    String tremoloSmufl() const { return m_tremoloSmufl; }
     int tremoloNr() const { return m_tremoloNr; }
     bool mustStopGraceAFter() const { return m_slurStop || m_wavyLineStop; }
 private:
@@ -259,6 +261,7 @@ private:
     void slur();
     void skipLogCurrElem();
     void technical();
+    void otherTechnical();
     void tied();
     void tuplet();
     void otherNotation();
@@ -272,8 +275,10 @@ private:
     StringList m_dynamicsList;
     std::vector<Notation> m_notations;
     SymId m_breath { SymId::noSym };
+    bool m_hasTremolo = false;
     String m_tremoloType;
     int m_tremoloNr = 0;
+    String m_tremoloSmufl;
     String m_wavyLineType;
     int m_wavyLineNo = 0;
     String m_arpeggioType;
@@ -447,7 +452,7 @@ private:
     bool isLyricBracket() const;
     bool isLikelySubtitle(const Fraction& tick) const;
     bool isLikelyLegallyDownloaded(const Fraction& tick) const;
-    bool isLikelyTempoText() const;
+    bool isLikelyTempoText(const track_idx_t track) const;
     Text* addTextToHeader(const TextStyleType textStyleType);
     void hideRedundantHeaderText(const Text* inferredText, const std::vector<String> metaTags);
     bool isLikelyFingering() const;
@@ -487,6 +492,7 @@ private:
     double m_tpoMetro = 0.0;                   // tempo according to metronome
     double m_tpoSound = 0.0;                   // tempo according to sound
     bool m_visible = true;
+    bool m_systemDirection = false;
     std::vector<EngravingItem*> m_elems;
     Fraction m_offset;
 };

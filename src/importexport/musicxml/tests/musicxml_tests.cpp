@@ -455,6 +455,12 @@ TEST_F(Musicxml_Tests, breaksSystem) {
 TEST_F(Musicxml_Tests, breathMarks) {
     mxmlIoTest("testBreathMarks");
 }
+TEST_F(Musicxml_Tests, buzzRoll) {
+    mxmlImportTestRef("testBuzzRoll");
+}
+TEST_F(Musicxml_Tests, buzzRoll2) {
+    mxmlIoTest("testBuzzRoll2");
+}
 TEST_F(Musicxml_Tests, changeTranspose) {
     mxmlIoTest("testChangeTranspose");
 }
@@ -714,6 +720,9 @@ TEST_F(Musicxml_Tests, inferredDynamicsExpression) {
 }
 TEST_F(Musicxml_Tests, inferredTempoText) {
     mxmlImportTestRef("testInferredTempoText");
+}
+TEST_F(Musicxml_Tests, inferredTempoText2) {
+    mxmlImportTestRef("testInferredTempoText2");
 }
 TEST_F(Musicxml_Tests, inferredCrescLines2) {
     mxmlImportTestRef("testInferredCrescLines2");
@@ -1001,6 +1010,9 @@ TEST_F(Musicxml_Tests, systemBrackets4) {
 }
 TEST_F(Musicxml_Tests, systemBrackets5) {
     mxmlIoTest("testSystemBrackets1");
+}
+TEST_F(Musicxml_Tests, systemDirection) {
+    mxmlIoTest("testSystemDirection");
 }
 #ifndef DISABLED_SOME_TESTS
 TEST_F(Musicxml_Tests, systemDistance) {

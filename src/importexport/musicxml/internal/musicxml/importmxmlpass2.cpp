@@ -2984,6 +2984,7 @@ void MusicXMLParserDirection::direction(const String& partId,
     bool isPercussionStaff = m_pass1.isPercussionStaff(partId);
     bool isExpressionText = false;
     bool delayOttava = m_pass1.exporterString().contains(u"sibelius");
+    m_systemDirection = m_e.attribute("system") == "only-top";
     //LOGD("direction track %d", track);
     std::vector<MusicXmlSpannerDesc> starts;
     std::vector<MusicXmlSpannerDesc> stops;
@@ -3052,7 +3053,7 @@ void MusicXMLParserDirection::direction(const String& partId,
     } else if (isLikelyLegallyDownloaded(tick)) {
         // Ignore (TBD: print to footer?)
         return;
-    } else if (isLikelyTempoText()) {
+    } else if (isLikelyTempoText(track)) {
         TempoText* tt = Factory::createTempoText(m_score->dummy()->segment());
         tt->setXmlText(m_wordsText + m_metroText);
         if (m_tpoSound > 0 && canAddTempoText(m_score->tempomap(), tick.ticks())) {
@@ -3107,6 +3108,8 @@ void MusicXMLParserDirection::direction(const String& partId,
                 isExpressionText = m_wordsText.contains(u"<i>") && m_metroText.empty();
                 if (isExpressionText) {
                     t = Factory::createExpression(m_score->dummy()->segment());
+                } else if (m_systemDirection) {
+                    t = Factory::createSystemText(m_score->dummy()->segment());
                 } else {
                     t = Factory::createStaffText(m_score->dummy()->segment());
                 }
@@ -3369,9 +3372,9 @@ bool MusicXMLParserDirection::isLikelyLegallyDownloaded(const Fraction& tick) co
            && m_wordsText.contains(std::wregex(L"This music has been legally downloaded\\.\\sDo not photocopy\\."));
 }
 
-bool MusicXMLParserDirection::isLikelyTempoText() const
+bool MusicXMLParserDirection::isLikelyTempoText(const track_idx_t track) const
 {
-    if (!configuration()->inferTextType() || !m_wordsText.contains(u"<b>") || m_placement == u"below") {
+    if (!configuration()->inferTextType() || m_wordsText.contains(u"<i>") || placement() == u"below" || track2staff(track) != 0) {
         return false;
     }
 
@@ -4256,6 +4259,7 @@ void MusicXMLParserDirection::bracket(const String& type, const int number,
         } else if ((sline && sline->isTextLine()) || (!sline && !isWavy)) {
             if (!sline) {
                 sline = new TextLine(m_score->dummy());
+                sline->setSystemFlag(m_systemDirection);
             }
             auto textLine = toTextLine(sline);
             // if (placement == "") placement = "above";  // TODO ? set default
@@ -5763,7 +5767,7 @@ static void addFiguredBassElements(FiguredBassList& fbl, const Fraction noteStar
 //---------------------------------------------------------
 
 static void addTremolo(ChordRest* cr,
-                       const int tremoloNr, const String& tremoloType,
+                       const int tremoloNr, const String& tremoloType, const String& tremoloSmufl,
                        Chord*& tremStart,
                        MxmlLogger* logger, const XmlStreamReader* const xmlreader,
                        Fraction& timeMod)
@@ -5840,6 +5844,11 @@ static void addTremolo(ChordRest* cr,
         } else {
             logger->logError(String(u"unknown tremolo type %1").arg(tremoloNr), xmlreader);
         }
+    } else if (tremoloNr == 0 && (tremoloType == u"unmeasured" || tremoloType.empty() || tremoloSmufl == u"buzzRoll")) {
+        // Out of all the SMuFL unmeasured tremolos, we only support 'buzzRoll'
+        TremoloSingleChord* tremolo = Factory::createTremoloSingleChord(mu::engraving::toChord(cr));
+        tremolo->setTremoloType(TremoloType::BUZZ_ROLL);
+        cr->add(tremolo);
     }
 }
 
@@ -6295,8 +6304,8 @@ Note* MusicXMLParserPass2::note(const String& partId,
     }
 
     // handle tremolo before handling tuplet (two note tremolos modify timeMod)
-    if (cr) {
-        addTremolo(cr, notations.tremoloNr(), notations.tremoloType(), m_tremStart, m_logger, &m_e, timeMod);
+    if (cr && notations.hasTremolo()) {
+        addTremolo(cr, notations.tremoloNr(), notations.tremoloType(), notations.tremoloSmufl(), m_tremStart, m_logger, &m_e, timeMod);
     }
 
     // handle tuplet state for the current chord or rest
@@ -7383,8 +7392,10 @@ void MusicXMLParserNotations::ornaments()
             }
             m_e.skipCurrentElement();  // skip but don't log
         } else if (m_e.name() == "tremolo") {
+            m_hasTremolo = true;
             m_tremoloType = m_e.attribute("type");
             m_tremoloNr = m_e.readText().toInt();
+            m_tremoloSmufl = m_e.attribute("smufl");
         } else if (m_e.name() == "inverted-mordent"
                    || m_e.name() == "mordent") {
             mordentNormalOrInverted();
@@ -7430,9 +7441,23 @@ void MusicXMLParserNotations::technical()
             m_notations.push_back(notation);
         } else if (m_e.name() == "harmonic") {
             harmonic();
+        } else if (m_e.name() == "other-technical") {
+            otherTechnical();
         } else {
             skipLogCurrElem();
         }
+    }
+}
+
+void MusicXMLParserNotations::otherTechnical()
+{
+    String text = m_e.readText();
+
+    if (text == u"z") {
+        // Buzz roll
+        m_hasTremolo = true;
+        m_tremoloNr = 0;
+        m_tremoloType = u"unmeasured";
     }
 }
 

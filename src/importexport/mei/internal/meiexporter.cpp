@@ -44,6 +44,7 @@
 #include "engraving/dom/lyrics.h"
 #include "engraving/dom/marker.h"
 #include "engraving/dom/measure.h"
+#include "engraving/dom/measurerepeat.h"
 #include "engraving/dom/note.h"
 #include "engraving/dom/ornament.h"
 #include "engraving/dom/ottava.h"
@@ -180,12 +181,12 @@ bool MeiExporter::writeHeader()
         pugi::xml_node title = titleStmt.append_child("title");
         if (!m_score->metaTag(u"workTitle").isEmpty()) {
             title.text().set(m_score->metaTag(u"workTitle").toStdString().c_str());
-            title.append_attribute("type") = u"main";
+            title.append_attribute("type") = "main";
         }
         if (!m_score->metaTag(u"subtitle").isEmpty()) {
             pugi::xml_node subtitle = titleStmt.append_child("title");
             subtitle.text().set(m_score->metaTag(u"subtitle").toStdString().c_str());
-            subtitle.append_attribute("type") = u"subordinate";
+            subtitle.append_attribute("type") = "subordinate";
         }
 
         pugi::xml_node respStmt;
@@ -902,6 +903,12 @@ bool MeiExporter::writeLayer(track_idx_t track, const Staff* staff, const Measur
     meiLayer.SetN(static_cast<int>(track2voice(track) + 1));
     meiLayer.Write(m_currentNode, this->getLayerXmlId());
 
+    if (measure->measureRepeatNumMeasures(track2staff(track)) == 1) {
+        MeasureRepeat* measureRepeat = measure->measureRepeatElement(track2staff(track));
+        this->writeMRpt(measureRepeat);
+        return true;
+    }
+
     for (Segment* seg = measure->first(); seg; seg = seg->next()) {
         if (seg->segmentType() == SegmentType::EndBarLine) {
             this->addFermataToMap(track, seg, measure);
@@ -1336,6 +1343,26 @@ bool MeiExporter::writeRest(const Rest* rest, const Staff* staff)
             restNode.set_name("space");
         }
     }
+
+    return true;
+}
+
+/**
+ * Write a measure repeat
+ */
+
+bool MeiExporter::writeMRpt(const MeasureRepeat* measureRepeat)
+{
+    IF_ASSERT_FAILED(measureRepeat) {
+        return false;
+    }
+
+    libmei::MRpt meiMRpt;
+    Convert::colorToMEI(measureRepeat, meiMRpt);
+    pugi::xml_node mRptNode = m_currentNode.append_child();
+    meiMRpt.Write(mRptNode, this->getXmlIdFor(measureRepeat, 'm'));
+
+    m_currentNode = m_currentNode.parent();
 
     return true;
 }
