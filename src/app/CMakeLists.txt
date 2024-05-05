@@ -241,14 +241,22 @@ endif()
 ###########################################
 
 add_executable(${EXECUTABLE_NAME}
-      ${APP_RCC_SOURCES}
-      main.cpp
-      app.cpp
-      app.h
-      commandlineparser.cpp
-      commandlineparser.h
-      ${MSCORE_APPEND_SRC}
-      )
+    ${APP_RCC_SOURCES}
+    ${MSCORE_APPEND_SRC}
+    main.cpp
+    cmdoptions.h
+    iapp.h
+    appfactory.cpp
+    appfactory.h
+
+    internal/commandlineparser.cpp
+    internal/commandlineparser.h
+    internal/consoleapp.cpp
+    internal/consoleapp.h
+    internal/guiapp.cpp
+    internal/guiapp.h
+
+)
 
 ###########################################
 # Setting target properties
