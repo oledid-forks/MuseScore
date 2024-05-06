@@ -37,7 +37,8 @@ using namespace muse;
 using namespace mu::app;
 using namespace mu::appshell;
 
-ConsoleApp::ConsoleApp()
+ConsoleApp::ConsoleApp(const CmdOptions& options, const modularity::ContextPtr& ctx)
+    : muse::BaseApplication(ctx), m_options(options)
 {
 }
 
@@ -46,11 +47,17 @@ void ConsoleApp::addModule(modularity::IModuleSetup* module)
     m_modules.push_back(module);
 }
 
-void ConsoleApp::perform(const CmdOptions& options)
+void ConsoleApp::perform()
 {
+    const CmdOptions& options = m_options;
+
+    IApplication::RunMode runMode = options.runMode;
+    setRunMode(runMode);
+
     // ====================================================
     // Setup modules: Resources, Exports, Imports, UiTypes
     // ====================================================
+    m_globalModule.setApplication(shared_from_this());
     m_globalModule.registerResources();
     m_globalModule.registerExports();
     m_globalModule.registerUiTypes();
@@ -71,11 +78,9 @@ void ConsoleApp::perform(const CmdOptions& options)
         m->registerApi();
     }
 
-    IApplication::RunMode runMode = options.runMode;
     // ====================================================
     // Setup modules: apply the command line options
     // ====================================================
-    muapplication()->setRunMode(runMode);
     applyCommandLineOptions(options, runMode);
 
     // ====================================================
@@ -194,7 +199,8 @@ void ConsoleApp::finish()
     // Delete modules
     qDeleteAll(m_modules);
     m_modules.clear();
-    modularity::ioc()->reset();
+
+    removeIoC();
 }
 
 void ConsoleApp::applyCommandLineOptions(const CmdOptions& options, IApplication::RunMode runMode)
