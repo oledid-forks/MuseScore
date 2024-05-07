@@ -32,7 +32,11 @@ using Inject = kors::modularity::Inject<I>;
 namespace muse {
 template<class I>
 using Inject = kors::modularity::Inject<I>;
+using Injectable = kors::modularity::Injectable;
 }
+
+#define INJECT(Interface, getter) muse::Inject<Interface> getter;
+#define INJECT_STATIC(Interface, getter) static inline muse::Inject<Interface> getter;
 
 namespace mu {
 template<class I>
@@ -47,9 +51,19 @@ using ContextPtr = kors::modularity::ContextPtr;
 template<class T>
 using Creator = kors::modularity::Creator<T>;
 
-inline ModulesIoC* ioc(const ContextPtr& ctx = nullptr)
+inline ModulesIoC* _ioc(const ContextPtr& ctx = nullptr)
 {
-    return kors::modularity::ioc(ctx);
+    return kors::modularity::_ioc(ctx);
+}
+
+inline ModulesIoC* globalIoc()
+{
+    return kors::modularity::_ioc(nullptr);
+}
+
+inline ModulesIoC* fixmeIoc()
+{
+    return kors::modularity::_ioc(nullptr);
 }
 
 inline void removeIoC(const ContextPtr& ctx = nullptr)
