@@ -479,6 +479,25 @@ static void setStaffTypePercussion(Part* part, Drumset* drumset)
     part->instrument()->channel(0)->setBank(128);
 }
 
+static std::pair<String, String> separateTransposition(const String& name)
+{
+    String n = name;
+    n.replace(u"♭", u"b").replace(u"♯", u"#");
+    std::pair<String, String> ret;
+    static const std::regex re("(^| )([ABCDEF][b#]?)( |$)");
+    static const std::regex in(" in");
+
+    const StringList results = n.search(re, { 2 });
+    if (!results.empty()) {
+        ret.second = convertPitchStringFlatsAndSharpsToUnicode(results.front());
+        n.remove(re);
+        n.remove(in);
+    }
+    ret.first = n.simplified();
+
+    return ret;
+}
+
 //---------------------------------------------------------
 //   createInstrument
 //---------------------------------------------------------
@@ -492,17 +511,11 @@ static Instrument createInstrument(const MusicXMLInstrument& mxmlInstr, const In
     Instrument instr;
 
     const InstrumentTemplate* it = nullptr;
-    if (!mxmlInstr.sound.isEmpty()) {
-        it = mu::engraving::searchTemplateForMusicXmlId(mxmlInstr.sound);
-    }
+    const std::pair<String, String> nameSplit = separateTransposition(mxmlInstr.name);
+    const String name = nameSplit.first;
+    const int transposition = string2pitch(nameSplit.second + u"5") % 12;
 
-    if (!it) {
-        it = mu::engraving::searchTemplateForInstrNameList({ mxmlInstr.name });
-    }
-
-    if (!it) {
-        it = mu::engraving::searchTemplateForMidiProgram(0, mxmlInstr.midiProgram);
-    }
+    it = combinedTemplateSearch(mxmlInstr.sound, name, transposition, 0, mxmlInstr.midiProgram);
 
     if (it) {
         // initialize from template with matching MusicXmlId
@@ -1068,6 +1081,10 @@ static void addArticulationToChord(const Notation& notation, ChordRest* cr)
     } else if (place == "below" || (dir == "down" && place == "")) {
         na->setAnchor(ArticulationAnchor::BOTTOM);
         na->setPropertyFlags(Pid::ARTICULATION_ANCHOR, PropertyFlags::UNSTYLED);
+    }
+
+    if (cr->isChord() && toChord(cr)->hasArticulation(na)) {
+        return;
     }
 
     cr->add(na);
@@ -3104,7 +3121,7 @@ void MusicXMLParserDirection::direction(const String& partId,
             }
         } else {
             if (m_wordsText != "" || m_metroText != "") {
-                isExpressionText = m_wordsText.contains(u"<i>") && m_metroText.empty();
+                isExpressionText = m_wordsText.contains(u"<i>") && m_metroText.empty() && placement() == u"below";
                 if (isExpressionText) {
                     t = Factory::createExpression(m_score->dummy()->segment());
                 } else if (m_systemDirection) {
@@ -5856,10 +5873,9 @@ static void addTremolo(ChordRest* cr,
 
 // TODO: refactor: optimize parameters
 
-static void setPitch(Note* note, MusicXMLParserPass1& pass1, const String& partId, const String& instrumentId, const MxmlNotePitch& mnp,
+static void setPitch(Note* note, const MusicXMLInstruments& instruments, const String& instrumentId, const MxmlNotePitch& mnp,
                      const int octaveShift, const Instrument* const instrument)
 {
-    const MusicXMLInstruments& instruments = pass1.getInstruments(partId);
     if (mnp.unpitched()) {
         if (hasDrumset(instruments) && muse::contains(instruments, instrumentId)) {
             // step and oct are display-step and ...-oct
@@ -5920,6 +5936,49 @@ static void setDrumset(Chord* c, MusicXMLParserPass1& pass1, const String& partI
     pass1.setDrumsetDefault(partId, instrumentId, headGroup, line, overruledStemDir);
 }
 
+static void xmlSetDrumsetPitch(Note* note, const Chord* const chord, const Staff* const staff, int step, int octave,
+                               NoteHeadGroup headGroup, const Instrument* const instrument)
+{
+    const Drumset* ds = instrument->drumset();
+    // get line
+    // determine staff line based on display-step / -octave and clef type
+    const ClefType clef = staff->clef(chord->tick());
+    const int po = ClefInfo::pitchOffset(clef);
+    const int pitch = MusicXMLStepAltOct2Pitch(step, 0, octave);
+    int line = po - absStep(pitch);
+    const int staffLines = staff->lines(chord->tick());
+    if (staffLines == 1) {
+        line -= 8;
+    }
+    if (staffLines == 3) {
+        line -= 2;
+    }
+
+    const int firstDrum = ds->nextPitch(0);
+    int curDrum = firstDrum;
+    // if line matches but not headgroup, set pitch anyway
+    int lineMatch = pitch;
+    int newPitch = pitch;
+    do {
+        if (ds->line(curDrum) == line) {
+            lineMatch = curDrum;
+            if (ds->noteHead(curDrum) == headGroup) {
+                newPitch = curDrum;
+                break;
+            }
+        }
+        curDrum = ds->nextPitch(curDrum);
+    } while (curDrum != firstDrum);
+
+    // If there is no exact match, fall back to correct line but different head
+    if (newPitch == pitch) {
+        newPitch = lineMatch;
+    }
+
+    note->setPitch(newPitch);
+    note->setTpcFromPitch();
+}
+
 //---------------------------------------------------------
 //   note
 //---------------------------------------------------------
@@ -5969,6 +6028,7 @@ Note* MusicXMLParserPass2::note(const String& partId,
     int velocity = round(m_e.doubleAttribute("dynamics") * 0.9);
     bool graceSlash = false;
     bool printObject = m_e.asciiAttribute("print-object") != "no";
+    bool isSingleDrumset = false;
     BeamMode bm;
     std::map<int, String> beamTypes;
     String instrumentId;
@@ -6132,6 +6192,10 @@ Note* MusicXMLParserPass2::note(const String& partId,
 
     TDuration duration = determineDuration(rest, type, mnd.dots(), dura, measure->ticks());
 
+    const Part* part = m_pass1.getPart(partId);
+    const Instrument* instrument = part->instrument(noteStartTime);
+    const MusicXMLInstruments& instruments = m_pass1.getInstruments(partId);
+    isSingleDrumset = instrument->drumset() && instruments.size() == 1;
     // begin allocation
     if (rest) {
         const int track = msTrack + msVoice;
@@ -6170,9 +6234,12 @@ Note* MusicXMLParserPass2::note(const String& partId,
         note = Factory::createNote(c);
         const staff_idx_t ottavaStaff = (msTrack - m_pass1.trackForPart(partId)) / VOICES;
         const int octaveShift = m_pass1.octaveShift(partId, ottavaStaff, noteStartTime);
-        const Part* part = m_pass1.getPart(partId);
-        const Instrument* instrument = part->instrument(noteStartTime);
-        setPitch(note, m_pass1, partId, instrumentId, mnp, octaveShift, instrument);
+        const Staff* st = c->staff();
+        if (isSingleDrumset && mnp.unpitched() && instrumentId.empty()) {
+            xmlSetDrumsetPitch(note, c, st, mnp.displayStep(), mnp.displayOctave(), headGroup, instrument);
+        } else {
+            setPitch(note, instruments, instrumentId, mnp, octaveShift, instrument);
+        }
         c->add(note);
         //c->setStemDirection(stemDir); // already done in handleBeamAndStemDir()
         //c->setNoStem(noStem);
@@ -6253,7 +6320,7 @@ Note* MusicXMLParserPass2::note(const String& partId,
             note->setUserVelocity(velocity);
         }
 
-        if (mnp.unpitched()) {
+        if (mnp.unpitched() && !isSingleDrumset) {
             setDrumset(c, m_pass1, partId, instrumentId, noteStartTime, mnp, stemDir, headGroup);
         }
 
