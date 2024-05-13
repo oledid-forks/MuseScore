@@ -30,9 +30,11 @@
 muse::Injectable::GetContext muse::iocCtxForQmlObject(const QObject* o)
 {
     return [o]() {
-        QQmlEngine* engine = qmlEngine(o);
-        if (!engine) {
-            engine = qmlEngine(o->parent());
+        const QObject* p = o;
+        QQmlEngine* engine = qmlEngine(p);
+        while (!engine && p->parent()) {
+            p = p->parent();
+            engine = qmlEngine(p);
         }
 
         IF_ASSERT_FAILED(engine) {
