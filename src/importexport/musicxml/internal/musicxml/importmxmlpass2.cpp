@@ -1574,6 +1574,7 @@ void MusicXMLParserPass2::initPartState(const String& partId)
     m_measureStyleSlash = MusicXmlSlash::NONE;
     m_extendedLyrics.init();
     m_graceNoteLyrics.clear();
+    m_inferredHairpins.clear();
 
     m_nstaves = m_pass1.getPart(partId)->nstaves();
     m_measureRepeatNumMeasures.assign(m_nstaves, 0);
@@ -3244,7 +3245,7 @@ void MusicXMLParserDirection::direction(const String& partId,
         delayedDirections.push_back(delayedDirection);
     }
 
-    addInferredCrescLine(track, tick, isVocalStaff);
+    addInferredCrescLine(track, tick + m_offset, isVocalStaff);
 
     // handle the elems
     for (EngravingItem* elem : m_elems) {
@@ -3383,16 +3384,18 @@ bool MusicXMLParserDirection::isLikelyLegallyDownloaded(const Fraction& tick) co
 
 bool MusicXMLParserDirection::isLikelyTempoText(const track_idx_t track) const
 {
-    if (!configuration()->inferTextType() || m_wordsText.contains(u"<i>") || placement() == u"below" || track2staff(track) != 0) {
+    if (!configuration()->inferTextType() || m_wordsText.contains(u"<i>") || m_wordsText.contains(u"“")
+        || m_wordsText.contains(u"”") || placement() == u"below"
+        || track2staff(track) != 0) {
         return false;
     }
 
     const String plainText = MScoreTextToMXML::toPlainText(m_wordsText.simplified());
     static const std::array<String,
-                            25> tempoStrs
-        = { u"a tempo", u"adag", u"alleg", u"andant", u"ballad", u"brisk", u"determination", u"dolce", u"expressive",
-            u"fast", u"free", u"grave", u"larg", u"lento", u"maestoso", u"moderat", u"mosso", u"prest", u"rubato", u"slow", u"straight",
-            u"tempo i", u"tenderly", u"triumphant", u"vivace" };
+                            31> tempoStrs
+        = { u"accel", u"adag", u"alleg", u"andant", u"a tempo", u"ballad", u"brisk", u"determination", u"dolce", u"expressive",
+            u"fast", u"free", u"gently", u"grave", u"larg", u"lento", u"stesso tempo", u"lively", u"maestoso", u"moderat", u"mosso",
+            u"prest", u"rit", u"rubato", u"slow", u"straight", u"tango", u"tempo i", u"tenderly", u"triumphant", u"vivace" };
 
     for (const String& str : tempoStrs) {
         if (plainText.contains(str, CaseSensitivity::CaseInsensitive)) {
@@ -4887,9 +4890,11 @@ void MusicXMLParserPass2::barline(const String& partId, Measure* measure, const 
             if (barStyle != "regular" || barlineColor.isValid() || loc == "middle") {
                 // Add barline to the first voice of every staff in the part,
                 // and span every barline except the last
-                staff_idx_t nstaves = m_pass1.getPart(partId)->nstaves();
+                const Part* part = m_pass1.getPart(partId);
+                staff_idx_t nstaves = part->nstaves();
                 for (staff_idx_t i = 0; i < nstaves; ++i) {
-                    bool spanStaff = i < nstaves - 1;
+                    const Staff* staff = part->staff(i);
+                    bool spanStaff = nstaves > 1 ? i < nstaves - 1 : staff->barLineSpan();
                     track_idx_t currentTrack = track + (i * VOICES);
                     auto b = createBarline(measure->score(), currentTrack, type, visible, barStyle, spanStaff);
                     if (barlineColor.isValid()) {

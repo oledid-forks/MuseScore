@@ -404,6 +404,9 @@ TEST_F(Musicxml_Tests, articulationCombination) {
 TEST_F(Musicxml_Tests, backupRoundingError) {
     mxmlImportTestRef("testBackupRoundingError");
 }
+TEST_F(Musicxml_Tests, barlineSpan) {
+    mxmlIoTest("testBarlineSpan");
+}
 TEST_F(Musicxml_Tests, barlineFermatas) {
     mxmlIoTest("testBarlineFermatas");
 }
@@ -753,6 +756,9 @@ TEST_F(Musicxml_Tests, invisibleDirection) {
 }
 TEST_F(Musicxml_Tests, invisibleElements) {
     mxmlIoTest("testInvisibleElements");
+}
+TEST_F(Musicxml_Tests, invisibleNote) {
+    mxmlMscxExportTestRef("testInvisibleNote");
 }
 TEST_F(Musicxml_Tests, keysig1) {
     mxmlIoTest("testKeysig1");
