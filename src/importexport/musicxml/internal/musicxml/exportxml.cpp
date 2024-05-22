@@ -84,6 +84,7 @@
 #include "engraving/dom/keysig.h"
 #include "engraving/dom/layoutbreak.h"
 #include "engraving/dom/letring.h"
+#include "engraving/dom/linkedobjects.h"
 #include "engraving/dom/lyrics.h"
 #include "engraving/dom/marker.h"
 #include "engraving/dom/masterscore.h"
@@ -4258,6 +4259,13 @@ void ExportMusicXml::chord(Chord* chord, staff_idx_t staff, const std::vector<Ly
         writeType(m_xml, note);
         for (NoteDot* dot : note->dots()) {
             String dotTag = u"dot";
+            if (note->userDotPosition() != engraving::DirectionV::AUTO) {
+                if (note->dotPosition() == engraving::DirectionV::UP) {
+                    dotTag += u" placement=\"above\"";
+                } else {
+                    dotTag += u" placement=\"below\"";
+                }
+            }
             dotTag += color2xml(dot);
             dotTag += elementPosition(this, dot);
             m_xml.tagRaw(dotTag);
@@ -7572,6 +7580,10 @@ static void writeStaffDetails(XmlWriter& xml, const Part* part)
                 attributes.push_back({ "print-object", "no" });
             }
             xml.startElement("staff-details", attributes);
+
+            if (i > 0 && st->links() && st->links()->contains(part->staff(i - 1))) {
+                xml.tag("staff-type", "alternate");
+            }
 
             xml.tag("staff-lines", st->lines(Fraction(0, 1)));
             if (st->isTabStaff(Fraction(0, 1)) && instrument->stringData()) {

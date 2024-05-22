@@ -3115,11 +3115,14 @@ void MusicXMLParserDirection::direction(const String& partId,
             }
         } else {
             if (!m_wordsText.empty() || !m_metroText.empty()) {
+                const PlayingTechniqueType technique = getPlayingTechnique();
                 isExpressionText = m_wordsText.contains(u"<i>") && m_metroText.empty() && placement() == u"below";
                 if (isExpressionText) {
                     t = Factory::createExpression(m_score->dummy()->segment());
                 } else if (m_systemDirection) {
                     t = Factory::createSystemText(m_score->dummy()->segment());
+                } else if (technique != PlayingTechniqueType::Undefined) {
+                    t = Factory::createPlayTechAnnotation(m_score->dummy()->segment(), technique, TextStyleType::STAFF);
                 } else {
                     t = Factory::createStaffText(m_score->dummy()->segment());
                 }
@@ -4236,6 +4239,50 @@ bool MusicXMLParserDirection::isLikelySticking()
            && m_rehearsalText.empty()
            && m_metroText.empty()
            && m_tpoSound < 0.1;
+}
+
+PlayingTechniqueType MusicXMLParserDirection::getPlayingTechnique() const
+{
+    if (!configuration()->inferTextType()) {
+        return PlayingTechniqueType::Undefined;
+    }
+
+    const String plainWords = MScoreTextToMXML::toPlainText(m_wordsText.simplified());
+    static const std::unordered_map<muse::String, PlayingTechniqueType> textToPlayTechniqueType {
+        { u"natural", PlayingTechniqueType::Natural },
+        { u"normal", PlayingTechniqueType::Natural },
+        { u"ord", PlayingTechniqueType::Natural },
+        { u"arco", PlayingTechniqueType::Natural },
+        { u"pizz", PlayingTechniqueType::Pizzicato },
+        { u"open", PlayingTechniqueType::Open },
+        { u"senza sord", PlayingTechniqueType::Open },
+        { u"unmuted", PlayingTechniqueType::Open },
+        { u"without mute", PlayingTechniqueType::Open },
+        { u"no mute", PlayingTechniqueType::Open },
+        { u"mute", PlayingTechniqueType::Mute },
+        { u"con sord", PlayingTechniqueType::Mute },
+        { u"sord", PlayingTechniqueType::Mute },
+        { u"trem", PlayingTechniqueType::Tremolo },
+        { u"detache", PlayingTechniqueType::Detache },
+        { u"martele", PlayingTechniqueType::Martele },
+        { u"legno", PlayingTechniqueType::ColLegno },
+        { u"sul pont", PlayingTechniqueType::SulPonticello },
+        { u"sul tast", PlayingTechniqueType::SulTasto },
+        { u"vibrato", PlayingTechniqueType::Vibrato },
+        { u"legato", PlayingTechniqueType::Legato },
+        { u"distortion", PlayingTechniqueType::Distortion },
+        { u"overdrive", PlayingTechniqueType::Overdrive },
+        { u"harmonics", PlayingTechniqueType::Harmonics },
+        { u"jazz", PlayingTechniqueType::JazzTone },
+    };
+
+    for (auto& technique : textToPlayTechniqueType) {
+        if (plainWords.contains(technique.first)) {
+            return technique.second;
+        }
+    }
+
+    return PlayingTechniqueType::Undefined;
 }
 
 //---------------------------------------------------------
@@ -5933,8 +5980,8 @@ static void setDrumset(Chord* c, MusicXMLParserPass1& pass1, const String& partI
     pass1.setDrumsetDefault(partId, instrumentId, headGroup, line, overruledStemDir);
 }
 
-static void xmlSetDrumsetPitch(Note* note, const Chord* const chord, const Staff* const staff, int step, int octave,
-                               NoteHeadGroup headGroup, const Instrument* const instrument)
+static void xmlSetDrumsetPitch(Note* note, const Chord* chord, const Staff* staff, int step, int octave,
+                               NoteHeadGroup headGroup, DirectionV& stemDir, const Instrument* instrument)
 {
     const Drumset* ds = instrument->drumset();
     // get line
@@ -5970,6 +6017,10 @@ static void xmlSetDrumsetPitch(Note* note, const Chord* const chord, const Staff
     // If there is no exact match, fall back to correct line but different head
     if (newPitch == pitch) {
         newPitch = lineMatch;
+    }
+
+    if (stemDir == DirectionV::AUTO) {
+        stemDir = ds->stemDirection(newPitch);
     }
 
     note->setPitch(newPitch);
@@ -6233,13 +6284,11 @@ Note* MusicXMLParserPass2::note(const String& partId,
         const int octaveShift = m_pass1.octaveShift(partId, ottavaStaff, noteStartTime);
         const Staff* st = c->staff();
         if (isSingleDrumset && mnp.unpitched() && instrumentId.empty()) {
-            xmlSetDrumsetPitch(note, c, st, mnp.displayStep(), mnp.displayOctave(), headGroup, instrument);
+            xmlSetDrumsetPitch(note, c, st, mnp.displayStep(), mnp.displayOctave(), headGroup, stemDir, instrument);
         } else {
             setPitch(note, instruments, instrumentId, mnp, octaveShift, instrument);
         }
         c->add(note);
-        //c->setStemDirection(stemDir); // already done in handleBeamAndStemDir()
-        //c->setNoStem(noStem);
         cr = c;
     }
     // end allocation
