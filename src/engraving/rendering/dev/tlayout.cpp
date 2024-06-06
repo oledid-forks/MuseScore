@@ -4487,7 +4487,7 @@ void TLayout::layoutOrnamentCueNote(Ornament* item, LayoutContext& ctx)
         return;
     }
 
-    ChordLayout::layoutChords3(ctx.conf().style(), { cueNoteChord }, { cueNote }, item->staff(), ctx);
+    ChordLayout::layoutChords3({ cueNoteChord }, { cueNote }, item->staff(), ctx);
     ChordLayout::layoutLedgerLines({ cueNoteChord });
     AccidentalsLayout::layoutAccidentals({ cueNoteChord }, ctx);
     layoutChord(cueNoteChord, ctx);
@@ -6691,19 +6691,6 @@ SpannerSegment* TLayout::layoutSystem(LyricsLine* line, System* system, LayoutCo
     if (!line->lyrics()) {
         // this line could have been removed in the process of laying out surrounding lyrics
         return nullptr;
-    }
-
-    // if temp melisma extend the first line segment to be
-    // after the lyrics syllable (otherwise the melisma segment
-    // will be too short).
-    const bool tempMelismaTicks = (line->lyrics()->ticks() == Lyrics::TEMP_MELISMA_TICKS);
-    if (tempMelismaTicks && line->spannerSegments().size() > 0 && line->spannerSegments().front() == lineSegm) {
-        lineSegm->rxpos2() += line->lyrics()->width();
-    }
-
-    // avoid backwards melisma
-    if (lineSegm->pos2().x() < 0) {
-        lineSegm->rxpos2() = 0;
     }
 
     return lineSegm;
