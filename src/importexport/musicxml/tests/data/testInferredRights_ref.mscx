@@ -3,8 +3,9 @@
   <Score>
     <Division>480</Division>
     <Style>
-      <pageHeight>11.6929</pageHeight>
-      <pagePrintableWidth>7.08661</pagePrintableWidth>
+      <pageWidth>8.26997</pageWidth>
+      <pageHeight>11.69</pageHeight>
+      <pagePrintableWidth>7.08887</pagePrintableWidth>
       <pageEvenLeftMargin>0.590551</pageEvenLeftMargin>
       <pageOddLeftMargin>0.590551</pageOddLeftMargin>
       <pageEvenTopMargin>0.590551</pageEvenTopMargin>
@@ -32,22 +33,25 @@
       <bendFontSize>10</bendFontSize>
       <headerFontSize>10</headerFontSize>
       <footerFontSize>10</footerFontSize>
-      <Spatium>1.75</Spatium>
+      <Spatium>1.74978</Spatium>
       </Style>
     <showInvisible>1</showInvisible>
     <showUnprintable>1</showUnprintable>
     <showFrames>1</showFrames>
     <showMargins>0</showMargins>
     <metaTag name="arranger"></metaTag>
-    <metaTag name="composer">Henry Ives</metaTag>
-    <metaTag name="copyright"></metaTag>
+    <metaTag name="composer">Composer / arranger</metaTag>
+    <metaTag name="copyright">© COPYRIGHT HOLDER.
+    This arrangement © THE COPYRIGHT HOLDER.
+    All Rights for the U.S. controlled by SOMEONE.
+    All Rights Reserved    International Copyright Secured    Used by Permission</metaTag>
     <metaTag name="lyricist"></metaTag>
     <metaTag name="movementNumber"></metaTag>
     <metaTag name="movementTitle"></metaTag>
     <metaTag name="source"></metaTag>
     <metaTag name="translator"></metaTag>
     <metaTag name="workNumber"></metaTag>
-    <metaTag name="workTitle">Bracket Types</metaTag>
+    <metaTag name="workTitle">Untitled score</metaTag>
     <Part id="1">
       <Staff id="1">
         <StaffType group="pitched">
@@ -55,17 +59,16 @@
           </StaffType>
         <hideWhenEmpty>3</hideWhenEmpty>
         </Staff>
-      <trackName>Piano</trackName>
-      <Instrument id="piano">
-        <longName>Piano</longName>
-        <shortName>Pno.</shortName>
-        <trackName>Piano</trackName>
-        <minPitchP>21</minPitchP>
-        <maxPitchP>108</maxPitchP>
-        <minPitchA>21</minPitchA>
-        <maxPitchA>108</maxPitchA>
-        <instrumentId>keyboard.piano</instrumentId>
-        <clef staff="2">F</clef>
+      <trackName>Flute</trackName>
+      <Instrument id="flute">
+        <longName>Flute</longName>
+        <shortName>Fl.</shortName>
+        <trackName>Flute</trackName>
+        <minPitchP>59</minPitchP>
+        <maxPitchP>98</maxPitchP>
+        <minPitchA>60</minPitchA>
+        <maxPitchA>93</maxPitchA>
+        <instrumentId>wind.flutes.flute</instrumentId>
         <Articulation>
           <velocity>100</velocity>
           <gateTime>95</gateTime>
@@ -107,29 +110,12 @@
           <gateTime>100</gateTime>
           </Articulation>
         <Channel>
-          <program value="0"/>
+          <program value="73"/>
           <controller ctrl="10" value="63"/>
           </Channel>
         </Instrument>
       </Part>
     <Staff id="1">
-      <VBox>
-        <height>12.5</height>
-        <Text>
-          <style>title</style>
-          <offset x="0" y="-0.07525"/>
-          <text><font size="22"/>Bracket Types</text>
-          </Text>
-        <Text>
-          <style>subtitle</style>
-          <offset x="0" y="9.92425"/>
-          <text><font size="16"/>MuseScore Testcase</text>
-          </Text>
-        <Text>
-          <style>composer</style>
-          <text>Henry Ives</text>
-          </Text>
-        </VBox>
       <Measure>
         <voice>
           <Clef>
@@ -141,123 +127,13 @@
             <sigN>4</sigN>
             <sigD>4</sigD>
             </TimeSig>
-          <Spanner type="TextLine">
-            <TextLine>
-              </TextLine>
-            <next>
-              <location>
-                <measures>1</measures>
-                </location>
-              </next>
-            </Spanner>
           <Chord>
             <durationType>whole</durationType>
             <Note>
-              <pitch>76</pitch>
-              <tpc>18</tpc>
+              <pitch>71</pitch>
+              <tpc>19</tpc>
               </Note>
             </Chord>
-          </voice>
-        </Measure>
-      <Measure>
-        <voice>
-          <Spanner type="TextLine">
-            <prev>
-              <location>
-                <measures>-1</measures>
-                </location>
-              </prev>
-            </Spanner>
-          <Spanner type="TextLine">
-            <TextLine>
-              <lineStyle>dashed</lineStyle>
-              </TextLine>
-            <next>
-              <location>
-                <measures>1</measures>
-                </location>
-              </next>
-            </Spanner>
-          <Chord>
-            <durationType>whole</durationType>
-            <Note>
-              <pitch>72</pitch>
-              <tpc>14</tpc>
-              </Note>
-            </Chord>
-          </voice>
-        </Measure>
-      <Measure>
-        <voice>
-          <Spanner type="TextLine">
-            <prev>
-              <location>
-                <measures>-1</measures>
-                </location>
-              </prev>
-            </Spanner>
-          <Spanner type="TextLine">
-            <TextLine>
-              <lineStyle>dotted</lineStyle>
-              </TextLine>
-            <next>
-              <location>
-                <measures>1</measures>
-                </location>
-              </next>
-            </Spanner>
-          <Chord>
-            <durationType>whole</durationType>
-            <Note>
-              <pitch>69</pitch>
-              <tpc>17</tpc>
-              </Note>
-            </Chord>
-          </voice>
-        </Measure>
-      <Measure>
-        <voice>
-          <Spanner type="TextLine">
-            <prev>
-              <location>
-                <measures>-1</measures>
-                </location>
-              </prev>
-            </Spanner>
-          <Spanner type="Trill">
-            <Trill>
-              <subtype>prallprall</subtype>
-              <Ornament>
-                <subtype>ornamentTrill</subtype>
-                </Ornament>
-              </Trill>
-            <next>
-              <location>
-                <fractions>1/1</fractions>
-                </location>
-              </next>
-            </Spanner>
-          <Chord>
-            <durationType>whole</durationType>
-            <Note>
-              <pitch>65</pitch>
-              <tpc>13</tpc>
-              </Note>
-            </Chord>
-          <Spanner type="Trill">
-            <prev>
-              <location>
-                <fractions>-1/1</fractions>
-                </location>
-              </prev>
-            </Spanner>
-          <Spanner type="Trill">
-            <prev>
-              <location>
-                <fractions>-1/1</fractions>
-                </location>
-              </prev>
-            </Spanner>
           <BarLine>
             <subtype>end</subtype>
             </BarLine>

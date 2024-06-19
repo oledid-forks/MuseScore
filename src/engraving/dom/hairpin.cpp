@@ -102,6 +102,12 @@ EngravingItem* HairpinSegment::drop(EditData& data)
         return nullptr;
     }
 
+    if (EngravingItem* item = ldata()->itemSnappedAfter()) {
+        if (item->isDynamic()) {
+            return item->drop(data);
+        }
+    }
+
     Fraction endTick = hairpin()->tick2();
     Measure* measure = score()->tick2measure(endTick);
     Segment* segment = measure->getChordRestOrTimeTickSegment(endTick);
@@ -774,7 +780,7 @@ PointF Hairpin::linePos(Grip grip, System** system) const
 
     *system = segment->measure()->system();
     double x = segment->x() + segment->measure()->x();
-    if (!start && !segment->isTimeTickType()) {
+    if (!start) {
         x -= spatium();
     }
 
