@@ -136,111 +136,32 @@
             <sigD>4</sigD>
             </TimeSig>
           <Dynamic>
-            <subtype>pp</subtype>
-            <velocity>33</velocity>
-            <direction>down</direction>
-            </Dynamic>
-          <Chord>
-            <durationType>quarter</durationType>
-            <StemDirection>down</StemDirection>
-            <Note>
-              <pitch>71</pitch>
-              <tpc>19</tpc>
-              </Note>
-            </Chord>
-          <Dynamic>
-            <subtype>fff</subtype>
-            <velocity>33</velocity>
-            <direction>down</direction>
-            </Dynamic>
-          <Chord>
-            <durationType>quarter</durationType>
-            <StemDirection>down</StemDirection>
-            <Note>
-              <pitch>71</pitch>
-              <tpc>19</tpc>
-              </Note>
-            </Chord>
-          <Dynamic>
             <subtype>p</subtype>
             <velocity>49</velocity>
             <direction>down</direction>
             </Dynamic>
           <Chord>
-            <durationType>quarter</durationType>
-            <StemDirection>down</StemDirection>
+            <durationType>whole</durationType>
             <Note>
-              <pitch>71</pitch>
-              <tpc>19</tpc>
-              </Note>
-            </Chord>
-          <Dynamic>
-            <subtype>sf</subtype>
-            <velocity>33</velocity>
-            <direction>down</direction>
-            </Dynamic>
-          <Chord>
-            <durationType>quarter</durationType>
-            <StemDirection>down</StemDirection>
-            <Note>
-              <pitch>71</pitch>
-              <tpc>19</tpc>
+              <pitch>67</pitch>
+              <tpc>15</tpc>
               </Note>
             </Chord>
           </voice>
         </Measure>
       <Measure>
         <voice>
-          <Dynamic>
-            <subtype>mp</subtype>
-            <velocity>64</velocity>
-            <direction>down</direction>
-            </Dynamic>
-          <Chord>
-            <durationType>quarter</durationType>
-            <StemDirection>down</StemDirection>
-            <Note>
-              <pitch>71</pitch>
-              <tpc>19</tpc>
-              </Note>
-            </Chord>
-          <Dynamic>
-            <subtype>sfz</subtype>
-            <velocity>33</velocity>
-            <direction>down</direction>
-            </Dynamic>
-          <Chord>
-            <durationType>quarter</durationType>
-            <StemDirection>down</StemDirection>
-            <Note>
-              <pitch>71</pitch>
-              <tpc>19</tpc>
-              </Note>
-            </Chord>
           <Dynamic>
             <subtype>mf</subtype>
-            <velocity>80</velocity>
+            <velocity>88</velocity>
             <direction>down</direction>
+            <text><sym>dynamicMezzo</sym><sym>dynamicForte</sym><sym>dynamicCombinedSeparatorHyphen</sym><sym>dynamicForte</sym></text>
             </Dynamic>
           <Chord>
-            <durationType>quarter</durationType>
-            <StemDirection>down</StemDirection>
+            <durationType>whole</durationType>
             <Note>
-              <pitch>71</pitch>
-              <tpc>19</tpc>
-              </Note>
-            </Chord>
-          <Dynamic>
-            <subtype>fz</subtype>
-            <velocity>33</velocity>
-            <direction>down</direction>
-            </Dynamic>
-          <Chord>
-            <durationType>quarter</durationType>
-            <StemDirection>down</StemDirection>
-            <Note>
-              <pitch>71</pitch>
-              <tpc>19</tpc>
+              <pitch>67</pitch>
+              <tpc>15</tpc>
               </Note>
             </Chord>
           </voice>
@@ -248,50 +169,37 @@
       <Measure>
         <voice>
           <Dynamic>
+            <subtype>mf</subtype>
+            <velocity>88</velocity>
+            <direction>down</direction>
+            <text><sym>dynamicMezzo</sym><sym>dynamicForte</sym><sym>dynamicCombinedSeparatorHyphen</sym><sym>dynamicForte</sym></text>
+            </Dynamic>
+          <Chord>
+            <durationType>whole</durationType>
+            <Note>
+              <pitch>67</pitch>
+              <tpc>15</tpc>
+              </Note>
+            </Chord>
+          </voice>
+        </Measure>
+      <Measure>
+        <voice>
+          <Dynamic>
+            <subtype>mf</subtype>
+            <velocity>88</velocity>
+            <direction>down</direction>
+            </Dynamic>
+          <Dynamic>
             <subtype>f</subtype>
-            <velocity>96</velocity>
+            <velocity>88</velocity>
             <direction>down</direction>
             </Dynamic>
           <Chord>
-            <durationType>quarter</durationType>
-            <StemDirection>down</StemDirection>
+            <durationType>whole</durationType>
             <Note>
-              <pitch>71</pitch>
-              <tpc>19</tpc>
-              </Note>
-            </Chord>
-          <Dynamic>
-            <subtype>fp</subtype>
-            <velocity>33</velocity>
-            <direction>down</direction>
-            </Dynamic>
-          <Chord>
-            <durationType>quarter</durationType>
-            <StemDirection>down</StemDirection>
-            <Note>
-              <pitch>71</pitch>
-              <tpc>19</tpc>
-              </Note>
-            </Chord>
-          <Dynamic>
-            <subtype>ff</subtype>
-            <velocity>112</velocity>
-            <direction>down</direction>
-            </Dynamic>
-          <Chord>
-            <durationType>quarter</durationType>
-            <StemDirection>down</StemDirection>
-            <Note>
-              <pitch>71</pitch>
-              <tpc>19</tpc>
-              </Note>
-            </Chord>
-          <Chord>
-            <durationType>quarter</durationType>
-            <StemDirection>down</StemDirection>
-            <Note>
-              <pitch>71</pitch>
-              <tpc>19</tpc>
+              <pitch>67</pitch>
+              <tpc>15</tpc>
               </Note>
             </Chord>
           <BarLine>

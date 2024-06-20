@@ -55,17 +55,27 @@
           <name>stdNormal</name>
           </StaffType>
         <hideWhenEmpty>3</hideWhenEmpty>
+        <bracket type="1" span="2" col="1" visible="1"/>
+        <barLineSpan>1</barLineSpan>
         </Staff>
-      <trackName>Flute</trackName>
-      <Instrument id="flute">
-        <longName>Flute</longName>
-        <shortName>Fl.</shortName>
-        <trackName>Flute</trackName>
-        <minPitchP>59</minPitchP>
-        <maxPitchP>98</maxPitchP>
-        <minPitchA>60</minPitchA>
-        <maxPitchA>93</maxPitchA>
-        <instrumentId>wind.flutes.flute</instrumentId>
+      <Staff id="2">
+        <StaffType group="pitched">
+          <name>stdNormal</name>
+          </StaffType>
+        <hideWhenEmpty>3</hideWhenEmpty>
+        </Staff>
+      <trackName>Piano</trackName>
+      <Instrument id="piano">
+        <longName>Piano</longName>
+        <shortName>Pno.</shortName>
+        <trackName>Instrument 1</trackName>
+        <minPitchP>21</minPitchP>
+        <maxPitchP>108</maxPitchP>
+        <minPitchA>21</minPitchA>
+        <maxPitchA>108</maxPitchA>
+        <instrumentId>keyboard.piano</instrumentId>
+        <clef staff="2">F</clef>
+        <singleNoteDynamics>0</singleNoteDynamics>
         <Articulation>
           <velocity>100</velocity>
           <gateTime>95</gateTime>
@@ -107,7 +117,7 @@
           <gateTime>100</gateTime>
           </Articulation>
         <Channel>
-          <program value="73"/>
+          <program value="0"/>
           <controller ctrl="10" value="63"/>
           </Channel>
         </Instrument>
@@ -135,11 +145,6 @@
             <sigN>4</sigN>
             <sigD>4</sigD>
             </TimeSig>
-          <Dynamic>
-            <subtype>pp</subtype>
-            <velocity>33</velocity>
-            <direction>down</direction>
-            </Dynamic>
           <Chord>
             <durationType>quarter</durationType>
             <StemDirection>down</StemDirection>
@@ -148,11 +153,6 @@
               <tpc>19</tpc>
               </Note>
             </Chord>
-          <Dynamic>
-            <subtype>fff</subtype>
-            <velocity>33</velocity>
-            <direction>down</direction>
-            </Dynamic>
           <Chord>
             <durationType>quarter</durationType>
             <StemDirection>down</StemDirection>
@@ -161,11 +161,6 @@
               <tpc>19</tpc>
               </Note>
             </Chord>
-          <Dynamic>
-            <subtype>p</subtype>
-            <velocity>49</velocity>
-            <direction>down</direction>
-            </Dynamic>
           <Chord>
             <durationType>quarter</durationType>
             <StemDirection>down</StemDirection>
@@ -174,11 +169,6 @@
               <tpc>19</tpc>
               </Note>
             </Chord>
-          <Dynamic>
-            <subtype>sf</subtype>
-            <velocity>33</velocity>
-            <direction>down</direction>
-            </Dynamic>
           <Chord>
             <durationType>quarter</durationType>
             <StemDirection>down</StemDirection>
@@ -191,11 +181,6 @@
         </Measure>
       <Measure>
         <voice>
-          <Dynamic>
-            <subtype>mp</subtype>
-            <velocity>64</velocity>
-            <direction>down</direction>
-            </Dynamic>
           <Chord>
             <durationType>quarter</durationType>
             <StemDirection>down</StemDirection>
@@ -204,11 +189,6 @@
               <tpc>19</tpc>
               </Note>
             </Chord>
-          <Dynamic>
-            <subtype>sfz</subtype>
-            <velocity>33</velocity>
-            <direction>down</direction>
-            </Dynamic>
           <Chord>
             <durationType>quarter</durationType>
             <StemDirection>down</StemDirection>
@@ -217,11 +197,6 @@
               <tpc>19</tpc>
               </Note>
             </Chord>
-          <Dynamic>
-            <subtype>mf</subtype>
-            <velocity>80</velocity>
-            <direction>down</direction>
-            </Dynamic>
           <Chord>
             <durationType>quarter</durationType>
             <StemDirection>down</StemDirection>
@@ -230,11 +205,6 @@
               <tpc>19</tpc>
               </Note>
             </Chord>
-          <Dynamic>
-            <subtype>fz</subtype>
-            <velocity>33</velocity>
-            <direction>down</direction>
-            </Dynamic>
           <Chord>
             <durationType>quarter</durationType>
             <StemDirection>down</StemDirection>
@@ -247,37 +217,6 @@
         </Measure>
       <Measure>
         <voice>
-          <Dynamic>
-            <subtype>f</subtype>
-            <velocity>96</velocity>
-            <direction>down</direction>
-            </Dynamic>
-          <Chord>
-            <durationType>quarter</durationType>
-            <StemDirection>down</StemDirection>
-            <Note>
-              <pitch>71</pitch>
-              <tpc>19</tpc>
-              </Note>
-            </Chord>
-          <Dynamic>
-            <subtype>fp</subtype>
-            <velocity>33</velocity>
-            <direction>down</direction>
-            </Dynamic>
-          <Chord>
-            <durationType>quarter</durationType>
-            <StemDirection>down</StemDirection>
-            <Note>
-              <pitch>71</pitch>
-              <tpc>19</tpc>
-              </Note>
-            </Chord>
-          <Dynamic>
-            <subtype>ff</subtype>
-            <velocity>112</velocity>
-            <direction>down</direction>
-            </Dynamic>
           <Chord>
             <durationType>quarter</durationType>
             <StemDirection>down</StemDirection>
@@ -294,6 +233,104 @@
               <tpc>19</tpc>
               </Note>
             </Chord>
+          <Chord>
+            <durationType>quarter</durationType>
+            <StemDirection>down</StemDirection>
+            <Note>
+              <pitch>71</pitch>
+              <tpc>19</tpc>
+              </Note>
+            </Chord>
+          <Chord>
+            <durationType>quarter</durationType>
+            <StemDirection>down</StemDirection>
+            <Note>
+              <pitch>71</pitch>
+              <tpc>19</tpc>
+              </Note>
+            </Chord>
+          </voice>
+        </Measure>
+      <Measure>
+        <voice>
+          <Chord>
+            <durationType>quarter</durationType>
+            <StemDirection>down</StemDirection>
+            <Note>
+              <pitch>71</pitch>
+              <tpc>19</tpc>
+              </Note>
+            </Chord>
+          <Chord>
+            <durationType>quarter</durationType>
+            <StemDirection>down</StemDirection>
+            <Note>
+              <pitch>71</pitch>
+              <tpc>19</tpc>
+              </Note>
+            </Chord>
+          <Chord>
+            <durationType>quarter</durationType>
+            <StemDirection>down</StemDirection>
+            <Note>
+              <pitch>71</pitch>
+              <tpc>19</tpc>
+              </Note>
+            </Chord>
+          <Chord>
+            <durationType>quarter</durationType>
+            <StemDirection>down</StemDirection>
+            <Note>
+              <pitch>71</pitch>
+              <tpc>19</tpc>
+              </Note>
+            </Chord>
+          <BarLine>
+            <subtype>end</subtype>
+            </BarLine>
+          </voice>
+        </Measure>
+      </Staff>
+    <Staff id="2">
+      <Measure>
+        <voice>
+          <Clef>
+            <concertClefType>F</concertClefType>
+            <transposingClefType>F</transposingClefType>
+            <isHeader>1</isHeader>
+            </Clef>
+          <TimeSig>
+            <sigN>4</sigN>
+            <sigD>4</sigD>
+            </TimeSig>
+          <Rest>
+            <durationType>measure</durationType>
+            <duration>1/1</duration>
+            </Rest>
+          </voice>
+        </Measure>
+      <Measure>
+        <voice>
+          <Rest>
+            <durationType>measure</durationType>
+            <duration>1/1</duration>
+            </Rest>
+          </voice>
+        </Measure>
+      <Measure>
+        <voice>
+          <Rest>
+            <durationType>measure</durationType>
+            <duration>1/1</duration>
+            </Rest>
+          </voice>
+        </Measure>
+      <Measure>
+        <voice>
+          <Rest>
+            <durationType>measure</durationType>
+            <duration>1/1</duration>
+            </Rest>
           <BarLine>
             <subtype>end</subtype>
             </BarLine>

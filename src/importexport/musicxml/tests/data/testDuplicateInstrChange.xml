@@ -7,14 +7,14 @@
   <identification>
     <creator type="composer">Composer / arranger</creator>
     <encoding>
-      <software>Finale v27.4 for Windows</software>
-      <encoding-date>2024-05-20</encoding-date>
-      <supports attribute="new-system" element="print" type="yes" value="yes"/>
-      <supports attribute="new-page" element="print" type="yes" value="yes"/>
+      <software>MuseScore 4.4.0</software>
+      <encoding-date>2024-06-18</encoding-date>
       <supports element="accidental" type="yes"/>
       <supports element="beam" type="yes"/>
+      <supports element="print" attribute="new-page" type="no"/>
+      <supports element="print" attribute="new-system" type="no"/>
       <supports element="stem" type="yes"/>
-    </encoding>
+      </encoding>
     </identification>
   <defaults>
     <scaling>
@@ -67,31 +67,43 @@
     </defaults>
   <part-list>
     <score-part id="P1">
-      <part-name>Flute</part-name>
-      <part-abbreviation>Fl.</part-abbreviation>
+      <part-name>Piano</part-name>
+      <part-abbreviation>Pno.</part-abbreviation>
       <score-instrument id="P1-I1">
-        <instrument-name>Flute</instrument-name>
-        <instrument-sound>wind.flutes.flute</instrument-sound>
-        </score-instrument>
-      <midi-device id="P1-I1" port="1"></midi-device>
-      <midi-instrument id="P1-I1">
+        <instrument-name>Keyboard Perc.</instrument-name>
+        <instrument-sound>keyboard.piano</instrument-sound>
+      </score-instrument>
+      <score-instrument id="P1-I1">
+        <instrument-name>Instrument 1</instrument-name>
+        <instrument-sound>keyboard.piano</instrument-sound>
+      </score-instrument>
+      <midi-instrument id="P1-I2">
         <midi-channel>1</midi-channel>
-        <midi-program>74</midi-program>
-        <volume>78.7402</volume>
+        <midi-program>1</midi-program>
+        <volume>80</volume>
         <pan>0</pan>
-        </midi-instrument>
+      </midi-instrument>
+      <midi-instrument id="P1-I2">
+        <midi-channel>1</midi-channel>
+        <midi-program>1</midi-program>
+        <volume>80</volume>
+        <pan>0</pan>
+      </midi-instrument>
       </score-part>
     </part-list>
   <part id="P1">
-    <measure number="1" width="368.09">
+    <measure number="1" width="294.94">
       <print>
         <system-layout>
           <system-margins>
             <left-margin>50</left-margin>
-            <right-margin>-0</right-margin>
+            <right-margin>0</right-margin>
             </system-margins>
           <top-system-distance>70</top-system-distance>
           </system-layout>
+        <staff-layout number="2">
+          <staff-distance>65</staff-distance>
+          </staff-layout>
         </print>
       <attributes>
         <divisions>1</divisions>
@@ -102,200 +114,250 @@
           <beats>4</beats>
           <beat-type>4</beat-type>
           </time>
-        <clef>
+        <staves>2</staves>
+        <instruments>5</instruments>
+        <clef number="1">
           <sign>G</sign>
           <line>2</line>
           </clef>
+        <clef number="2">
+          <sign>F</sign>
+          <line>4</line>
+          </clef>
         </attributes>
-      <direction placement="below">
-        <direction-type>
-          <words default-y="-63" font-family="Scarlatti" font-size="14.4">π</words>
-        </direction-type>
-        <sound dynamics="36.67"/>
-        </direction>
-      <note default-x="80.22" default-y="-20">
+      <note default-x="82.98" default-y="-20">
         <pitch>
           <step>B</step>
           <octave>4</octave>
           </pitch>
         <duration>1</duration>
+        <instrument id="P1-I1"/>
         <voice>1</voice>
         <type>quarter</type>
         <stem>down</stem>
+        <staff>1</staff>
         </note>
-        <direction>
-        <direction-type>
-          <words default-y="-63" font-family="Scarlatti" font-size="14.4">Ï</words>
-        </direction-type>
-        <sound dynamics="36.67"/>
-        </direction>
-      <note default-x="151.73" default-y="-20">
+      <note default-x="135.52" default-y="-20">
         <pitch>
           <step>B</step>
           <octave>4</octave>
           </pitch>
         <duration>1</duration>
+        <instrument id="P1-I2"/>
         <voice>1</voice>
         <type>quarter</type>
         <stem>down</stem>
+        <staff>1</staff>
         </note>
-      <direction placement="below">
-        <direction-type>
-          <words default-y="-63" font-family="Scarlatti" font-size="14.4">p</words>
-        </direction-type>
-        <sound dynamics="54.44"/>
-        </direction>
-      <note default-x="223.25" default-y="-20">
+      <note default-x="188.06" default-y="-20">
         <pitch>
           <step>B</step>
           <octave>4</octave>
           </pitch>
         <duration>1</duration>
+        <instrument id="P1-I2"/>
         <voice>1</voice>
         <type>quarter</type>
         <stem>down</stem>
+        <staff>1</staff>
         </note>
-        <direction>
-        <direction-type>
-          <words default-y="-63" font-family="Scarlatti" font-size="14.4">S</words>
-        </direction-type>
-        <sound dynamics="36.67"/>
-        </direction>
-      <note default-x="294.77" default-y="-20">
+      <note default-x="240.6" default-y="-20">
         <pitch>
           <step>B</step>
           <octave>4</octave>
           </pitch>
         <duration>1</duration>
+        <instrument id="P1-I2"/>
         <voice>1</voice>
         <type>quarter</type>
         <stem>down</stem>
+        <staff>1</staff>
+        </note>
+      <backup>
+        <duration>4</duration>
+        </backup>
+      <note default-x="171.56" default-y="-115">
+        <rest measure="yes"/>
+        <duration>4</duration>
+        <voice>5</voice>
+        <staff>2</staff>
         </note>
       </measure>
-    <measure number="2" width="300.87">
-      <direction placement="below">
-        <direction-type>
-          <words default-y="-63" font-family="Scarlatti" font-size="14.4">P</words>
-        </direction-type>
-        <sound dynamics="71.11"/>
-        </direction>
+    <measure number="2" width="224.96">
       <note default-x="13" default-y="-20">
         <pitch>
           <step>B</step>
           <octave>4</octave>
           </pitch>
         <duration>1</duration>
+        <instrument id="P1-I2"/>
         <voice>1</voice>
         <type>quarter</type>
         <stem>down</stem>
+        <staff>1</staff>
         </note>
-        <direction>
-        <direction-type>
-          <words default-y="-63" font-family="Scarlatti" font-size="14.4">ß</words>
-        </direction-type>
-        <sound dynamics="36.67"/>
-        </direction>
-      <note default-x="84.52" default-y="-20">
+      <note default-x="65.54" default-y="-20">
         <pitch>
           <step>B</step>
           <octave>4</octave>
           </pitch>
         <duration>1</duration>
+        <instrument id="P1-I2"/>
         <voice>1</voice>
         <type>quarter</type>
         <stem>down</stem>
+        <staff>1</staff>
         </note>
-      <direction placement="below">
-        <direction-type>
-          <words default-y="-62" font-family="Scarlatti" font-size="14.4" relative-x="-9">F</words>
-        </direction-type>
-        <sound dynamics="88.89"/>
-        </direction>
-      <note default-x="156.04" default-y="-20">
+      <note default-x="118.08" default-y="-20">
         <pitch>
           <step>B</step>
           <octave>4</octave>
           </pitch>
         <duration>1</duration>
+        <instrument id="P1-I1"/>
         <voice>1</voice>
         <type>quarter</type>
         <stem>down</stem>
+        <staff>1</staff>
         </note>
-        <direction>
-        <direction-type>
-          <words default-y="-63" font-family="Scarlatti" font-size="14.4">Z</words>
-        </direction-type>
-        <sound dynamics="36.67"/>
-        </direction>
-      <note default-x="227.55" default-y="-20">
+      <note default-x="170.62" default-y="-20">
         <pitch>
           <step>B</step>
           <octave>4</octave>
           </pitch>
         <duration>1</duration>
+        <instrument id="P1-I1"/>
         <voice>1</voice>
         <type>quarter</type>
         <stem>down</stem>
+        <staff>1</staff>
+        </note>
+      <backup>
+        <duration>4</duration>
+        </backup>
+      <note default-x="105.08" default-y="-115">
+        <rest measure="yes"/>
+        <duration>4</duration>
+        <voice>5</voice>
+        <staff>2</staff>
         </note>
       </measure>
-    <measure number="3" width="310.07">
-      <direction placement="below">
-        <direction-type>
-          <words default-y="-63" font-family="Scarlatti" font-size="14.4">f</words>
-        </direction-type>
-        <sound dynamics="106.67"/>
-        </direction>
+    <measure number="3" width="224.96">
       <note default-x="13" default-y="-20">
         <pitch>
           <step>B</step>
           <octave>4</octave>
           </pitch>
         <duration>1</duration>
+        <instrument id="P1-I1"/>
         <voice>1</voice>
         <type>quarter</type>
         <stem>down</stem>
+        <staff>1</staff>
         </note>
-        <direction>
-        <direction-type>
-          <words default-y="-63" font-family="Scarlatti" font-size="14.4">Í</words>
-        </direction-type>
-        <sound dynamics="36.67"/>
-        </direction>
-      <note default-x="84.52" default-y="-20">
+      <note default-x="65.54" default-y="-20">
         <pitch>
           <step>B</step>
           <octave>4</octave>
           </pitch>
         <duration>1</duration>
+        <instrument id="P1-I1"/>
         <voice>1</voice>
         <type>quarter</type>
         <stem>down</stem>
+        <staff>1</staff>
         </note>
-      <direction placement="below">
-        <direction-type>
-          <words default-y="-63" font-family="Scarlatti" font-size="14.4">ƒ</words>
-        </direction-type>
-        <sound dynamics="124.44"/>
-        </direction>
-      <note default-x="156.04" default-y="-20">
+      <note default-x="118.08" default-y="-20">
         <pitch>
           <step>B</step>
           <octave>4</octave>
           </pitch>
         <duration>1</duration>
+        <instrument id="P1-I2"/>
         <voice>1</voice>
         <type>quarter</type>
         <stem>down</stem>
+        <staff>1</staff>
         </note>
-      <note default-x="227.55" default-y="-20">
+      <note default-x="170.62" default-y="-20">
         <pitch>
           <step>B</step>
           <octave>4</octave>
           </pitch>
         <duration>1</duration>
+        <instrument id="P1-I2"/>
         <voice>1</voice>
         <type>quarter</type>
         <stem>down</stem>
+        <staff>1</staff>
+        </note>
+      <backup>
+        <duration>4</duration>
+        </backup>
+      <note default-x="105.08" default-y="-115">
+        <rest measure="yes"/>
+        <duration>4</duration>
+        <voice>5</voice>
+        <staff>2</staff>
+        </note>
+      </measure>
+    <measure number="4" width="234.16">
+      <note default-x="13" default-y="-20">
+        <pitch>
+          <step>B</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>1</duration>
+        <instrument id="P1-I2"/>
+        <voice>1</voice>
+        <type>quarter</type>
+        <stem>down</stem>
+        <staff>1</staff>
+        </note>
+      <note default-x="65.54" default-y="-20">
+        <pitch>
+          <step>B</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>1</duration>
+        <instrument id="P1-I2"/>
+        <voice>1</voice>
+        <type>quarter</type>
+        <stem>down</stem>
+        <staff>1</staff>
+        </note>
+      <note default-x="118.08" default-y="-20">
+        <pitch>
+          <step>B</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>1</duration>
+        <instrument id="P1-I1"/>
+        <voice>1</voice>
+        <type>quarter</type>
+        <stem>down</stem>
+        <staff>1</staff>
+        </note>
+      <note default-x="170.62" default-y="-20">
+        <pitch>
+          <step>B</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>1</duration>
+        <instrument id="P1-I1"/>
+        <voice>1</voice>
+        <type>quarter</type>
+        <stem>down</stem>
+        <staff>1</staff>
+        </note>
+      <backup>
+        <duration>4</duration>
+        </backup>
+      <note default-x="105.08" default-y="-115">
+        <rest measure="yes"/>
+        <duration>4</duration>
+        <voice>5</voice>
+        <staff>2</staff>
         </note>
       <barline location="right">
         <bar-style>light-heavy</bar-style>

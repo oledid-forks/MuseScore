@@ -565,6 +565,9 @@ TEST_F(Musicxml_Tests, dsalCodaMisplaced) {
 TEST_F(Musicxml_Tests, durationLargeErrorMscx) {
     mxmlImportTestRef("testDurationLargeError");
 }
+TEST_F(Musicxml_Tests, duplicateInstrChange) {
+    mxmlImportTestRef("testDuplicateInstrChange");
+}
 TEST_F(Musicxml_Tests, durationLargeErrorXml) {
     mxmlIoTestRef("testDurationLargeError");
 }
@@ -718,6 +721,9 @@ TEST_F(Musicxml_Tests, DISABLED_EXCEPT_ON_LINUX(inferredCredits2)) {
 }
 TEST_F(Musicxml_Tests, inferCodaII) {
     mxmlImportTestRef("testInferCodaII");
+}
+TEST_F(Musicxml_Tests, inferredDynamicRange) {
+    mxmlImportTestRef("testInferredDynamicRange");
 }
 TEST_F(Musicxml_Tests, inferSegnoII) {
     mxmlImportTestRef("testInferSegnoII");

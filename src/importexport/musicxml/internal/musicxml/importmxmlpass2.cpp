@@ -568,9 +568,14 @@ static void updatePartWithInstrument(Part* const part, const MusicXMLInstrument&
  */
 
 static InstrumentChange* createInstrumentChange(Score* score, const MusicXMLInstrument& mxmlInstr, const Interval interval,
-                                                const track_idx_t track)
+                                                const track_idx_t track, const Instrument* curInstr)
 {
     const Instrument instr = createInstrument(mxmlInstr, interval);
+
+    if (curInstr->id() == instr.id() && instr.longNames() == curInstr->longNames() && instr.shortNames() == curInstr->shortNames()) {
+        return nullptr;
+    }
+
     InstrumentChange* instrChange = Factory::createInstrumentChange(score->dummy()->segment(), instr);
     instrChange->setTrack(track);
 
@@ -589,7 +594,13 @@ static InstrumentChange* createInstrumentChange(Score* score, const MusicXMLInst
 static void updatePartWithInstrumentChange(Part* const part, const MusicXMLInstrument& mxmlInstr, const Interval interval,
                                            Segment* const segment, const track_idx_t track, const Fraction tick)
 {
-    InstrumentChange* const ic = createInstrumentChange(part->score(), mxmlInstr, interval, track);
+    const Instrument* curInstr = part->instrument(tick);
+    InstrumentChange* const ic = createInstrumentChange(part->score(), mxmlInstr, interval, track, curInstr);
+
+    if (!ic) {
+        return;
+    }
+
     segment->add(ic);               // note: includes part::setInstrument(instr);
 
     // setMidiChannel() depends on setInstrument() already been done
@@ -3009,6 +3020,7 @@ void MusicXMLParserDirection::direction(const String& partId,
     //LOGD("direction track %d", track);
     std::vector<MusicXmlSpannerDesc> starts;
     std::vector<MusicXmlSpannerDesc> stops;
+    bool isDynamicRange = false;
 
     // note: file order is direction-type first, then staff
     // this means staff is still unknown when direction-type is handled
@@ -3106,6 +3118,8 @@ void MusicXMLParserDirection::direction(const String& partId,
         } else {
             addElemOffset(sticking, track, placement(), measure, tick + m_offset);
         }
+    } else if (isLikelyDynamicRange()) {
+        isDynamicRange = true;
     } else if (!m_wordsText.empty() || !m_rehearsalText.empty() || !m_metroText.empty()) {
         TextBase* t = 0;
         if (m_tpoSound > 0.1) {
@@ -3217,11 +3231,25 @@ void MusicXMLParserDirection::direction(const String& partId,
         }
     }
 
+    Dynamic* firstDyn = nullptr;
+
     // do dynamics
     // LVIFIX: check import/export of <other-dynamics>unknown_text</...>
     for (StringList::iterator it = m_dynamicsList.begin(); it != m_dynamicsList.end(); ++it) {
         Dynamic* dyn = Factory::createDynamic(m_score->dummy()->segment());
         dyn->setDynamicType(*it);
+
+        if (isDynamicRange) {
+            if (it == m_dynamicsList.begin()) {
+                firstDyn = dyn;
+            } else if (it == m_dynamicsList.end() - 1 && firstDyn) {
+                // append hyphen and this dynamic to first
+                firstDyn->setXmlText(firstDyn->xmlText() + u"<sym>dynamicCombinedSeparatorHyphen</sym>" + dyn->xmlText());
+                delete dyn;
+                continue;
+            }
+        }
+
         if (!m_dynaVelocity.isEmpty()) {
             int dynaValue = round(m_dynaVelocity.toDouble() * 0.9);
             if (dynaValue > 127) {
@@ -3838,7 +3866,10 @@ void MusicXMLParserDirection::textToDynamic(String& text)
     String simplifiedText = MScoreTextToMXML::toPlainText(text).simplified();
     // Correct finale's incorrect dynamic export
     if (m_pass1.exporterString().contains(u"finale")) {
-        static const std::map<String, String> finaleDynamicSubs = { { u"π", u"pp" }, { u"P", u"mp" }, { u"F", u"mf" }, { u"ƒ", u"ff" } };
+        static const std::map<String,
+                              String> finaleDynamicSubs
+            = { { u"π", u"pp" }, { u"P", u"mp" }, { u"F", u"mf" }, { u"ƒ", u"ff" }, { u"Ï", u"fff" }, { u"S", u"sf" }, { u"ß", u"sfz" },
+            { u"Z", u"fz" },  { u"Í", u"fp" } };
         for (const auto& sub : finaleDynamicSubs) {
             if (simplifiedText == sub.first) {
                 simplifiedText = sub.second;
@@ -4264,6 +4295,20 @@ bool MusicXMLParserDirection::isLikelySticking()
            && m_rehearsalText.empty()
            && m_metroText.empty()
            && m_tpoSound < 0.1;
+}
+
+bool MusicXMLParserDirection::isLikelyDynamicRange() const
+{
+    if (!configuration()->inferTextType()) {
+        return false;
+    }
+
+    String rawWordsText = m_wordsText.simplified();
+    static const std::regex re("(<.*?>)");
+    rawWordsText.remove(re);
+
+    // If there are two dynamics and a hyphen in a single direction node, this is most likely something like "mp-f"
+    return (rawWordsText.simplified() == u"-" || rawWordsText.simplified() == u"—") && m_dynamicsList.size() == 2;
 }
 
 PlayingTechniqueType MusicXMLParserDirection::getPlayingTechnique() const
