@@ -2057,7 +2057,10 @@ void NotationInteraction::applyDropPaletteElement(mu::engraving::Score* score, m
         }
 
         if (el && el->hasVoiceApplicationProperties()) {
-            el->setInitialTrackAndVoiceApplication(el->track());
+            // If target has voice application properties, dropped element takes those and discards the default
+            if (!target->hasVoiceApplicationProperties()) {
+                el->setInitialTrackAndVoiceApplication(el->track());
+            }
         }
 
         if (el && !score->inputState().noteEntryMode()) {
@@ -3541,7 +3544,7 @@ void NotationInteraction::editElement(QKeyEvent* event)
         if (!isShiftRelease) {
             if (isGripEditStarted()) {
                 updateGripAnchorLines();
-            } else if (isElementEditStarted()) {
+            } else if (isElementEditStarted() && !m_editData.editTextualProperties) {
                 updateDragAnchorLines();
             }
         }
