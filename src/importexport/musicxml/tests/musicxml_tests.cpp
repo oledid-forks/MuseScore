@@ -622,6 +622,12 @@ TEST_F(Musicxml_Tests, figuredBassDivisions) {
 TEST_F(Musicxml_Tests, finaleDynamics) {
     mxmlImportTestRef("testFinaleDynamics");
 }
+TEST_F(Musicxml_Tests, finaleInstr) {
+    mxmlImportTestRef("testFinaleInstr");
+}
+TEST_F(Musicxml_Tests, finaleInstr2) {
+    mxmlImportTestRef("testFinaleInstr2");
+}
 TEST_F(Musicxml_Tests, formattedThings) {
     mxmlIoTest("testFormattedThings");
 }
@@ -633,6 +639,9 @@ TEST_F(Musicxml_Tests, fractionPlus) {
 }
 TEST_F(Musicxml_Tests, fractionTicks) {
     mxmlIoTestRef("testFractionTicks");
+}
+TEST_F(Musicxml_Tests, glissFall) {
+    mxmlImportTestRef("testGlissFall");
 }
 TEST_F(Musicxml_Tests, grace1) {
     mxmlIoTest("testGrace1");
@@ -995,6 +1004,9 @@ TEST_F(Musicxml_Tests, sibMetronomeMarks) {
 TEST_F(Musicxml_Tests, sibOttavas) {
     mxmlImportTestRef("testSibOttavas");
 }
+TEST_F(Musicxml_Tests, sibRitLine) {
+    mxmlImportTestRef("testSibRitLine");
+}
 TEST_F(Musicxml_Tests, slurTieDirection) {
     mxmlIoTest("testSlurTieDirection");
 }
@@ -1114,6 +1126,9 @@ TEST_F(Musicxml_Tests, tempo5) {
 }
 TEST_F(Musicxml_Tests, tempo6) {
     mxmlIoTest("testTempo6");
+}
+TEST_F(Musicxml_Tests, tempoLineFermata) {
+    mxmlImportTestRef("testTempoLineFermata");
 }
 TEST_F(Musicxml_Tests, tempoOverlap) {
     mxmlIoTestRef("testTempoOverlap");
