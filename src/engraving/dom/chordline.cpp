@@ -219,15 +219,16 @@ std::vector<PointF> ChordLine::gripsPositions(const EditData&) const
 
 static Note::SlideType slideType(ChordLineType type)
 {
-    static std::unordered_map<ChordLineType, Note::SlideType> chordLineToSlideTypes {
+    static const std::unordered_map<ChordLineType, Note::SlideType> chordLineToSlideTypes {
         { ChordLineType::FALL, Note::SlideType::DownFromNote },
         { ChordLineType::DOIT, Note::SlideType::UpFromNote },
         { ChordLineType::SCOOP, Note::SlideType::UpToNote },
         { ChordLineType::PLOP, Note::SlideType::DownToNote }
     };
 
-    if (chordLineToSlideTypes.find(type) != chordLineToSlideTypes.end()) {
-        return chordLineToSlideTypes.at(type);
+    auto it = chordLineToSlideTypes.find(type);
+    if (it != chordLineToSlideTypes.end()) {
+        return it->second;
     }
 
     return Note::SlideType::Undefined;
@@ -274,7 +275,7 @@ int ChordLine::subtype() const
     size_t h2 = std::hash<bool> {}(m_straight);
     size_t h3 = std::hash<bool> {}(m_wavy);
 
-    return h1 ^ (h2 << 1) ^ (h3 << 2);
+    return static_cast<int>(h1 ^ (h2 << 1) ^ (h3 << 2));
 }
 
 muse::TranslatableString ChordLine::subtypeUserName() const

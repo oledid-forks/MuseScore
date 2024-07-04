@@ -331,6 +331,7 @@ enum class AutoOnOff : char {
     OFF
 };
 
+//! Note: from lowest to highest priority
 enum class VoiceApplication {
     ALL_VOICE_IN_INSTRUMENT,
     ALL_VOICE_IN_STAFF,
@@ -781,6 +782,8 @@ enum class TextStyleType {
     RH_GUITAR_FINGERING,
     STRING_NUMBER,
     STRING_TUNINGS,
+    FRET_DIAGRAM_FINGERING,
+    FRET_DIAGRAM_FRET_NUMBER,
     HARP_PEDAL_DIAGRAM,
     HARP_PEDAL_TEXT_DIAGRAM,
 

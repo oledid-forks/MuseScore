@@ -407,7 +407,7 @@ void PlaybackModel::processSegment(const int tickPositionOffset, const Segment* 
                 processMeasureRepeat(tickPositionOffset, measureRepeat, currentMeasure, staffIdx, trackChanges);
 
                 continue;
-            } else {
+            } else if (item->voice() == 0) {
                 const Measure* currentMeasure = segment->measure();
 
                 if (currentMeasure->measureRepeatCount(staffIdx) > 0) {
@@ -843,8 +843,8 @@ PlaybackModel::TickBoundaries PlaybackModel::tickBoundaries(const ScoreChangesRa
                 continue;
             }
 
-            const Note* firstTiedNote = startNote->firstTiedNote();
-            const Note* lastTiedNote = endNote->lastTiedNote();
+            const Note* firstTiedNote = startNote->firstTiedNote(false);
+            const Note* lastTiedNote = endNote->lastTiedNote(false);
 
             IF_ASSERT_FAILED(firstTiedNote && lastTiedNote) {
                 continue;
