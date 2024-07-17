@@ -89,7 +89,7 @@ const std::array<StyleDef::StyleValue, size_t(Sid::STYLES)> StyleDef::styleValue
     styleDef(lyricsLineThickness,                        Spatium(0.1)),
     styleDef(lyricsMelismaAlign,                         Align(AlignH::LEFT, AlignV::BASELINE)),
 
-    styleDef(lyricsMelismaPad,                           Spatium(0.10)),  // the empty space before a melisma line
+    styleDef(lyricsMelismaPad,                           Spatium(0.20)),  // the empty space before a melisma line
     styleDef(lyricsDashPad,                              Spatium(0.05)),  // the min. empty space before and after a dash
     styleDef(lyricsDashLineThickness,                    Spatium(0.1)),   // in sp. units
     styleDef(lyricsDashYposRatio,                        0.50),           // the fraction of lyrics font x-height to raise the dashes above text base line
@@ -190,7 +190,7 @@ const std::array<StyleDef::StyleValue, size_t(Sid::STYLES)> StyleDef::styleValue
     styleDef(combineVoice,                               true),
     styleDef(beginRepeatLeftMargin,                      Spatium(1.0)),
     styleDef(minNoteDistance,                            Spatium(0.5)),
-    styleDef(barNoteDistance,                            Spatium(1.3)),   // was 1.2
+    styleDef(barNoteDistance,                            Spatium(1.25)),   // was 1.2
 
     styleDef(barAccidentalDistance,                      Spatium(0.65)),
     styleDef(noteBarDistance,                            Spatium(1.5)),
@@ -245,10 +245,10 @@ const std::array<StyleDef::StyleValue, size_t(Sid::STYLES)> StyleDef::styleValue
     styleDef(lastSystemFillLimit,                        PropertyValue(0.3)),
 
     styleDef(hairpinPlacement,                           PlacementV::BELOW),
-    styleDef(hairpinPosAbove,                            PointF(0.0, -2.0)),
-    styleDef(hairpinPosBelow,                            PointF(.0, 2)),
-    styleDef(hairpinLinePosAbove,                        PointF(0.0, -1.5)),
-    styleDef(hairpinLinePosBelow,                        PointF(.0, 2.5)),
+    styleDef(hairpinPosAbove,                            PointF(0.0, -1.75)),
+    styleDef(hairpinPosBelow,                            PointF(.0, 1.75)),
+    styleDef(hairpinLinePosAbove,                        PointF(0.0, -1.0)),
+    styleDef(hairpinLinePosBelow,                        PointF(.0, 2.0)),
     styleDef(hairpinHeight,                              Spatium(1.15)),
     styleDef(hairpinContHeight,                          Spatium(0.5)),
     styleDef(hairpinLineWidth,                           Spatium(0.12)),
@@ -471,7 +471,7 @@ const std::array<StyleDef::StyleValue, size_t(Sid::STYLES)> StyleDef::styleValue
     styleDef(minMMRestWidth,                             Spatium(6)),
     styleDef(mmRestNumberPos,                            Spatium(-0.5)),
     styleDef(mmRestNumberMaskHBar,                       true),
-    styleDef(multiMeasureRestMargin,                     Spatium(1.2)),
+    styleDef(multiMeasureRestMargin,                     Spatium(1.25)),
     styleDef(mmRestHBarThickness,                        Spatium(0.7)),
     styleDef(mmRestHBarVStrokeThickness,                 Spatium(0.2)),
     styleDef(mmRestHBarVStrokeHeight,                    Spatium(2.0)),
@@ -682,8 +682,8 @@ const std::array<StyleDef::StyleValue, size_t(Sid::STYLES)> StyleDef::styleValue
     styleDef(dynamicsFont,                               PropertyValue(String(u"Leland"))),
     styleDef(dynamicsSize,                               1.0), // percentage of the standard size
     styleDef(dynamicsPlacement,                          PlacementV::BELOW),
-    styleDef(dynamicsPosAbove,                           PointF(.0, -1.5)),
-    styleDef(dynamicsPosBelow,                           PointF(.0, 2.5)),
+    styleDef(dynamicsPosAbove,                           PointF(.0, -1.0)),
+    styleDef(dynamicsPosBelow,                           PointF(.0, 2.0)),
     styleDef(avoidBarLines,                              true),
     styleDef(snapToDynamics,                             true),
     styleDef(centerOnNotehead,                           true),
