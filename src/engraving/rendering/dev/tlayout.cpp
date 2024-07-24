@@ -3891,7 +3891,9 @@ void TLayout::layoutLayoutBreak(const LayoutBreak* item, LayoutBreak::LayoutData
 
 static void _layoutLedgerLine(const LedgerLine* item, const LayoutContext& ctx, LedgerLine::LayoutData* ldata)
 {
-    ldata->lineWidth = ctx.conf().styleMM(Sid::ledgerLineWidth) * item->chord()->mag();
+    double chordMag = item->chord()->mag();
+    ldata->setMag(chordMag);
+    ldata->lineWidth = ctx.conf().styleMM(Sid::ledgerLineWidth) * chordMag;
     if (item->staff()) {
         const_cast<LedgerLine*>(item)->setColor(item->staff()->staffType(item->tick())->color());
     }
@@ -4321,7 +4323,7 @@ void TLayout::layoutNote(const Note* item, Note::LayoutData* ldata)
             const_cast<Note*>(item)->setHeadHasParentheses(false, /* addToLinked= */ false);
         }
 
-        double w = item->tabHeadWidth(tab);     // !! use _fretString
+        double w = item->tabHeadWidth(tab);
         double mags = item->magS();
 
         const MStyle& style = item->style();
