@@ -339,6 +339,7 @@ void EngravingItem::reset()
     undoResetProperty(Pid::PLACEMENT);
     undoResetProperty(Pid::MIN_DISTANCE);
     undoResetProperty(Pid::OFFSET);
+    undoResetProperty(Pid::LEADING_SPACE);
     setOffsetChanged(false);
     EngravingObject::reset();
 }
@@ -2083,7 +2084,7 @@ void EngravingItem::drawEditMode(Painter* p, EditData& ed, double /*currentViewS
     p->setPen(pen);
     for (int i = 0; i < ed.grips; ++i) {
         if (Grip(i) == ed.curGrip) {
-            p->setBrush(configuration()->formattingMarksColor());
+            p->setBrush(configuration()->formattingColor());
         } else {
             p->setBrush(BrushStyle::NoBrush);
         }
