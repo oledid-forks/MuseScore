@@ -223,7 +223,6 @@ EngravingItem* HairpinSegment::propertyDelegate(Pid pid)
         || pid == Pid::HAIRPIN_CIRCLEDTIP
         || pid == Pid::HAIRPIN_HEIGHT
         || pid == Pid::HAIRPIN_CONT_HEIGHT
-        || pid == Pid::DYNAMIC_RANGE
         || pid == Pid::LINE_STYLE
         || pid == Pid::VOICE_ASSIGNMENT
         || pid == Pid::DIRECTION
@@ -499,6 +498,36 @@ DynamicType Hairpin::dynamicTypeTo() const
     return TConv::dynamicType(ba.constChar());
 }
 
+const Dynamic* Hairpin::dynamicSnappedBefore() const
+{
+    const LineSegment* seg = frontSegment();
+    if (!seg) {
+        return nullptr;
+    }
+
+    const EngravingItem* item = seg->ldata()->itemSnappedBefore();
+    if (!item || !item->isDynamic()) {
+        return nullptr;
+    }
+
+    return toDynamic(item);
+}
+
+const Dynamic* Hairpin::dynamicSnappedAfter() const
+{
+    const LineSegment* seg = backSegment();
+    if (!seg) {
+        return nullptr;
+    }
+
+    const EngravingItem* item = seg->ldata()->itemSnappedAfter();
+    if (!item || !item->isDynamic()) {
+        return nullptr;
+    }
+
+    return toDynamic(item);
+}
+
 //---------------------------------------------------------
 //   setHairpinType
 //---------------------------------------------------------
@@ -529,6 +558,13 @@ LineSegment* Hairpin::createLineSegment(System* parent)
     return h;
 }
 
+void Hairpin::setDynRange(DynamicRange range)
+{
+    m_dynRange = range;
+
+    setVoiceAssignment(dynamicRangeToVoiceAssignment(range));
+}
+
 //---------------------------------------------------------
 //   getProperty
 //---------------------------------------------------------
@@ -542,8 +578,6 @@ PropertyValue Hairpin::getProperty(Pid id) const
         return int(m_hairpinType);
     case Pid::VELO_CHANGE:
         return m_veloChange;
-    case Pid::DYNAMIC_RANGE:
-        return int(m_dynRange);
     case Pid::HAIRPIN_HEIGHT:
         return m_hairpinHeight;
     case Pid::HAIRPIN_CONT_HEIGHT:
@@ -583,9 +617,6 @@ bool Hairpin::setProperty(Pid id, const PropertyValue& v)
         break;
     case Pid::VELO_CHANGE:
         m_veloChange = v.toInt();
-        break;
-    case Pid::DYNAMIC_RANGE:
-        m_dynRange = v.value<DynamicRange>();
         break;
     case Pid::HAIRPIN_HEIGHT:
         m_hairpinHeight = v.value<Spatium>();
@@ -633,9 +664,6 @@ PropertyValue Hairpin::propertyDefault(Pid id) const
 
     case Pid::VELO_CHANGE:
         return 0;
-
-    case Pid::DYNAMIC_RANGE:
-        return DynamicRange::PART;
 
     case Pid::BEGIN_TEXT:
         if (m_hairpinType == HairpinType::CRESC_LINE) {
