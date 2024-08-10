@@ -161,6 +161,10 @@ if (MUSE_MODULE_UI)
     list(APPEND LINK_LIB muse::dockwindow)
 endif()
 
+if (MUSE_MODULE_AUDIOPLUGINS)
+    list(APPEND LINK_LIB muse::audioplugins)
+endif()
+
 if (MUE_BUILD_CONVERTER_MODULE)
     list(APPEND LINK_LIB converter)
 endif()
