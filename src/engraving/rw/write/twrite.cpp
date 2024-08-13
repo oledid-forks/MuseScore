@@ -541,7 +541,7 @@ void TWrite::write(const Ambitus* item, XmlWriter& xml, WriteContext& ctx)
     xml.tagProperty(Pid::HEAD_TYPE,  int(item->noteHeadType()),  int(Ambitus::NOTEHEADTYPE_DEFAULT));
     xml.tagProperty(Pid::MIRROR_HEAD, int(item->direction()),    int(Ambitus::DIRECTION_DEFAULT));
     xml.tag("hasLine",    item->hasLine(), true);
-    xml.tagProperty(Pid::LINE_WIDTH_SPATIUM, item->lineWidth(), Ambitus::LINEWIDTH_DEFAULT);
+    xml.tagProperty(Pid::LINE_WIDTH, item->lineWidth(), Ambitus::LINEWIDTH_DEFAULT);
     xml.tag("topPitch",   item->topPitch());
     xml.tag("topTpc",     item->topTpc());
     xml.tag("bottomPitch", item->bottomPitch());
@@ -750,7 +750,7 @@ void TWrite::writeProperties(const Box* item, XmlWriter& xml, WriteContext& ctx)
 {
     for (Pid id : {
         Pid::BOX_HEIGHT, Pid::BOX_WIDTH, Pid::TOP_GAP, Pid::BOTTOM_GAP,
-        Pid::LEFT_MARGIN, Pid::RIGHT_MARGIN, Pid::TOP_MARGIN, Pid::BOTTOM_MARGIN, Pid::BOX_AUTOSIZE
+        Pid::LEFT_MARGIN, Pid::RIGHT_MARGIN, Pid::TOP_MARGIN, Pid::BOTTOM_MARGIN, Pid::BOX_AUTOSIZE, Pid::SIZE_SPATIUM_DEPENDENT
     }) {
         bool force = (item->isVBox() && id == Pid::BOX_HEIGHT) || (item->isHBox() && id == Pid::BOX_WIDTH);
         writeProperty(item, xml, id, force);

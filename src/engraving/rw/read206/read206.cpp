@@ -2050,7 +2050,7 @@ static void readVolta206(XmlReader& e, ReadContext& ctx, Volta* volta)
                 volta->endings().push_back(i);
             }
         } else if (tag == "lineWidth") {
-            volta->setLineWidth(Millimetre(e.readDouble() * volta->spatium()));
+            volta->setLineWidth(Spatium(e.readDouble()));
         } else if (!readTextLineProperties(e, ctx, volta)) {
             e.unknown();
         }
@@ -2145,7 +2145,7 @@ void Read206::readHairpin206(XmlReader& e, ReadContext& ctx, Hairpin* h)
         if (tag == "subtype") {
             h->setHairpinType(HairpinType(e.readInt()));
         } else if (tag == "lineWidth") {
-            h->setLineWidth(Millimetre(e.readDouble() * h->spatium()));
+            h->setLineWidth(Spatium(e.readDouble()));
             // lineWidthStyle = PropertyFlags::UNSTYLED;
         } else if (tag == "hairpinHeight") {
             h->setHairpinHeight(Spatium(e.readDouble()));
@@ -3075,7 +3075,7 @@ static void readStaffContent206(Score* score, XmlReader& e, ReadContext& ctx)
 
             if (tag == "Measure") {
                 if (lastReadBox) {
-                    lastReadBox->setBottomGap(lastReadBox->bottomGap() + lastReadBox->propertyDefault(Pid::BOTTOM_GAP).value<Millimetre>());
+                    lastReadBox->setBottomGap(lastReadBox->bottomGap() + lastReadBox->propertyDefault(Pid::BOTTOM_GAP).value<Spatium>());
                     lastReadBox = nullptr;
                 }
                 readMeasureLast = true;
@@ -3120,10 +3120,10 @@ static void readStaffContent206(Score* score, XmlReader& e, ReadContext& ctx)
                 // If it's the first box, and comes before any measures, reset to
                 // 301 default.
                 if (!readMeasureLast && !lastReadBox) {
-                    b->setTopGap(b->propertyDefault(Pid::TOP_GAP).value<Millimetre>());
+                    b->setTopGap(b->propertyDefault(Pid::TOP_GAP).value<Spatium>());
                     b->setPropertyFlags(Pid::TOP_GAP, PropertyFlags::STYLED);
                 } else if (readMeasureLast) {
-                    b->setTopGap(b->topGap() + b->propertyDefault(Pid::TOP_GAP).value<Millimetre>());
+                    b->setTopGap(b->topGap() + b->propertyDefault(Pid::TOP_GAP).value<Spatium>());
                 }
 
                 lastReadBox = b;

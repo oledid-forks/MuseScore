@@ -1614,7 +1614,7 @@ bool TRead::readProperties(Ambitus* a, XmlReader& e, ReadContext& ctx)
     } else if (tag == "hasLine") {
         a->setHasLine(e.readInt());
     } else if (tag == "lineWidth") {
-        TRead::readProperty(a, e, ctx, Pid::LINE_WIDTH_SPATIUM);
+        TRead::readProperty(a, e, ctx, Pid::LINE_WIDTH);
     } else if (tag == "topPitch") {
         a->setTopPitch(e.readInt(), false);
     } else if (tag == "bottomPitch") {
@@ -2058,16 +2058,16 @@ bool TRead::readProperties(Box* b, XmlReader& e, ReadContext& ctx)
         b->setBoxWidth(Spatium(e.readDouble()));
     } else if (tag == "topGap") {
         double gap = e.readDouble();
-        b->setTopGap(Millimetre(gap));
+        b->setTopGap(Spatium(gap));
         if (b->score()->mscVersion() >= 206) {
-            b->setTopGap(Millimetre(gap * b->style().spatium()));
+            b->setTopGap(Spatium(gap));
         }
         b->setPropertyFlags(Pid::TOP_GAP, PropertyFlags::UNSTYLED);
     } else if (tag == "bottomGap") {
         double gap = e.readDouble();
-        b->setBottomGap(Millimetre(gap));
+        b->setBottomGap(Spatium(gap));
         if (b->score()->mscVersion() >= 206) {
-            b->setBottomGap(Millimetre(gap * b->style().spatium()));
+            b->setBottomGap(Spatium(gap));
         }
         b->setPropertyFlags(Pid::BOTTOM_GAP, PropertyFlags::UNSTYLED);
     } else if (tag == "leftMargin") {
@@ -3520,7 +3520,7 @@ bool TRead::readProperties(SLine* l, XmlReader& e, ReadContext& ctx)
     } else if (tag == "anchor") {
         l->setAnchor(SLine::Anchor(e.readInt()));
     } else if (tag == "lineWidth") {
-        l->setLineWidth(Millimetre(e.readDouble() * l->spatium()));
+        l->setLineWidth(Spatium(e.readDouble()));
     } else if (TRead::readProperty(l, tag, e, ctx, Pid::LINE_STYLE)) {
     } else if (tag == "dashLineLength") {
         l->setDashLineLen(e.readDouble());

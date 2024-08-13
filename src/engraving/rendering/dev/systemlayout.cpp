@@ -284,6 +284,10 @@ System* SystemLayout::collectSystem(LayoutContext& ctx)
             break;
         }
 
+        if (oldSystem && system != oldSystem && muse::contains(ctx.state().systemList(), oldSystem)) {
+            oldSystem->clear();
+        }
+
         if (ctx.state().prevMeasure() && ctx.state().prevMeasure()->isMeasure() && ctx.state().prevMeasure()->system() == system) {
             //
             // now we know that the previous measure is not the last
@@ -522,9 +526,10 @@ System* SystemLayout::collectSystem(LayoutContext& ctx)
                 createBrackets = false;
             }
         } else if (mb->isHBox()) {
-            mb->setPos(pos + PointF(toHBox(mb)->topGap(), 0.0));
-            TLayout::layoutMeasureBase(mb, ctx);
-            createBrackets = toHBox(mb)->createSystemHeader();
+            HBox* curHBox = toHBox(mb);
+            curHBox->setPos(pos + PointF(curHBox->absoluteFromSpatium(curHBox->topGap()), 0.0));
+            TLayout::layoutMeasureBase(curHBox, ctx);
+            createBrackets = curHBox->createSystemHeader();
         } else if (mb->isVBox()) {
             mb->setPos(pos);
         }
@@ -2716,12 +2721,15 @@ double SystemLayout::minDistance(const System* top, const System* bottom, const 
     const LayoutConfiguration& conf = ctx.conf();
     const DomAccessor& dom = ctx.dom();
 
-    if (top->vbox() && !bottom->vbox()) {
-        return std::max(double(top->vbox()->bottomGap()), bottom->minTop());
-    } else if (!top->vbox() && bottom->vbox()) {
-        return std::max(double(bottom->vbox()->topGap()), top->minBottom());
-    } else if (top->vbox() && bottom->vbox()) {
-        return double(bottom->vbox()->topGap() + top->vbox()->bottomGap());
+    const Box* topVBox = top->vbox();
+    const Box* bottomVBox = bottom->vbox();
+
+    if (topVBox && !bottomVBox) {
+        return std::max(topVBox->absoluteFromSpatium(topVBox->bottomGap()), bottom->minTop());
+    } else if (!topVBox && bottomVBox) {
+        return std::max(bottomVBox->absoluteFromSpatium(bottomVBox->topGap()), top->minBottom());
+    } else if (topVBox && bottomVBox) {
+        return bottomVBox->absoluteFromSpatium(bottomVBox->topGap()) + topVBox->absoluteFromSpatium(topVBox->bottomGap());
     }
 
     if (top->staves().empty() || bottom->staves().empty()) {

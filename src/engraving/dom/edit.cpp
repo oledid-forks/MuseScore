@@ -4124,6 +4124,7 @@ MeasureBase* Score::insertBox(ElementType type, MeasureBase* beforeMeasure, cons
     }
 
     Fraction tick;
+    bool isTitleFrame = type == ElementType::VBOX && beforeMeasure == beforeMeasure->score()->first();
     if (beforeMeasure) {
         if (beforeMeasure->isMeasure()) {
             Measure* m = toMeasure(beforeMeasure);
@@ -4149,6 +4150,7 @@ MeasureBase* Score::insertBox(ElementType type, MeasureBase* beforeMeasure, cons
     newMeasureBase->setTick(tick);
     newMeasureBase->setNext(beforeMeasure);
     newMeasureBase->setPrev(beforeMeasure ? beforeMeasure->prev() : last());
+    newMeasureBase->setSizeIsSpatiumDependent(!isTitleFrame);
 
     undo(new InsertMeasures(newMeasureBase, newMeasureBase));
 
@@ -5761,18 +5763,7 @@ void Score::undoChangeVisible(EngravingItem* item, bool visible)
 void Score::undoAddElement(EngravingItem* element, bool addToLinkedStaves, bool ctrlModifier, EngravingItem* elementToRelink)
 {
     Staff* ostaff = element->staff();
-    track_idx_t strack = muse::nidx;
-    if (ostaff) {
-        strack = ostaff->idx() * VOICES + element->track() % VOICES;
-
-        if (mu::engraving::Excerpt* excerpt = ostaff->score()->excerpt()) {
-            const TracksMap& tracks = excerpt->tracksMapping();
-
-            if (!tracks.empty() && strack != muse::nidx) {
-                strack = muse::key(tracks, strack, muse::nidx);
-            }
-        }
-    }
+    track_idx_t strack = element->track();
 
     ElementType et = element->type();
 
@@ -6156,6 +6147,10 @@ void Score::undoAddElement(EngravingItem* element, bool addToLinkedStaves, bool 
             ChordRest* ncr = toChordRest(seg->element(linkedTrack));
             ne->setParent(ncr);
             if (element->isChordLine()) {
+                if (cr->isGrace()) {
+                    ncr = findLinkedChord(toChord(cr), score->staff(staffIdx));
+                    ne->setParent(ncr);
+                }
                 ChordLine* oldChordLine = toChordLine(element);
                 ChordLine* newChordLine = toChordLine(ne);
                 // Chordline also needs to know the new note
@@ -6430,16 +6425,7 @@ void Score::undoAddCR(ChordRest* cr, Measure* measure, const Fraction& tick)
     }
 
     Staff* ostaff = cr->staff();
-    track_idx_t strack = ostaff->idx() * VOICES + cr->voice();
-    // If this is on an excerpt, get actual track
-    if (mu::engraving::Excerpt* excerpt = ostaff->score()->excerpt()) {
-        if (ostaff->isVoiceVisible(cr->voice())) {
-            const TracksMap& tracks = excerpt->tracksMapping();
-            if (!tracks.empty()) {
-                strack = muse::key(tracks, strack, muse::nidx);
-            }
-        }
-    }
+    track_idx_t strack = cr->track();
 
     SegmentType segmentType = SegmentType::ChordRest;
 
